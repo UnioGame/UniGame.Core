@@ -28,7 +28,31 @@ namespace UniGreenModules.UniGame.Core.EditorTools.Editor.DrawersTools
             return PropertyTreeFactory(target);
         }
 #endif
-     
+
+
+        public static void DrawAssetChildWithOdin(this Object asset, Type type, int childIndex)
+        {
+#if ODIN_INSPECTOR               
+            var propertyTree = asset.GetPropertyTree();
+            
+            for (var i = 0; i < propertyTree.RootPropertyCount; i++) {
+                var p = propertyTree.GetRootProperty(i);
+                if(p.Info.TypeOfValue != type)
+                    continue;
+                var children = p.Children;
+                if (children.Count != childIndex)
+                    return;
+                
+                var child = children[childIndex];
+                var items = child.Children;
+                foreach (var property in items)
+                {
+                    property.Draw();
+                }
+            }
+#endif
+        }
+        
         
         [Conditional("ODIN_INSPECTOR")]
         public static void DrawOdinPropertyInspector(this object asset)

@@ -51,8 +51,9 @@ namespace UniModules.UniGame.Core.Runtime.Extension
             foreach (T obj in source)
             {
                 action(obj);
-                yield return obj;
             }
+
+            return source;
         }
 
         /// <summary>Perform an action on each item.</summary>
