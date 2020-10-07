@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace UniGreenModules.UniCore.Runtime.ObjectPool.Examples.SpawnDemo
+namespace UniModules.UniCore.Runtime.ObjectPool.Examples.SpawnDemo
 {
     using System;
     using Runtime;

@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.Utils
+﻿namespace UniModules.UniCore.Runtime.Utils
 {
     using System.Collections.Generic;
     using UnityEngine;

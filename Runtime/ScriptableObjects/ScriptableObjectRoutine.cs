@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.ScriptableObjects
+﻿namespace UniModules.UniCore.Runtime.ScriptableObjects
 {
     using System;
     using System.Collections;

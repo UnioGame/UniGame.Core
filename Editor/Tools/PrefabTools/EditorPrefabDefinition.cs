@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.EditorTools.Editor.PrefabTools
+﻿namespace UniModules.UniCore.EditorTools.Editor.PrefabTools
 {
     using System.Text;
     using UnityEditor;

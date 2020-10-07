@@ -3,11 +3,11 @@
     using System;
     using System.Collections.Generic;
     using Interfaces;
-    using UniGreenModules.UniCore.Runtime.Common;
-    using UniGreenModules.UniCore.Runtime.DataFlow;
-    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
-    using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime;
-    using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+    using UniModules.UniCore.Runtime.Common;
+    using UniModules.UniCore.Runtime.DataFlow;
+    using UniModules.UniCore.Runtime.DataFlow.Interfaces;
+    using UniModules.UniCore.Runtime.ObjectPool.Runtime;
+    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
 
     public class ComposedLifeTime : IPoolable, IComposedLifeTime
     {

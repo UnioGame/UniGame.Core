@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UniGreenModules.UniGame.Core.Tests.Editor
+namespace UniModules.UniGame.Core.Tests.Editor
 {
     public class LinkedListTests : MonoBehaviour
     {

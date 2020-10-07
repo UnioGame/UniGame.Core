@@ -1,4 +1,4 @@
-namespace UniGreenModules.UniCore.Runtime.Math
+namespace UniModules.UniCore.Runtime.Math
 {
     using System;
 

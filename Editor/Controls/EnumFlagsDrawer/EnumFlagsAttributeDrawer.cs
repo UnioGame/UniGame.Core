@@ -1,8 +1,8 @@
-﻿using UniGreenModules.UniCore.Runtime.Attributes;
+﻿using UniModules.UniCore.Runtime.Attributes;
 using UnityEditor;
 using UnityEngine;
 
-namespace UniGreenModules.UniCore.EditorTools.Editor.Attributes
+namespace UniModules.UniCore.EditorTools.Editor.Attributes
 {
     [CustomPropertyDrawer(typeof(EnumFlagsAttribute))]
     public class EnumFlagsAttributeDrawer : PropertyDrawer

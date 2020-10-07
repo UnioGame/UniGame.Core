@@ -1,10 +1,10 @@
-﻿using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+﻿using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
 
 namespace UniGame.Core.Runtime.Common
 {
     using System;
-    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
-    using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
+    using UniModules.UniCore.Runtime.DataFlow.Interfaces;
+    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
 
     public class LifeTimedAction : IPoolable,ILifeTimedAction

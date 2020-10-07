@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UniGreenModules.UniGame.Core.Runtime.Rx
+namespace UniModules.UniGame.Core.Runtime.Rx
 {
     [Serializable]
     public class IntRecycleReactiveProperty : RecycleReactiveProperty<int> {}

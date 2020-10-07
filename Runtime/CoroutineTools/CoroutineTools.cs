@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.CoroutineTools
+﻿namespace UniModules.UniCore.Runtime.CoroutineTools
 {
     using System;
     using System.Collections;

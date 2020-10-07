@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.Extension
+﻿namespace UniModules.UniCore.Runtime.Extension
 {
     using System;
     using System.Collections.Generic;

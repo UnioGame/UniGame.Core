@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.ObjectPool.Runtime.Components
+﻿namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Components
 {
 	using UnityEngine;
 

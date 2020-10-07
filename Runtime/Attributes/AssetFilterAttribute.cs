@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UniGreenModules.UniGame.Core.Runtime.Attributes
+namespace UniModules.UniGame.Core.Runtime.Attributes
 {
     using System;
 

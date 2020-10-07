@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniGame.Core.Runtime.Rx
+﻿namespace UniModules.UniGame.Core.Runtime.Rx
 {
     using System;
     using UniCore.Runtime.ObjectPool.Runtime.Extensions;

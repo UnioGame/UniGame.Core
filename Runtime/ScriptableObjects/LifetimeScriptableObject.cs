@@ -3,7 +3,7 @@
     using System;
     using DataFlow.Interfaces;
     using Interfaces;
-    using UniGreenModules.UniCore.Runtime.DataFlow;
+    using UniModules.UniCore.Runtime.DataFlow;
     using UnityEngine;
 
     public class LifetimeScriptableObject : ScriptableObject, 

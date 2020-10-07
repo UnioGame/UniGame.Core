@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.ProfilerTools
+﻿namespace UniModules.UniCore.Runtime.ProfilerTools
 {
     using System;
     using System.Collections.Generic;

@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.Collider
+﻿namespace UniModules.UniCore.Runtime.Collider
 {
     using System.Collections.Generic;
     using UnityEngine;

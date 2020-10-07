@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.EditorTools.Editor.PropertiesDrawers
+﻿namespace UniModules.UniCore.EditorTools.Editor.PropertiesDrawers
 {
     using System;
     using System.Collections.Generic;

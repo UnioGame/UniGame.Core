@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.ReflectionUtils
+﻿namespace UniModules.UniCore.Runtime.ReflectionUtils
 {
     using System;
     using System.Collections;

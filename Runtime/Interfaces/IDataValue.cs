@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.Interfaces
+﻿namespace UniModules.UniCore.Runtime.Interfaces
 {
 	using Rx;
 

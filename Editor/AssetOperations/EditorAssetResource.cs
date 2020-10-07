@@ -1,7 +1,7 @@
 ﻿namespace UniModules.UniGame.Core.EditorTools.Editor.AssetOperations
 {
     using System;
-    using UniGreenModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
     using UnityEditor;
     using Object = UnityEngine.Object;
 

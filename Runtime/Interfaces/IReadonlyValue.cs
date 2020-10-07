@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniGame.Core.Runtime.Interfaces
+﻿namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
     public interface IReadonlyValue <T>
     {

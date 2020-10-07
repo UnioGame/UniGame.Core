@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.DataFlow.Interfaces
+﻿namespace UniModules.UniCore.Runtime.DataFlow.Interfaces
 {
     public interface ILifeTimeFactory
     {

@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.ModelBehaviours
+﻿namespace UniModules.UniCore.Runtime.ModelBehaviours
 {
     using System;
     using DataFlow.Interfaces;

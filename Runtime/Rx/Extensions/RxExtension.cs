@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.Rx.Extensions
+﻿namespace UniModules.UniCore.Runtime.Rx.Extensions
 {
     using System;
     using System.Linq;

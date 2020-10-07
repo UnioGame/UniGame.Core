@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UniGreenModules.UniGame.Core.Runtime.DataStructure
+namespace UniModules.UniGame.Core.Runtime.DataStructure
 {
     using global::UniCore.Runtime.ProfilerTools;
 

@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace UniGreenModules.UniCore.EditorTools.Editor
+namespace UniModules.UniCore.EditorTools.Editor
 {
     public class CompareWindow : EditorWindow {
 

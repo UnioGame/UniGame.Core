@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniGame.Core.Runtime.Common
+﻿namespace UniModules.UniGame.Core.Runtime.Common
 {
     using System;
     using UniCore.Runtime.DataFlow;

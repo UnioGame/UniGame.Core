@@ -1,7 +1,7 @@
 // Copyright (c) Rotorz Limited. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root.
 
-namespace UniGreenModules.UniCore.EditorTools.Editor.Controls.ReorderableList.Element_Adder_Menu {
+namespace UniModules.UniCore.EditorTools.Editor.Controls.ReorderableList.Element_Adder_Menu {
 	using UnityEngine;
 
 	/// <summary>

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace UniGreenModules.UniGame.Core.Runtime.Extension
+namespace UniModules.UniGame.Core.Runtime.Extension
 {
     using Object = UnityEngine.Object;
 

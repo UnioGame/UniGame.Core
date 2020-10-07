@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Interfaces;
-    using UniGreenModules.UniCore.Runtime.DataFlow.Interfaces;
+    using UniModules.UniCore.Runtime.DataFlow.Interfaces;
 
     public interface IComposedLifeTime : ILifeTime, IDisposable
     {

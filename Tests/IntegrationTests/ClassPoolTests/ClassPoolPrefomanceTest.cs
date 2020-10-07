@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UniGreenModules.UniCore.Tests.IntegrationTests.ClassPoolTests
+namespace UniModules.UniCore.Tests.IntegrationTests.ClassPoolTests
 {
     using System.Collections;
     using System.Collections.Generic;

@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.DataStructure
+﻿namespace UniModules.UniCore.Runtime.DataStructure
 {
 	using System.Collections.Generic;
 	using System.Threading;

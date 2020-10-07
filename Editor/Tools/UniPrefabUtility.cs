@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace UniGreenModules.UniCore.EditorTools.Editor.Utility
+namespace UniModules.UniCore.EditorTools.Editor.Utility
 {
     public class UniPrefabUtility 
     {

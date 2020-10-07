@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace UniGreenModules.UniCore.Runtime.Interfaces
+namespace UniModules.UniCore.Runtime.Interfaces
 {
     public interface IAsyncFactory<TResult>
     {

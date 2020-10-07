@@ -1,7 +1,9 @@
-﻿namespace UniModules.UniGame.Core.Runtime.Components
+﻿using UniCore.Runtime.ProfilerTools;
+
+namespace UniModules.UniGame.Core.Runtime.Components
 {
     using UniCore.Runtime.ProfilerTools;
-    using UniGreenModules.UniCore.Runtime.Interfaces;
+    using UniModules.UniCore.Runtime.Interfaces;
 #if UNITY_EDITOR
     using UnityEditor;
 #endif

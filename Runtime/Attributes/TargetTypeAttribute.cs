@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.Attributes
+﻿namespace UniModules.UniCore.Runtime.Attributes
 {
     using System;
 

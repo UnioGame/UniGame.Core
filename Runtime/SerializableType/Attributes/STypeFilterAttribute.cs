@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniGame.Core.Runtime.SerializableType.Attributes
+﻿namespace UniModules.UniGame.Core.Runtime.SerializableType.Attributes
 {
     using System;
     using UnityEngine;

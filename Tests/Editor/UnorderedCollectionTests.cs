@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Tests.Editor
+﻿namespace UniModules.UniCore.Tests.Editor
 {
     using NUnit.Framework;
     using Runtime.DataStructure;

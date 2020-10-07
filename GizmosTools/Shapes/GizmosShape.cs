@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.GizmosTools.Shapes
+﻿namespace UniModules.UniCore.GizmosTools.Shapes
 {
     using System.Diagnostics;
     using UnityEngine;

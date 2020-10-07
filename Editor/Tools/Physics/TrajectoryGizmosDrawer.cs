@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.EditorTools.Editor.Physics {
+﻿namespace UniModules.UniCore.EditorTools.Editor.Physics {
     using Runtime.Physics;
     using UnityEditor;
     using UnityEngine;

@@ -1,6 +1,6 @@
-﻿using UniGreenModules.UniCore.Runtime.Interfaces;
+﻿using UniModules.UniCore.Runtime.Interfaces;
 
-namespace UniGreenModules.UniGame.Core.Runtime.Interfaces
+namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
     public interface ILifeTimeCompletionCommand : ILifeTimeCommand, ICompletionSource
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UniGreenModules.UniGame.SerializableContext.Runtime.Abstract
+namespace UniModules.UniGame.SerializableContext.Runtime.Abstract
 {
     public interface IResourceDisposable: IDisposable
     {

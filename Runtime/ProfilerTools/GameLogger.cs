@@ -3,7 +3,7 @@
     using System;
     using Cysharp.Text;
     using Interfaces;
-    using UniGreenModules.UniCore.Runtime.Utils;
+    using UniModules.UniCore.Runtime.Utils;
     using UnityEngine;
     using Debug = UnityEngine.Debug;
     using Object = UnityEngine.Object;

@@ -6,9 +6,9 @@
     using EditorResources;
     using Runtime.DataFlow.Interfaces;
     using Runtime.Interfaces;
-    using UniGreenModules.UniCore.EditorTools.Editor;
-    using UniGreenModules.UniCore.Runtime.DataFlow;
-    using UniGreenModules.UniCore.Runtime.Rx.Extensions;
+    using UniModules.UniCore.EditorTools.Editor;
+    using UniModules.UniCore.Runtime.DataFlow;
+    using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniRx;
     using Object = UnityEngine.Object;
 

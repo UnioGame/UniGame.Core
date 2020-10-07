@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.Input {
+﻿namespace UniModules.UniCore.Runtime.Input {
 	using System;
 
 	[Flags]

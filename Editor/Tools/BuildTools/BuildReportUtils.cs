@@ -1,8 +1,8 @@
-﻿using UniGreenModules.UniCore.Runtime.ProfilerTools;
+﻿using UniModules.UniCore.Runtime.ProfilerTools;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-namespace UniGreenModules.UniCore.EditorTools.Editor.BuildTools
+namespace UniModules.UniCore.EditorTools.Editor.BuildTools
 {
     using global::UniCore.Runtime.ProfilerTools;
 

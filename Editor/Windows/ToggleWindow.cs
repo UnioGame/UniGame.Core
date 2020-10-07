@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace UniGreenModules.UniCore.EditorTools.Editor.Windows
+namespace UniModules.UniCore.EditorTools.Editor.Windows
 {
     public class ToggleWindow : EditorWindow {
 

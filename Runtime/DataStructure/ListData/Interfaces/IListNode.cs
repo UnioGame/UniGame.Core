@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniGame.Core.Runtime.DataStructure.LinkedList.Interfaces
+﻿namespace UniModules.UniGame.Core.Runtime.DataStructure.LinkedList.Interfaces
 {
     using System;
     using Runtime.Interfaces;

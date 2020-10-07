@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UniGreenModules.UniCore.Runtime.ScriptableObjects
+namespace UniModules.UniCore.Runtime.ScriptableObjects
 {
     using System;
     using UniRx;

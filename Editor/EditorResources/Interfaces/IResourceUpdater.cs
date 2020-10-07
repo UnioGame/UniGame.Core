@@ -1,4 +1,4 @@
-namespace UniGreenModules.UniResourceSystem.Runtime.Interfaces
+namespace UniModules.UniResourceSystem.Runtime.Interfaces
 {
     using UnityEngine;
 

@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.Common
+﻿namespace UniModules.UniCore.Runtime.Common
 {
     using System;
     using Interfaces;

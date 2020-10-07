@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.Physics
+﻿namespace UniModules.UniCore.Runtime.Physics
 {
     using UnityEngine;
 

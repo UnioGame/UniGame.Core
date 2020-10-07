@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.ObjectPool.Runtime
+﻿namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 {
     using Interfaces;
     using UnityEngine;

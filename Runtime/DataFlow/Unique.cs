@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniGame.Core.Runtime.DataFlow
+﻿namespace UniModules.UniGame.Core.Runtime.DataFlow
 {
     using System.Threading;
 

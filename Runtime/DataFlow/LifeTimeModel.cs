@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.DataFlow
+﻿namespace UniModules.UniCore.Runtime.DataFlow
 {
     using Interfaces;
     using ObjectPool.Runtime.Extensions;

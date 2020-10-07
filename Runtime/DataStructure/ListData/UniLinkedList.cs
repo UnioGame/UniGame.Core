@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniGame.Core.Runtime.DataStructure
+﻿namespace UniModules.UniGame.Core.Runtime.DataStructure
 {
     using System;
     using System.Collections;

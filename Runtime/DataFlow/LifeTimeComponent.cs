@@ -4,7 +4,7 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow
 {
     using System;
     using Interfaces;
-    using UniGreenModules.UniCore.Runtime.DataFlow;
+    using UniModules.UniCore.Runtime.DataFlow;
 
     public class LifeTimeComponent :
         MonoBehaviour, 

@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniGame.Core.Runtime.SerializableType
+﻿namespace UniModules.UniGame.Core.Runtime.SerializableType
 {
     using System;
     using Taktika.GameRuntime.Types;

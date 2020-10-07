@@ -10,9 +10,9 @@
     using EditorResources;
     using Runtime.Extension;
     using Tools;
-    using UniGreenModules.UniCore.EditorTools.Editor;
-    using UniGreenModules.UniCore.EditorTools.Editor.Utility;
-    using UniGreenModules.UniCore.Runtime.Rx.Extensions;
+    using UniModules.UniCore.EditorTools.Editor;
+    using UniModules.UniCore.EditorTools.Editor.Utility;
+    using UniModules.UniCore.Runtime.Rx.Extensions;
     using UnityEditor;
     using UnityEngine;
     using Object = UnityEngine.Object;

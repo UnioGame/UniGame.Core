@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace UniGreenModules.UniGame.Core.EditorTools.Editor.DrawersTools
+namespace UniModules.UniGame.Core.EditorTools.Editor.DrawersTools
 {
     using UniCore.EditorTools.Editor.Utility;
     using UniCore.Runtime.Utils;

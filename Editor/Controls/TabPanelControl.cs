@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.EditorTools.Editor.Controls
+﻿namespace UniModules.UniCore.EditorTools.Editor.Controls
 {
     using System;
     using UnityEditor;

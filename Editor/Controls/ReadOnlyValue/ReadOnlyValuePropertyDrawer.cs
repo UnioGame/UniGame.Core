@@ -1,8 +1,8 @@
-﻿using UniGreenModules.UniCore.Runtime.Attributes;
+﻿using UniModules.UniCore.Runtime.Attributes;
 using UnityEditor;
 using UnityEngine;
 
-namespace UniGreenModules.UniCore.EditorTools.Editor.PropertiesDrawers
+namespace UniModules.UniCore.EditorTools.Editor.PropertiesDrawers
 {
     [CustomPropertyDrawer(typeof(ReadOnlyValueAttribute))]
     public class ReadOnlyValuePropertyDrawer : PropertyDrawer

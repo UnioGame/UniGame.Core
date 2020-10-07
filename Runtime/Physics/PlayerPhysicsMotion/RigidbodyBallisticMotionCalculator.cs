@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.Physics.PlayerPhysicsMotion {
+﻿namespace UniModules.UniCore.Runtime.Physics.PlayerPhysicsMotion {
     using UnityEngine;
 
     public class RigidbodyBallisticMotionCalculator {

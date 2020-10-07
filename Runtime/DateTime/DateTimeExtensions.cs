@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.DateTime
+﻿namespace UniModules.UniCore.Runtime.DateTime
 {
     using System;
 

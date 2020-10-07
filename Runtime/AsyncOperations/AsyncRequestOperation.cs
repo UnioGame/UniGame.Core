@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.Runtime.AsyncOperations
+﻿namespace UniModules.UniCore.Runtime.AsyncOperations
 {
     using System.Collections;
     using Interfaces;

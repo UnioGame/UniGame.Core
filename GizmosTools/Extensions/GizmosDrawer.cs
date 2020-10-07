@@ -1,4 +1,4 @@
-﻿namespace UniGreenModules.UniCore.GizmosTools.Extensions
+﻿namespace UniModules.UniCore.GizmosTools.Extensions
 {
     using System;
     using System.Diagnostics;
