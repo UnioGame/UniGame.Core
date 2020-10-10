@@ -28,6 +28,8 @@
         
         public static ILifeTime AddTo(this Component component, IDisposable disposable) => AddTo(component.gameObject, disposable);
         
+        public static ILifeTime AddTo(this Component component, Action action) =>AddCleanUp(component.gameObject, action);
+        
         
         public static ILifeTime AddCleanUp(this Component component, Action cleanupAction) => AddCleanUp(component.gameObject, cleanupAction);
 
