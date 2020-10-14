@@ -2,6 +2,11 @@
 {
     using Cysharp.Threading.Tasks;
 
+    public interface IAsyncCommand
+    {
+        UniTask Execute();
+    }
+    
     public interface IAsyncCommand<T>
     {
         UniTask<T> Execute();
