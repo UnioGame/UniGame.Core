@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.Interfaces
+﻿namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
 	public interface IInitializable<TContext>
 	{

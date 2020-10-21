@@ -2,8 +2,7 @@
 {
 	using System;
 	using System.Collections.Generic;
-	using Interfaces;
-	using Interfaces.Rx;
+	using UniGame.Core.Runtime.Interfaces.Rx;
 	using UniRx;
 
 	public class RecycleMessageBrocker : IRecycleMessageBrocker

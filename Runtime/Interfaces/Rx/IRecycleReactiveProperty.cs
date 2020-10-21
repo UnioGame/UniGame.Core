@@ -1,8 +1,6 @@
-﻿namespace UniModules.UniCore.Runtime.Interfaces.Rx
+﻿namespace UniModules.UniGame.Core.Runtime.Interfaces.Rx
 {
     using System;
-    using ObjectPool.Runtime.Interfaces;
-    using UniModules.UniGame.Core.Runtime.Interfaces;
     using UniRx;
 
     public interface IRecycleReactiveProperty<TValue> : 

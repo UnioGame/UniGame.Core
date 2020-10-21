@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections;
-    using Interfaces;
+    using UniGame.Core.Runtime.Interfaces;
     using UnityEngine;
 
     public abstract class ScriptableObjectRoutine<TContext> : 

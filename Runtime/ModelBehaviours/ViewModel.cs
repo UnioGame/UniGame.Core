@@ -3,9 +3,9 @@
     using System;
     using DataFlow;
     using DataFlow.Interfaces;
-    using Interfaces;
-    using Interfaces.Rx;
     using Rx;
+    using UniGame.Core.Runtime.Interfaces;
+    using UniGame.Core.Runtime.Interfaces.Rx;
     using UniGame.Core.Runtime.Rx;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniRx;

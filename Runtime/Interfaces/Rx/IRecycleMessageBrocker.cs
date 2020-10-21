@@ -1,6 +1,6 @@
-namespace UniModules.UniCore.Runtime.Interfaces.Rx
+namespace UniModules.UniGame.Core.Runtime.Interfaces.Rx
 {
-    using ObjectPool.Runtime.Interfaces;
+    using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
     using UniRx;
 
     public interface IRecycleMessageBrocker : IMessageBroker, IPoolable

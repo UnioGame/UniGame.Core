@@ -2,7 +2,7 @@
 {
     using System;
     using DataFlow.Interfaces;
-    using Interfaces;
+    using UniGame.Core.Runtime.Interfaces;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniRx;
     using UnityEngine;

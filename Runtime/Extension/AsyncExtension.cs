@@ -2,7 +2,7 @@
 {
     using System;
     using Cysharp.Threading.Tasks;
-    using Interfaces;
+    using UniGame.Core.Runtime.Interfaces;
     using UnityEngine;
 
     public static class AsyncExtension

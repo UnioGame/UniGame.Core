@@ -1,7 +1,5 @@
-﻿namespace UniModules.UniStateMachine.Runtime.Interfaces
+﻿namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
-    using UniCore.Runtime.Interfaces;
-    using UniModules.UniGame.Core.Runtime.Interfaces;
     using UniRx;
 
     public interface IAsyncState : IAsyncState<Unit>
@@ -10,7 +8,7 @@
 
     public interface IAsyncState<T,TValue> : 
         IAsyncCommand<T,TValue>, 
-        IEndPoint,
+        IAsyncEndPoint,
         ILifeTimeContext,
         IActiveStatus
     {
@@ -18,7 +16,7 @@
     
     public interface IAsyncState<T> : 
         IAsyncCommand<T>, 
-        IEndPoint,
+        IAsyncEndPoint,
         ILifeTimeContext,
         IActiveStatus
     {

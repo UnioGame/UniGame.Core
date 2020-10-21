@@ -3,7 +3,6 @@
     using System;
     using Common;
     using DataFlow.Interfaces;
-    using Interfaces;
     using ObjectPool.Runtime;
     using ObjectPool.Runtime.Interfaces;
     using UniGame.Core.Runtime.Common;

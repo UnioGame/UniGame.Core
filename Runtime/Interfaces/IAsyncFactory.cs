@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-
-namespace UniModules.UniCore.Runtime.Interfaces
+﻿namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
+    using System.Threading.Tasks;
+
     public interface IAsyncFactory<TResult>
     {
 

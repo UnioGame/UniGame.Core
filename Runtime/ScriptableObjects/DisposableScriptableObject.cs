@@ -2,7 +2,7 @@
 
 namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
 {
-    using UniModules.UniGame.SerializableContext.Runtime.Abstract;
+    using Interfaces;
     using UnityEngine;
 
     public class DisposableScriptableObject : 

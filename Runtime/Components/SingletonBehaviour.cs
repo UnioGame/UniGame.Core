@@ -2,8 +2,8 @@
 
 namespace UniModules.UniGame.Core.Runtime.Components
 {
+    using Interfaces;
     using UniCore.Runtime.ProfilerTools;
-    using UniModules.UniCore.Runtime.Interfaces;
 #if UNITY_EDITOR
     using UnityEditor;
 #endif

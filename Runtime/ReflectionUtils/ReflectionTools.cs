@@ -249,7 +249,7 @@
         /// <summary>
         /// utility method for returning the first matching custom attribute (or <c>null</c>) of the specified member.
         /// </summary>
-        public static T GetCustomAttribute<T>(this Type type, bool inherit = true) where T : Attribute
+        public static T GetCustomAttribute<T>(this Type type, bool inherit = true)
         {
             var array = type.GetCustomAttributes(typeof (T), inherit);
             return array.Length != 0 ? (T) array[0] : default (T);

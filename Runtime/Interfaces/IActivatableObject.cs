@@ -1,5 +1,5 @@
-﻿namespace UniModules.UniCore.Runtime.Interfaces {
-    using ObjectPool.Runtime.Interfaces;
+﻿namespace UniModules.UniGame.Core.Runtime.Interfaces {
+    using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
 
     public interface IActivatableObject : IPoolable {
         bool IsActive { get; }

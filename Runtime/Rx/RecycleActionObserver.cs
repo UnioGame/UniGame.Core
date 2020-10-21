@@ -1,10 +1,9 @@
 ﻿namespace UniModules.UniCore.Runtime.Rx
 {
     using System;
-    using Interfaces;
-    using Interfaces.Rx;
     using ObjectPool;
     using ObjectPool.Runtime.Extensions;
+    using UniGame.Core.Runtime.Interfaces.Rx;
 
     public class RecycleActionObserver<T> : IRecycleObserver<T>
     {

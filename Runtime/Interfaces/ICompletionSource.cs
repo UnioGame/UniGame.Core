@@ -1,7 +1,5 @@
-﻿namespace UniModules.UniCore.Runtime.Interfaces
+﻿namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
-    using System;
-
     public interface ICompletionSource : ICompletionStatus
     {
         void Complete();

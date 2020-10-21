@@ -1,9 +1,9 @@
 ﻿namespace UniModules.UniCore.Runtime.Common
 {
     using System;
-    using Interfaces;
     using ObjectPool.Runtime.Extensions;
     using ObjectPool.Runtime.Interfaces;
+    using UniGame.Core.Runtime.Interfaces;
     using UniGame.Core.Runtime.Rx;
 
     [Serializable]

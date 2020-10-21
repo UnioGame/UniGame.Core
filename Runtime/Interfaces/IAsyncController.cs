@@ -1,8 +1,8 @@
-namespace UniModules.UniCore.Runtime.Interfaces
+namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
     using System;
     using Cysharp.Threading.Tasks;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+    using DataFlow.Interfaces;
     using UniRx;
 
     public interface IAsyncController : IDisposable

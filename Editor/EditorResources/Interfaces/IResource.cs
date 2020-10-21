@@ -1,6 +1,6 @@
 namespace UniModules.UniResourceSystem.Runtime.Interfaces
 {
-    using UniCore.Runtime.Interfaces;
+    using UniGame.Core.Runtime.Interfaces;
     using UnityEngine;
 
     /// <summary>

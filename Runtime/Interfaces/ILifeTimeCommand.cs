@@ -1,8 +1,6 @@
-namespace UniModules.UniCore.Runtime.Interfaces
+namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
-    using DataFlow;
     using DataFlow.Interfaces;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
 
     public interface ILifeTimeCommand
     {

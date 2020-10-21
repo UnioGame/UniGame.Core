@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace UniModules.UniGame.SerializableContext.Runtime.Abstract
+﻿namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
+    using System;
+
     public interface IResourceDisposable: IDisposable
     {
     

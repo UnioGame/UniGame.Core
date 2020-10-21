@@ -1,7 +1,6 @@
-namespace UniModules.UniCore.Runtime.Common
+namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
     using System.Collections.Generic;
-    using Interfaces;
 
     public interface IProxyContainer<TSource, TTarget> : IContainer<TTarget> where TSource : class, TTarget
     {

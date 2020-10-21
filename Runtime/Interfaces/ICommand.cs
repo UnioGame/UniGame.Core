@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.Interfaces
+﻿namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
     using System;
 
@@ -6,21 +6,24 @@
     {
         void Execute();
     }
+    
+    public interface ICommand<TResult>
+    {
+        TResult Execute();
+    }
 
-    public interface ICommand<TResult,TValue>
+    public interface ICommand<TValue,TResult>
     {
         TResult Execute(TValue value);
     }
     
     public interface IDisposableCommand : ICommand, IDisposable{}
     
-    public interface IRoutine<out TResult>
+    public interface IRoutine<TResult> : ICommand<TResult>
     {
-        TResult Execute();
     }
 
-    public interface IRoutine<in TData,out TResult>
+    public interface IRoutine<TData,TResult> : ICommand<TData,TResult>
     {
-        TResult Execute(TData data);
     }
 }

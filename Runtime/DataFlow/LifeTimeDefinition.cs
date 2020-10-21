@@ -3,8 +3,8 @@
     using System;
     using Interfaces;
     using ObjectPool.Runtime.Interfaces;
-    using Runtime.Interfaces;
     using UniGame.Core.Runtime.DataFlow;
+    using UniGame.Core.Runtime.Interfaces;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
 
     public class LifeTimeDefinition : 

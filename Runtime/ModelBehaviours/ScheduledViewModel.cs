@@ -1,7 +1,7 @@
 ﻿namespace UniModules.UniCore.Runtime.ModelBehaviours
 {
-    using Interfaces;
     using Rx.Extensions;
+    using UniGame.Core.Runtime.Interfaces;
 
     public abstract class ScheduledViewModel<TModel> : ComponentViewModel<TModel>
     {

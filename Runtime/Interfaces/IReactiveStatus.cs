@@ -1,4 +1,4 @@
-﻿namespace UniGame.UniNodes.GameFlow.Runtime.Interfaces
+﻿namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
     using UniRx;
 

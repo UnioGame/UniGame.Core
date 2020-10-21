@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using Interfaces;
+    using UniGame.Core.Runtime.Interfaces;
     using UnityEngine;
 
     [Serializable]

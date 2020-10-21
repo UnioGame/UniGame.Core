@@ -1,8 +1,6 @@
-namespace UniModules.UniStateMachine.Runtime.Interfaces
+namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
-    using UniCore.Runtime.Interfaces;
     using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
-    using UniModules.UniGame.Core.Runtime.Interfaces;
 
     public interface IState : 
         ICommand, 
@@ -21,4 +19,6 @@ namespace UniModules.UniStateMachine.Runtime.Interfaces
         IActiveStatus
     {
     }
+    
+
 }

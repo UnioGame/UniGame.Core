@@ -1,7 +1,7 @@
 ﻿namespace UniModules.UniCore.Runtime.AsyncOperations
 {
     using System.Collections;
-    using Interfaces;
+    using UniGame.Core.Runtime.Interfaces;
 
     public class AsyncRequestOperation : IAsyncOperation {
 
