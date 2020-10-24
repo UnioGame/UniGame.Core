@@ -11,13 +11,8 @@ namespace UniModules.UniGame.Core.Runtime.Interfaces
         IValueContainerStatus, 
         IReadOnlyData
     {
+        
         bool Remove<TData>();
         
-        //Editor Only API
-#if UNITY_EDITOR
-
-        IReadOnlyDictionary<Type, IValueContainerStatus> EditorValues { get; }
-        
-#endif
     }
 }
