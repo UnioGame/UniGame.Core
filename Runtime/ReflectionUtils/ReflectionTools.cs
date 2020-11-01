@@ -23,6 +23,21 @@
                 return fields;
             });
 
+        
+        private static MemorizeItem<Type, List<Type>> assignableTypesCache = MemorizeTool.Memorize<Type, List<Type>>(x => {
+            var items = x.GetAssignableTypesNonCached().
+                ToList();
+            return items;
+        });
+        
+        private static MemorizeItem<(Type source,Type attribute), List<Type>> assignableAttributesTypesCache = 
+            MemorizeTool.Memorize<(Type source,Type attribute), List<Type>>(x => 
+            {
+                var items = x.source.GetAssignableWithAttributeNonCached(x.attribute).
+                    ToList();
+                return items;
+            });
+        
         public const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
 
         public static DoubleKeyDictionary<Type,string,FieldInfo> fieldInfos = new DoubleKeyDictionary<Type,string,FieldInfo>();
@@ -192,11 +207,37 @@
             }
             return result;
         }
+
+        
+        public static List<Type> GetAssignableWithAttribute<TAttribute>(this Type baseType)
+            where TAttribute : Attribute
+        {
+            return baseType.GetAssignableWithAttribute(typeof(TAttribute));
+        }
+        
+        public static List<Type> GetAssignableWithAttribute(this Type baseType, Type attribute) {
+            return assignableAttributesTypesCache.GetValue((baseType, attribute));
+        }
+        
+        public static List<Type> GetAssignableWithAttributeNonCached(this Type baseType, Type attribute)
+        {
+            var items = baseType.GetAssignableTypes().
+                Where(node => node.HasAttribute(attribute)).
+                ToList();
+            return items;
+        }
         
         /// <summary>
         /// Get all classes deriving from baseType via reflection
         /// </summary>
-        public static List<Type> GetAssignableTypes(this Type baseType)
+        public static List<Type> GetAssignableTypes(this Type baseType) {
+            return assignableTypesCache.GetValue(baseType);
+        }
+        
+        /// <summary>
+        /// Get all classes deriving from baseType via reflection
+        /// </summary>
+        public static List<Type> GetAssignableTypesNonCached(this Type baseType)
         {
             var types      = new List<Type>();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -260,7 +301,12 @@
         /// </summary>
         public static bool HasAttribute<T>(this Type type, bool inherit = true) where T : Attribute
         {
-            var array = type.GetCustomAttributes(typeof (T), inherit);
+            return type.HasAttribute(typeof(T),inherit);
+        }
+        
+        public static bool HasAttribute(this Type type,Type attribute, bool inherit = true) 
+        {
+            var array = type.GetCustomAttributes(attribute, inherit);
             return array.Length != 0 ;
         }
         

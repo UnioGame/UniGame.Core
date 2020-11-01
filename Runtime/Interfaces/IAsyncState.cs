@@ -6,19 +6,15 @@
     {
     }
 
-    public interface IAsyncState<T,TValue> : 
-        IAsyncCommand<T,TValue>, 
+    public interface IAsyncState<TValue,TResult> : 
+        IAsyncCommand<TValue,TResult>, 
         IAsyncEndPoint,
         ILifeTimeContext,
         IActiveStatus
     {
     }
-    
-    public interface IAsyncState<T> : 
-        IAsyncCommand<T>, 
-        IAsyncEndPoint,
-        ILifeTimeContext,
-        IActiveStatus
-    {
+
+    public interface IAsyncState<T> : IAsyncState<T, Unit> {
+        
     }
 }

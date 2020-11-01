@@ -12,7 +12,7 @@
         UniTask<T> Execute();
     }
     
-    public interface IAsyncCommand<T,TValue>
+    public interface IAsyncCommand<TValue,T>
     {
         UniTask<T> Execute(TValue value);
     }

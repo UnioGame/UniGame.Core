@@ -5,8 +5,14 @@
         UniTask Rollback();
     }
     
-    public interface IAsyncRollback<TResult>
+    public interface IAsyncRollback<TSource>
     {
-        UniTask<TResult> Rollback();
+        UniTask Rollback(TSource source);
     }
+    
+    public interface IAsyncRollback<TSource,TResult>
+    {
+        UniTask<TResult> Rollback(TSource source);
+    }
+    
 }

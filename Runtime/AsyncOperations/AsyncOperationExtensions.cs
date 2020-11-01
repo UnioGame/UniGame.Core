@@ -10,8 +10,10 @@
     using UniRx;
     using UnityEngine;
 
+
     public static class AsyncOperationExtensions
     {
+
         public static async Task<T> WaitAsync<T>(this Task<T> task, CancellationToken token)
         {
             var taskCompletionSource = new TaskCompletionSource<T>();
@@ -19,6 +21,7 @@
                 return await await Task.WhenAny(task, taskCompletionSource.Task).ConfigureAwait(false);
             }
         }
+
 
         public static IEnumerator WaitAll(this List<IEnumerator> operations) {
             var counter = ClassPool.Spawn<List<int>>();
