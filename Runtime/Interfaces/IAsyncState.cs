@@ -2,7 +2,7 @@
 {
     using UniRx;
 
-    public interface IAsyncState : IAsyncState<Unit>
+    public interface IAsyncState : IAsyncState<AsyncStatus>
     {
     }
 
@@ -14,7 +14,7 @@
     {
     }
 
-    public interface IAsyncState<T> : IAsyncState<T, Unit> {
+    public interface IAsyncState<T> : IAsyncState<T, AsyncStatus> {
         
     }
 }

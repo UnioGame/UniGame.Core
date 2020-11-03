@@ -11,7 +11,7 @@
     [Serializable]
     public class AsyncScenario<TCommand,TData> : 
         AsyncState<TData>
-        where TCommand : IAsyncCommand<TData,Unit>
+        where TCommand : IAsyncCommand<TData,AsyncStatus>
     {
         #region inspector
         
@@ -35,33 +35,32 @@
         
         
         
-        protected sealed override async UniTask<Unit> OnExecute(TData context, ILifeTime executionLifeTime) {
+        protected sealed override async UniTask<AsyncStatus> OnExecute(TData context, ILifeTime executionLifeTime) {
 
             var asCancellationSource = executionLifeTime.AsCancellationSource();
-            var isCancelled       = false;
+            var isCancelled          = false;
+            var result               = AsyncStatus.Pending;
             _activeScenarioIndex = 0;
             
             for (var i = 0; i < scenarios.Count; i++) {
                 var asyncScenario = scenarios[i];
                 var task          = asyncScenario.Execute(context).
                     WithCancellation(asCancellationSource.Token);
-                var result        = await task;
+                
+                result = await task;
                     
-                if (task.Status == UniTaskStatus.Succeeded) {
+                if (result == AsyncStatus.Succeeded) {
                     continue;
                 }
 
                 _activeScenarioIndex = i;
-                isCancelled          = true;
                 break;
             }
 
-            return isCancelled ? 
-                await UniTask.FromCanceled<Unit>():
-                Unit.Default;
+            return result;
         }
 
-        public async UniTask<Unit> Rollback(IContext source) {
+        public async UniTask Rollback(IContext source) {
             
             for (var i = _activeScenarioIndex; i >=0 ; i--) 
             {
@@ -74,8 +73,6 @@
                         break;
                 }
             }
-
-            return Unit.Default;
         }
     }
 }

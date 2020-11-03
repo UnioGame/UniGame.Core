@@ -10,7 +10,7 @@
     using UniRx;
 
     public class AsyncState<TData> : 
-        AsyncState<TData, Unit> ,
+        AsyncState<TData, AsyncStatus> ,
         IAsyncState<TData> { }
 
     public class AsyncState<TData, TResult> :

@@ -6,6 +6,7 @@ namespace UniModules.UniGame.Core.Runtime.Interfaces
 
     public interface IReadOnlyContext : 
         IMessageBroker,
+        ITypeDataConnector<IMessagePublisher>,
         IValueContainerStatus, 
         IReadOnlyData,
         ILifeTimeContext
