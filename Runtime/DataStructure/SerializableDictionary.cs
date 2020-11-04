@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace UniModules.UniGame.Core.Runtime.DataStructure
 {
+    using System.Linq;
     using global::UniCore.Runtime.ProfilerTools;
 
     [Serializable]
@@ -51,5 +52,12 @@ namespace UniModules.UniGame.Core.Runtime.DataStructure
                 }
             }
         }
+        
+         
+        protected virtual IEnumerable<TKey> GetKeys() => Enumerable.Empty<TKey>();
+        
+        
+        protected virtual IEnumerable<TValue> GetValues() => Enumerable.Empty<TValue>();
+
     }
 }
