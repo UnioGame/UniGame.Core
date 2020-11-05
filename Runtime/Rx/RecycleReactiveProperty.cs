@@ -62,8 +62,7 @@
                 return Disposable.Empty;
             }
             
-            var disposeAction = ClassPool.
-                Spawn<DisposableAction>();
+            var disposeAction = ClassPool.Spawn<DisposableAction>();
             
             var node = Observers.Add(observer);
             disposeAction.Initialize(() => Remove(node));

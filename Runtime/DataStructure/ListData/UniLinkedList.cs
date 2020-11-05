@@ -47,7 +47,10 @@
             {
                 last = node.Previous;
             }
-
+            if (node == current)
+            {
+                current = node.Next;
+            }
             if (node.Previous != null)
             {
                 node.Previous.Next = node.Next;
