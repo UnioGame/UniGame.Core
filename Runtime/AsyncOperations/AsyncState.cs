@@ -2,7 +2,6 @@
     using System.Threading;
     using Cysharp.Threading.Tasks;
     using DataFlow.Interfaces;
-    using Extension;
     using Interfaces;
     using Rx;
     using UniCore.Runtime.AsyncOperations;
@@ -42,9 +41,10 @@
                     _cancellationSource.Token);
             }
 
-            _isActive = true;
-            _data     = data;
-
+            _isActive           = true;
+            _data               = data;
+            _cancellationSource = _lifeTime.AsCancellationSource();
+            
             if (!_isInitialized)
                 Initialize();
 

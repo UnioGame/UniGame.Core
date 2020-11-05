@@ -2,20 +2,31 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using UnityEngine;
 
     [Serializable]
-    public class SerializableRefrenceDictionary<TKey, TValue> : Dictionary<TKey, TValue>,
+    public class SerializableReferenceDictionary<TKey, TValue> : Dictionary<TKey, TValue>,
         ISerializationCallbackReceiver
     {
-        [SerializeField]     protected List<TKey>   keys   = new List<TKey>();
-        [SerializeReference] protected List<TValue> values = new List<TValue>();
+        [SerializeField]
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.ValueDropdown(nameof(GetKeys))]
+#endif
+        protected List<TKey>   keys   = new List<TKey>();
+        
+        
+        [SerializeReference] 
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.ValueDropdown(nameof(GetValues))]
+#endif
+        protected List<TValue> values = new List<TValue>();
 
         #region construcotr
 
-        public SerializableRefrenceDictionary(int capacity) : base(capacity) { }
+        public SerializableReferenceDictionary(int capacity) : base(capacity) { }
 
-        public SerializableRefrenceDictionary() : base() { }
+        public SerializableReferenceDictionary() : base() { }
 
         #endregion
         
@@ -40,5 +51,12 @@
             for (var i = 0; i < keys.Count; i++)
                 this.Add(keys[i], values[i]);
         }
+        
+        protected virtual IEnumerable<TKey> GetKeys() => Enumerable.Empty<TKey>();
+        
+        
+        protected virtual IEnumerable<TValue> GetValues() => Enumerable.Empty<TValue>();
+        
+        
     }
 }

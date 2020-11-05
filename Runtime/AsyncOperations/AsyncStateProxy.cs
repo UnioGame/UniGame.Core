@@ -2,8 +2,8 @@
     using System;
     using Core.Runtime.AsyncOperations;
     using Core.Runtime.DataFlow.Interfaces;
-    using Core.Runtime.Interfaces;
     using Cysharp.Threading.Tasks;
+
 
     [Serializable]
     public class AsyncStateProxy<TData,TValue> : 
@@ -11,7 +11,7 @@
     {
         private readonly Func<TData, ILifeTime, UniTask<TValue>> onExecute;
         private readonly Func<TValue, TData, ILifeTime, UniTask> onComplete;
-        private readonly Func<TData,UniTask>                      onExit;
+        private readonly Func<TData,UniTask>                     onExit;
 
         public AsyncStateProxy(
             Func<TData, ILifeTime, UniTask<TValue>> onExecute,
