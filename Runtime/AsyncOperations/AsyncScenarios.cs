@@ -5,18 +5,19 @@
     using Cysharp.Threading.Tasks;
     using DataFlow.Interfaces;
     using Interfaces;
-    using UniRx;
     using UnityEngine;
 
     [Serializable]
-    public class AsyncScenario<TCommand,TData> : 
-        AsyncState<TData>
+    public class AsyncScenario<TCommand,TData> : AsyncState<TData>
         where TCommand : IAsyncCommand<TData,AsyncStatus>
     {
         #region inspector
         
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.ListDrawerSettings(Expanded = true)]
+#endif
         [SerializeReference]
-        public List<TCommand> scenarios = new List<TCommand>();
+        public List<TCommand> commands = new List<TCommand>();
 
         [SerializeField] 
         private int _activeScenarioIndex = 0;
@@ -28,22 +29,53 @@
         public AsyncScenario() { }
         
         public AsyncScenario(IEnumerable<TCommand> nodes) {
-            scenarios.AddRange(nodes);
+            commands.AddRange(nodes);
         }
         
         #endregion
         
-        
-        
+        public async UniTask Rollback(IContext source) {
+            
+            for (var i = _activeScenarioIndex; i >=0 ; i--) 
+            {
+                switch (commands[i]) {
+                    case  IAsyncRollback<IContext> contextRollback:
+                        await contextRollback.Rollback(source);
+                        break;
+                    case  IAsyncRollback rollback:
+                        await rollback.Rollback();
+                        break;
+                }
+            }
+        }
+
+        protected override async UniTask OnExit(TData data)
+        {
+
+            for (int i = commands.Count; i >= 0; i++)
+            {
+                var scenario = commands[i];
+                switch (scenario)
+                {
+                    case IAsyncEndPoint<TData> dataEndPoint:
+                        await dataEndPoint.Exit(data);
+                        break;
+                    case IAsyncEndPoint endPoint:
+                        await endPoint.Exit();
+                        break;
+                }
+            }
+            
+        }
+
         protected sealed override async UniTask<AsyncStatus> OnExecute(TData context, ILifeTime executionLifeTime) {
 
             var asCancellationSource = executionLifeTime.AsCancellationSource();
-            var isCancelled          = false;
             var result               = AsyncStatus.Pending;
             _activeScenarioIndex = 0;
             
-            for (var i = 0; i < scenarios.Count; i++) {
-                var asyncScenario = scenarios[i];
+            for (var i = 0; i < commands.Count; i++) {
+                var asyncScenario = commands[i];
                 var task          = asyncScenario.Execute(context).
                     WithCancellation(asCancellationSource.Token);
                 
@@ -60,19 +92,5 @@
             return result;
         }
 
-        public async UniTask Rollback(IContext source) {
-            
-            for (var i = _activeScenarioIndex; i >=0 ; i--) 
-            {
-                switch (scenarios[i]) {
-                    case  IAsyncRollback<IContext> contextRollback:
-                        await contextRollback.Rollback(source);
-                        break;
-                    case  IAsyncRollback rollback:
-                        await rollback.Rollback();
-                        break;
-                }
-            }
-        }
     }
 }

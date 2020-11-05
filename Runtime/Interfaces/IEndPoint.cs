@@ -7,6 +7,11 @@ namespace UniModules.UniGame.Core.Runtime.Interfaces
         void Exit();
     }
     
+    public interface IAsyncEndPoint<TData>
+    {
+        UniTask Exit(TData data);
+    }
+    
     public interface IAsyncEndPoint
     {
         UniTask Exit();
