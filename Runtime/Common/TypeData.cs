@@ -44,8 +44,8 @@
             
             var removed = contextValues.Remove(type);
             //release context value
-            if(value is IPoolable poolable)
-                poolable.Despawn();
+            if(value is IDespawnable poolable)
+                poolable.MakeDespawn();
 
             if (cachedType == type) {
                 ResetCache();
