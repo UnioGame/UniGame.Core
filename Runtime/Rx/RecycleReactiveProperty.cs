@@ -9,13 +9,16 @@
     using UniCore.Runtime.DataFlow;
     using UniCore.Runtime.DataFlow.Interfaces;
     using UniCore.Runtime.ObjectPool.Runtime;
+    using UniCore.Runtime.ObjectPool.Runtime.Extensions;
+    using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniRx;
     using UnityEngine;
 
     [Serializable]
     public class RecycleReactiveProperty<T> : 
-        IRecycleReactiveProperty<T>  
+        IRecycleReactiveProperty<T>  , 
+        IDespawnable
     {
         private IEqualityComparer<T> _equalityComparer;
         private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
@@ -54,6 +57,11 @@
         public bool HasValue => hasValue;
 
         #region public methods
+        
+        public void MakeDespawn() {
+            Release();
+            this.Despawn();
+        }
         
         public IDisposable Subscribe(IObserver<T> observer)
         {
