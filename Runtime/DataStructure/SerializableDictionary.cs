@@ -12,6 +12,7 @@ namespace UniModules.UniGame.Core.Runtime.DataStructure
         Dictionary<TKey, TValue>,
         ISerializationCallbackReceiver
     {
+        
         [SerializeField] protected List<TKey>   keys   = new List<TKey>();
         [SerializeField] protected List<TValue> values = new List<TValue>();
 
