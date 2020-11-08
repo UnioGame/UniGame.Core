@@ -11,10 +11,7 @@
     [Serializable]
     public class UniLinkedList<T> : IUniLinkedList<T>
     {
-        public ListNode<T> current;
-        
         public ListNode<T> root;
-
         public ListNode<T> last;
 
         public ListNode<T> Add(T value)
@@ -25,7 +22,7 @@
             var next = node.SetValue(value);
             if (root == null)
             {
-                current = root = last = next;
+                root = last = next;
             }
             else
             {
@@ -47,10 +44,7 @@
             {
                 last = node.Previous;
             }
-            if (node == current)
-            {
-                current = node.Next;
-            }
+
             if (node.Previous != null)
             {
                 node.Previous.Next = node.Next;
@@ -68,11 +62,8 @@
 
         public void Release()
         {
-            Reset();
-            var node          = root;
-            
-            current = root = last = null;
-
+            var node    = root;
+            root = last = null;
             while (node != null)
             {
                 var next = node.Next;
@@ -80,25 +71,20 @@
                 node = next;
             }
         }
-        
-        #region ienumerator
 
-        public bool MoveNext()
+        public void Apply(Action<T> action)
         {
-            if (current == null) return false;
-            current = current.Next;
-            return current != null;
+            if (action == null)
+                return;
+            
+            var node = root;
+            while (node != null)
+            {
+                var next = node.Next;
+                action(node.Value);
+                node = next;
+            }
         }
 
-        public void Reset()
-        {
-            current = root;
-        }
-
-        public ListNode<T> Current => current;
-
-        object IEnumerator.Current => Current;
-        
-        #endregion
     }
 }

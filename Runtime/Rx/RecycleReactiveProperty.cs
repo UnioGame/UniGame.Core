@@ -56,6 +56,8 @@
 
         public bool HasValue => hasValue;
 
+        public Type Type => typeof(T);
+
         #region public methods
         
         public void MakeDespawn() {
@@ -96,21 +98,14 @@
         {
             hasValue = true;
             value    = propertyValue;
-            
-            do {
-                Observers.current?.Value.OnNext(value);
-            } while (Observers.MoveNext());
-
-            Observers.Reset();
+            Observers.Apply(x => x.OnNext(propertyValue));
         }
-    
+  
         public void Release()
         {
             CleanUp();
             _lifeTimeDefinition.Release();
         }
-
-        public Type Type => typeof(T);
 
         public object GetValue() => value;
         
@@ -138,11 +133,9 @@
             hasValue = false;
             
             //stop listing all child observers
-            do {
-                Observers.current?.Value.OnCompleted();
-            } while (Observers.MoveNext());
-            
+            Observers.Apply(x => x.OnCompleted());
             Observers.Release();
+            
             value = default(T);
                      
             OnRelease();

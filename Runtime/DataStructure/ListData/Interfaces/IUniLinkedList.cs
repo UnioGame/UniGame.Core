@@ -1,10 +1,8 @@
 ﻿namespace UniModules.UniGame.Core.Runtime.Rx
 {
-    using System.Collections.Generic;
     using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
 
-    public interface IUniLinkedList<T> : 
-        IEnumerator<ListNode<T>>, 
+    public interface IUniLinkedList<T> :
         IPoolable
     {
         ListNode<T> Add(T value);
