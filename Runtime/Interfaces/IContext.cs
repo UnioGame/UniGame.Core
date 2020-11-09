@@ -5,20 +5,17 @@ namespace UniModules.UniGame.Core.Runtime.Interfaces
     using UniRx;
 
     public interface IReadOnlyContext : 
-        IMessageBroker,
+        IMessageContext,
         ITypeDataConnector<IMessagePublisher>,
         IValueContainerStatus, 
-        IReadOnlyData,
-        ILifeTimeContext
-    {
-        
-    }
+        IReadOnlyData { }
+    
+    public interface IMessageContext : 
+        IMessageBroker,
+        ILifeTimeContext { }
     
     public interface IContext : 
         IReadOnlyContext,
         ITypeData,
-        IDisposable
-    {
-        
-    }
+        IDisposable{ }
 }
