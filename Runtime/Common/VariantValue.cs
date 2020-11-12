@@ -47,6 +47,7 @@ namespace UniModules.UniGame.Core.Runtime.Common {
 #if UNITY_EDITOR
             return UnityEditor.AssetDatabase.FindAssets($"t:{typeof(TAsset).Name}").OfType<TAsset>();
 #endif
+            return Enumerable.Empty<TAsset>();
         }
         
     }
