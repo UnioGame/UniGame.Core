@@ -6,7 +6,8 @@ namespace UniModules.UniGame.Core.Runtime.Common {
     using System.Linq;
 
     [Serializable]
-    public class VariantValue<TValue,TAsset,TApi> : IVariantValue<TApi>
+    public class VariantValue<TValue,TAsset,TApi> : 
+        IVariantValue<TApi>
     {
         
         [SerializeReference]
@@ -25,8 +26,7 @@ namespace UniModules.UniGame.Core.Runtime.Common {
 #endif
         [SerializeField]
         public TAsset assetValue;
-
-                
+        
         public bool IsUnityCommandInitialized => assetValue != null;
 
         public bool IsSerializedCommandInitialized => value != null;
@@ -34,6 +34,21 @@ namespace UniModules.UniGame.Core.Runtime.Common {
         public bool HasValue => value != null || assetValue != null;
         
         public TApi Value => Convert(value, assetValue);
+
+        public void SetValue(TApi variant)
+        {
+            switch (variant)
+            {
+                case TValue regularVariant:
+                    value      = regularVariant;
+                    assetValue = default;
+                    break;
+                case TAsset assetVariant :
+                    value      = default;
+                    assetValue = assetVariant;
+                    break;
+            }
+        }
 
         protected virtual TApi Convert(TValue valueParameter, TAsset assetParameter)
         {

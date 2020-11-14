@@ -58,7 +58,7 @@ namespace UniModules.UniGame.Core.EditorTools.Editor.DrawersTools
         public static void DrawOdinPropertyInspector(this object asset)
         {
 #if ODIN_INSPECTOR
-            if (asset == null) {
+            if (asset == null || EditorApplication.isCompiling || EditorApplication.isUpdating) {
                 return;
             }
             

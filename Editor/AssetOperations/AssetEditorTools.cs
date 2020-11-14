@@ -111,6 +111,12 @@
             return LoadOrCreate<TAsset>(path, typeof(TAsset).Name, null,false);
         }
         
+        public static TAsset LoadOrCreate<TAsset>(Type assetType,string path)
+            where TAsset : ScriptableObject
+        {
+            return LoadOrCreate<TAsset>(assetType,path, typeof(TAsset).Name, null,false);
+        }
+        
         public static TAsset LoadOrCreate<TAsset>(string path, Action<TAsset> action)
             where TAsset : ScriptableObject
         {
@@ -132,13 +138,23 @@
             Action<TAsset> onCreateAction,
             bool refreshDatabase = false) where TAsset : ScriptableObject
         {
+            return LoadOrCreate<TAsset>(typeof(TAsset), path, assetName, onCreateAction, refreshDatabase);
+        }
+        
+        public static TAsset LoadOrCreate<TAsset>(
+            Type assetType,
+            string path,
+            string assetName,
+            Action<TAsset> onCreateAction,
+            bool refreshDatabase = false) where TAsset : ScriptableObject
+        {
             assetName = string.IsNullOrEmpty(assetName) ? typeof(TAsset).Name : assetName;
             var asset = AssetEditorTools.GetAsset<TAsset>(path);
             if (asset) return asset;
 
-            asset = ScriptableObject.CreateInstance<TAsset>();
+            asset = ScriptableObject.CreateInstance(assetType) as TAsset;
             onCreateAction?.Invoke(asset);
-            asset.SaveAsset(assetName, path, refreshDatabase);
+            asset?.SaveAsset(assetName, path, refreshDatabase);
             
             return asset;
         }
@@ -400,13 +416,15 @@
             return output;
         }
 
-        public static List<EditorAssetResource> GetEditorResources<TSource>(string[] folders = null)
+        public static List<EditorResource> GetEditorResources<TSource>(string[] folders = null)
             where TSource : Object
         {
-            var result = AssetEditorTools.GetAssetsPaths<TSource>(folders).Select(x =>
+            var result = AssetEditorTools.
+                GetAssets<TSource>(folders).
+                Select(x =>
             {
-                var asset = new EditorAssetResource();
-                asset.Initialize(x);
+                var asset = new EditorResource();
+                asset.Update(x);
                 return asset;
             }).ToList();
             return result;

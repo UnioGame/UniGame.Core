@@ -17,6 +17,6 @@ namespace UniModules.UniResourceSystem.Runtime.Interfaces
         /// <summary>
         /// load resource with type T
         /// </summary>
-        T Load<T>() where T : Object;
+        T Load<T>() where T : class;
     }
 }

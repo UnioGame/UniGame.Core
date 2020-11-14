@@ -42,7 +42,9 @@
                 return this;
             }
             referenceMap[asset] = new List<ResourceHandle>();
-            assets[asset]  = new EditorResource().Update(asset);
+            var resource = new EditorResource();
+            resource.Update(asset);
+            assets[asset] = resource;
             return this;
         }
 

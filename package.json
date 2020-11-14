@@ -11,6 +11,7 @@
   "dependencies": {
     "com.unigame.neuecc.unirx": "7.1.1",
     "com.unigame.neuecc.unitask": "2.0.33",
-    "com.unigame.neuecc.zstring": "1.0.0"
+    "com.unigame.neuecc.zstring": "1.0.0",
+    "com.unity.editorcoroutines" : "1.0.0"
   }
 }

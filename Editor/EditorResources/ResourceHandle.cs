@@ -28,6 +28,12 @@
         public Object asset;
 
         public string ItemName => assetName;
+
+        public string Guid => guid;
+
+        public string AssetPath => assetPath;
+
+        public Object Asset => asset;
         
         #region public methods
 
@@ -37,7 +43,7 @@
         }
         
         public T Load<T>()
-            where T : Object
+            where T : class
         {
             T result = null;
             if (_loadedItem != null)
@@ -63,12 +69,12 @@
             return result;
         }
         
-        public ResourceHandle Update(Object target)
+        public void Update(Object target)
         {
             this.asset = target;
             assetName = target.name;
             
-            return OnUpdateAsset(this.asset);
+            OnUpdateAsset(this.asset);
         }
 
         public ResourceHandle Update() {
@@ -91,11 +97,11 @@
         #endregion
 
         protected T GetTargetFromSource<T>(Object source)
-            where  T : Object
+            where  T : class
         {
                         
             var result = source as T;
-            if (result)
+            if (result!=null)
             {
                 return result;
             }
@@ -103,7 +109,7 @@
             if (source is GameObject gameObject)
             {
                 result = gameObject.GetComponent<T>();
-                if (result)
+                if (result!=null)
                 {
                     return result;
                 }
@@ -114,14 +120,14 @@
         }
         
         private T ApplyResource<T>(T resource)
-            where T : Object
+            where T : class
         {
-            _loadedItem = resource;
+            _loadedItem = resource as Object;
             return resource;
         }
 
         protected virtual TResult LoadAsset<TResult>()
-            where TResult : Object
+            where TResult : class
         {
             return null;
         }

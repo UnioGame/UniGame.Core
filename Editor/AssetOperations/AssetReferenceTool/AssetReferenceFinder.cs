@@ -103,7 +103,7 @@
                         if (!asset)
                             return;
 
-                        referenceItem.Add(new EditorResource().Update(asset));
+                        referenceItem.Add(asset.ToEditorResource());
                         Interlocked.Increment(ref referencesCount);
                     });
 
