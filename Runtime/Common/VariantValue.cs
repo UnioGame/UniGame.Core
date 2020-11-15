@@ -4,10 +4,12 @@ namespace UniModules.UniGame.Core.Runtime.Common {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
 
     [Serializable]
     public class VariantValue<TValue,TAsset,TApi> : 
-        IVariantValue<TApi>
+        IVariantValue<TApi>,
+        IPoolable
     {
         
         [SerializeReference]
@@ -35,6 +37,12 @@ namespace UniModules.UniGame.Core.Runtime.Common {
         
         public TApi Value => Convert(value, assetValue);
 
+        public void Release()
+        {
+            value      = default;
+            assetValue = default;
+        }
+        
         public void SetValue(TApi variant)
         {
             switch (variant)
