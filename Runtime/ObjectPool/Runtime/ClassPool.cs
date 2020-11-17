@@ -9,22 +9,24 @@
 	public static class ClassPool {
 
 		private static IPoolContainer _container;
-
-		private static IPoolContainer Container
+		private static IPoolContainer Container => _container = _container ?? CreateContainer();
+		
+#region constructor		        
+		static ClassPool()
 		{
-			get
-			{
-				if (_container == null )
-				{
-					_container = CreateContainer(false);
-				}
-				else if(Application.isPlaying && _container is DummyPoolContainer) {
-					_container = CreateContainer(false);
-				}
-
-				return _container;
-			}
+#if UNITY_EDITOR
+			UnityEditor.EditorApplication.playModeStateChanged += OnPlaymodeChanged;
+#endif
 		}
+		
+#if UNITY_EDITOR
+		private static void OnPlaymodeChanged(UnityEditor.PlayModeStateChange change)
+		{
+			_container = null;
+		}
+#endif
+		
+#endregion
 
 		public static TResult Spawn<TResult>(this object _, Action<TResult> onSpawn = null)
 			where TResult : class, new()
@@ -113,19 +115,12 @@
 
 		private static readonly DummyPoolContainer dummyPoolContainer = new DummyPoolContainer();
 
-		private static IPoolContainer CreateContainer(bool persistent)
+		private static IPoolContainer CreateContainer()
 		{
 			if (!Application.isPlaying)
 				return dummyPoolContainer;
-				
-			var container = new GameObject(persistent ? "ClassPool(Immortal)" : "ClassPool")
-				.AddComponent<ClassPoolContainer>();
 
-			if (persistent)
-			{
-				Object.DontDestroyOnLoad(container.gameObject);
-			}
-			
+			var container = new ClassPoolContainer();
 			return container;
 		}
 	}

@@ -1,53 +1,52 @@
 ﻿namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
 
-    [Serializable]
-    public class ClassPoolItem<T> : BasePoolItem
+    public static class ClassPoolItem<T> 
         where T : class
     {
-        private static ClassPoolItem<T> instance;
-        
         [NonSerialized]
-        private Stack<T> _items = new Stack<T>();
-
-        public static ClassPoolItem<T> Instance {
-            get
-            {
-                if(instance == null) 
-                {
-                    instance = new ClassPoolItem<T>();
-                }
-                return instance;
-            }
-        }
-
-        protected ClassPoolItem()
-        {
-            typeName = typeof(T).Name;
-        }
-
-        public int Count => count;
+        private static ConcurrentQueue<T> _items = new ConcurrentQueue<T>();
         
-        public override void Release()
+        public static Type Type = typeof(T);
+
+        public static int Count => _items.Count;
+
+        public static bool IsEmpty => _items.IsEmpty;
+        
+        #region construcotr
+        
+        static ClassPoolItem()
         {
-            count = 0;
-            _items.Clear();
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.playModeStateChanged += OnPlaymodeChanged;
+#endif
         }
 		
-        public void Push(T item)
+#if UNITY_EDITOR
+        private static void OnPlaymodeChanged(UnityEditor.PlayModeStateChange change)
         {
-            _items.Push(item);
-            count++;
+            Release();
+        }
+#endif
+        
+        #endregion
+        
+        public static void Release()
+        {
+            _items = new ConcurrentQueue<T>();
+        }
+		
+        public static void Enqueue(T item)
+        {
+            _items.Enqueue(item);
         }
 
-        public T Pop()
+        public static T Dequeue()
         {
-            if (count == 0) return null;
-            var item = _items.Pop();
-            count--;
-            return item;
+            return !_items.TryDequeue(out var item) ? default : item;
         }
     }
 }

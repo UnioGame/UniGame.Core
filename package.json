@@ -4,7 +4,7 @@
   "displayName": "UniGame Core Module",
   "description": "UniGame Tools Core",
   "unity": "2019.2",
-  "version": "2020.1.10",
+  "version": "2020.1.11",
   "keywords": [
     "core"
   ],
@@ -12,6 +12,6 @@
     "com.unigame.neuecc.unirx": "7.1.1",
     "com.unigame.neuecc.unitask": "2.0.33",
     "com.unigame.neuecc.zstring": "1.0.0",
-    "com.unity.editorcoroutines" : "1.0.0"
+    "com.unity.editorcoroutines": "1.0.0"
   }
 }
