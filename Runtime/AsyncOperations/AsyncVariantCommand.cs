@@ -16,12 +16,12 @@ namespace UniModules.UniGame.Core.Runtime.AsyncOperations
         [SerializeField]
         public TVariant asyncCommand;
 
-        public async UniTask<AsyncStatus> Execute(TData value)
+        public async UniTask<AsyncStatus> ExecuteAsync(TData value)
         {
             if (!asyncCommand.HasValue)
                 return AsyncStatus.Succeeded;
             
-            var result = await asyncCommand.Value.Execute(value);
+            var result = await asyncCommand.Value.ExecuteAsync(value);
             return result;
         }
     }

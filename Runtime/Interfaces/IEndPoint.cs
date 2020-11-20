@@ -9,11 +9,11 @@ namespace UniModules.UniGame.Core.Runtime.Interfaces
     
     public interface IAsyncEndPoint<TData>
     {
-        UniTask Exit(TData data);
+        UniTask ExitAsync(TData data);
     }
     
     public interface IAsyncEndPoint
     {
-        UniTask Exit();
+        UniTask ExitAsync();
     }
 }

@@ -32,7 +32,7 @@
 
         #endregion
 
-        public async UniTask<TResult> Execute(TData data) {
+        public async UniTask<TResult> ExecuteAsync(TData data) {
             //state already active
             if (_isActive) {
                 return await UniTaskOperations.Await(
@@ -47,10 +47,12 @@
             
             if (!_isInitialized)
                 Initialize();
-
+            
             //cleanup value on reset
             LifeTime.AddCleanUpAction(() => _value.Release());
-
+            //setup default value
+            _value.Value = GetInitialExecutionValue();
+            
             //if target value contains lifetime, then bind
             var contextLifetime = data is ILifeTimeContext lifeTimeContext ? 
                 lifeTimeContext.LifeTime.Compose(LifeTime) : 
@@ -81,7 +83,7 @@
             return result;
         }
 
-        public async UniTask Exit() {
+        public async UniTask ExitAsync() {
             if (!_isActive)
                 return;
 
@@ -94,6 +96,11 @@
 
             _isActive = false;
             _lifeTime?.Release();
+        }
+
+        protected virtual TResult GetInitialExecutionValue()
+        {
+            return default;
         }
         
         protected virtual UniTask<TResult> OnExecute(TData data, ILifeTime executionLifeTime) => UniTask.FromResult<TResult>(default);

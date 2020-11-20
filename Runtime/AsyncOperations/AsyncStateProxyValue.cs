@@ -38,20 +38,20 @@
         protected override async UniTask OnComplete(TValue value, TData context, ILifeTime lifeTime) {
             if (_onComplete == null)
                 return;
-            await _onComplete.Complete(value, context, lifeTime);
+            await _onComplete.CompleteAsync(value, context, lifeTime);
         }
         
         protected override async UniTask<TValue> OnExecute(TData context, ILifeTime lifeTime) {
             if (_command == null)
                 return default;
-            return await _command.Execute(context).
+            return await _command.ExecuteAsync(context).
                 WithCancellation(lifeTime.AsCancellationToken());
         }
 
         protected override async UniTask OnExit(TData data) {
             if (_endPoint == null)
                 return;
-            await _endPoint.Exit(data);
+            await _endPoint.ExitAsync(data);
         }
     }
 }

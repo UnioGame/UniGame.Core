@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections;
+    using System.Collections.Generic;
     using Rx;
     using UniCore.Runtime.ObjectPool.Runtime;
 
@@ -34,6 +35,31 @@
             return next;
         }
 
+        public void RemoveSince(ListNode<T> node)
+        {
+            if (node == null)
+                return;
+            
+            var previous = node.Previous;
+
+            if (previous != null)
+            {
+                previous.Next = null;
+            }
+            else
+            {
+                root = null;
+            }
+            last = previous;
+            
+            while (node != null)
+            {
+                var next = node.Next;
+                node.Dispose();
+                node = next;
+            }
+        }
+
         public void Remove(ListNode<T> node)
         {
             if (node == root)
@@ -62,14 +88,7 @@
 
         public void Release()
         {
-            var node    = root;
-            root = last = null;
-            while (node != null)
-            {
-                var next = node.Next;
-                node.Dispose();
-                node = next;
-            }
+            RemoveSince(root);
         }
 
         public void Apply(Action<T> action)
@@ -86,5 +105,21 @@
             }
         }
 
+        #region IEnumerable<T>
+        
+        public IEnumerator<ListNode<T>> GetEnumerator()
+        {
+            var node = root;
+            while (node != null)
+            {
+                var next = node.Next;
+                yield return node;
+                node = next;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        
+        #endregion
     }
 }

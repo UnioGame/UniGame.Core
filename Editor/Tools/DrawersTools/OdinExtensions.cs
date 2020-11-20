@@ -36,11 +36,15 @@ namespace UniModules.UniGame.Core.EditorTools.Editor.DrawersTools
             var propertyTree = asset.GetPropertyTree();
             
             for (var i = 0; i < propertyTree.RootPropertyCount; i++) {
-                var p = propertyTree.GetRootProperty(i);
-                if(p.Info.TypeOfValue != type)
+                var p            = propertyTree.GetRootProperty(i);
+                var info         = p.Info;
+                var valueType    = info.TypeOfValue;
+
+                if(valueType != type)
                     continue;
-                var children = p.Children;
-                if (children.Count != childIndex)
+                var children   = p.Children;
+                var childCount = children.Count;
+                if (childCount == 0 || childIndex >= children.Count)
                     return;
                 
                 var child = children[childIndex];

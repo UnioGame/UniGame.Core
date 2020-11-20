@@ -5,22 +5,22 @@
 
     public interface IAsyncCompletion<TResult,TData>
     {
-        UniTask Complete(TResult value, TData data, ILifeTime lifeTime);
+        UniTask CompleteAsync(TResult value, TData data, ILifeTime lifeTime);
     }
     
     public interface IAsyncCommand
     {
-        UniTask Execute();
+        UniTask ExecuteAsync();
     }
     
     public interface IAsyncCommand<T>
     {
-        UniTask<T> Execute();
+        UniTask<T> ExecuteAsync();
     }
     
     public interface IAsyncCommand<TValue,T>
     {
-        UniTask<T> Execute(TValue value);
+        UniTask<T> ExecuteAsync(TValue value);
     }
     
     

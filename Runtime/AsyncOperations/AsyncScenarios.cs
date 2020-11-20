@@ -58,10 +58,10 @@
                 switch (scenario)
                 {
                     case IAsyncEndPoint<TData> dataEndPoint:
-                        await dataEndPoint.Exit(data);
+                        await dataEndPoint.ExitAsync(data);
                         break;
                     case IAsyncEndPoint endPoint:
-                        await endPoint.Exit();
+                        await endPoint.ExitAsync();
                         break;
                 }
             }
@@ -76,7 +76,7 @@
             
             for (var i = 0; i < commands.Count; i++) {
                 var asyncScenario = commands[i];
-                var task          = asyncScenario.Execute(context).
+                var task          = asyncScenario.ExecuteAsync(context).
                     WithCancellation(asCancellationSource.Token);
                 
                 result = await task;
