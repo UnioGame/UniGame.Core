@@ -42,12 +42,13 @@
             }
 
             _isActive           = true;
-            _data               = data;
-            _cancellationSource = _lifeTime.AsCancellationSource();
-            
+                        
             if (!_isInitialized)
                 Initialize();
-            
+
+            _data               = data;
+            _cancellationSource = LifeTime.AsCancellationSource();
+
             //cleanup value on reset
             LifeTime.AddCleanUpAction(() => _value.Release());
             //setup default value

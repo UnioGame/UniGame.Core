@@ -11,13 +11,13 @@
         AsyncState<TData,TValue>,
         IAsyncRollback<TData>
     {
-        private readonly IAsyncCommand<TData, TValue>    _command;
-        private readonly IAsyncCompletion<TValue, TData> _onComplete;
-        private readonly IAsyncEndPoint<TData>           _endPoint;
-        private readonly IAsyncRollback<TData>           _onRollback;
+        private readonly IAsyncStateCommand<TData,TValue> _command;
+        private readonly IAsyncCompletion<TValue, TData>  _onComplete;
+        private readonly IAsyncEndPoint<TData>            _endPoint;
+        private readonly IAsyncRollback<TData>            _onRollback;
 
         public AsyncStateProxyValue(
-            IAsyncCommand<TData,TValue> command = null,
+            IAsyncStateCommand<TData,TValue> command = null,
             IAsyncCompletion<TValue,TData> onComplete = null,
             IAsyncEndPoint<TData> endPoint = null,
             IAsyncRollback<TData> onRollback = null)
@@ -35,20 +35,20 @@
         }
         
         
-        protected override async UniTask OnComplete(TValue value, TData context, ILifeTime lifeTime) {
+        protected sealed override async UniTask OnComplete(TValue value, TData context, ILifeTime lifeTime) {
             if (_onComplete == null)
                 return;
             await _onComplete.CompleteAsync(value, context, lifeTime);
         }
         
-        protected override async UniTask<TValue> OnExecute(TData context, ILifeTime lifeTime) {
+        protected sealed override async UniTask<TValue> OnExecute(TData context, ILifeTime lifeTime) {
             if (_command == null)
                 return default;
-            return await _command.ExecuteAsync(context).
+            return await _command.ExecuteStateAsync(context).
                 WithCancellation(lifeTime.AsCancellationToken());
         }
 
-        protected override async UniTask OnExit(TData data) {
+        protected sealed override async UniTask OnExit(TData data) {
             if (_endPoint == null)
                 return;
             await _endPoint.ExitAsync(data);
