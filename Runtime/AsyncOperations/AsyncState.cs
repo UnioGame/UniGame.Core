@@ -59,8 +59,7 @@
                 lifeTimeContext.LifeTime.Compose(LifeTime) : 
                 LifeTime;
 
-            _taskHandle = OnExecute(data, contextLifetime).
-                Preserve();
+            _taskHandle = OnExecute(data, contextLifetime).Preserve();
             var result     = await _taskHandle;
 
             if (!_isActive) return result;

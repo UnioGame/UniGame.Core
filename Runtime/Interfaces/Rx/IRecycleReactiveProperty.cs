@@ -16,6 +16,7 @@
         
     {
         new TValue Value { get; set; }
-        
+
+        void SetValueForce(TValue propertyValue);
     }
 }

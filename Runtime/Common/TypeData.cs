@@ -61,6 +61,12 @@
             data.Value = value;           
         }
 
+        public void PublishForce<TData>(TData value)
+        {
+            var data = GetData<TData>();
+            data.SetValueForce(value);        
+        }
+
         #endregion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -83,8 +89,6 @@
             return Contains(type);
         }
 
-        private IRecycleReactiveProperty<TValue> CreateContextValue<TValue>() => ClassPool.Spawn<RecycleReactiveProperty<TValue>>();
-        
         public bool Contains(Type type) => contextValues.TryGetValue(type, out var value) && 
                                            value.HasValue;
 
@@ -106,6 +110,8 @@
             cachedType  = null;
             cachedValue = null;
         }
+
+        private IRecycleReactiveProperty<TValue> CreateContextValue<TValue>() => ClassPool.Spawn<RecycleReactiveProperty<TValue>>();
 
         private IRecycleReactiveProperty<TValue> GetData<TValue>()
         {
