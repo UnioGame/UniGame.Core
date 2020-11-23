@@ -18,5 +18,9 @@
         new TValue Value { get; set; }
 
         void SetValueForce(TValue propertyValue);
+
+        void SetValueSilence(TValue value);
+
+        void RemoveValueSilence();
     }
 }

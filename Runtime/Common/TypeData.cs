@@ -33,6 +33,12 @@
             return Remove(type);
         }
 
+        public void RemoveSilent<TData>()
+        {
+            var value = GetData<TData>();
+            value.RemoveValueSilence();
+        }
+
         public void Dispose()
         {
             Release();

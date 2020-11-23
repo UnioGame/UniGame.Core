@@ -100,7 +100,19 @@
             value    = propertyValue;
             Observers.Apply(x => x.OnNext(propertyValue));
         }
-  
+
+        public void SetValueSilence(T propertyValue)
+        {
+            hasValue = true;
+            value    = propertyValue;
+        }
+        
+        public void RemoveValueSilence()
+        {
+            hasValue = false;
+            value    = default;
+        }
+
         public void Release()
         {
             CleanUp();
