@@ -3,6 +3,8 @@
     using System.Collections.Generic;
     using System.IO;
     using AssetOperations;
+    using global::UniCore.Runtime.ProfilerTools;
+    using Tools;
     using UnityEngine;
     
 #if UNITY_EDITOR
@@ -11,17 +13,18 @@
 
     public static class PrefabExtensions
     {
-        private const string PrefabExtension = ".prefab";
-        
         public static void CreatePrefabs(this IEnumerable<GameObject> source, string path)
         {
 #if UNITY_EDITOR
-            foreach (var gameObject in source) {
-                var fullPath = Path.Combine(path, $"{gameObject.name}{PrefabExtension}");
-                
-                if(!gameObject.TryApplyPrefab()) {
-                    PrefabUtility.SaveAsPrefabAssetAndConnect(gameObject, fullPath, InteractionMode.AutomatedAction);
+            
+            foreach (var gameObject in source)
+            {
+                if (!gameObject)
+                {
+                    Debug.LogError($"NULL Object Asset with path {path}");
                 }
+
+                gameObject.SaveAsset(gameObject.name, path, false);
             }
             
             AssetDatabase.Refresh();

@@ -29,6 +29,10 @@ namespace UniModules.UniGame.Core.EditorTools.Editor.AssetOperations
             EditorFileUtils.CreateDirectories(itemPath);
 
             var gameObjectAsset = asset as GameObject;
+            gameObjectAsset = !gameObjectAsset && asset is Component assetComponent ? 
+                assetComponent.gameObject :
+                gameObjectAsset;
+            
             if (gameObjectAsset != null) {
                 gameObjectAsset.name = name;
                 return PrefabUtility.SaveAsPrefabAssetAndConnect(gameObjectAsset, itemPath, InteractionMode.AutomatedAction) as TAsset;

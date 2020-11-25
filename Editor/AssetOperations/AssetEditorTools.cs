@@ -74,11 +74,17 @@
 
         public static string GetAssetExtension(Object asset)
         {
-            if (asset is GameObject)
-                return PrefabExtension;
-            if (asset is ScriptableObject)
-                return AssetExtension;
-            return string.Empty;
+            switch (asset)
+            {
+                case GameObject _:
+                    return PrefabExtension;
+                case ScriptableObject _:
+                    return AssetExtension;
+                case Component _:
+                    return PrefabExtension;
+                default:
+                    return string.Empty;
+            }
         }
 
         public static void ApplyProgressAssetAction<T>(List<T> assets, string message, Action<T> action)
