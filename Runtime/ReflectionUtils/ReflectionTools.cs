@@ -33,8 +33,7 @@
         private static MemorizeItem<(Type source,Type attribute), List<Type>> assignableAttributesTypesCache = 
             MemorizeTool.Memorize<(Type source,Type attribute), List<Type>>(x => 
             {
-                var items = x.source.GetAssignableWithAttributeNonCached(x.attribute).
-                    ToList();
+                var items = x.source.GetAssignableWithAttributeNonCached(x.attribute).ToList();
                 return items;
             });
         
@@ -208,6 +207,20 @@
             return result;
         }
 
+        public static List<(Type type,TAttribute attribute)> GetAssignableWithAttributeMap<TAttribute>(this Type baseType)
+            where TAttribute : Attribute
+        {
+            return baseType.GetAssignableWithAttribute(typeof(TAttribute)).
+                Select(x => (x,x.GetCustomAttribute<TAttribute>())).
+                ToList();
+        }
+        
+        public static List<(Type type,Attribute attribute)> GetAssignableWithAttributeMap(this Type baseType, Type attribute)
+        {
+            return baseType.GetAssignableWithAttribute(attribute).
+                Select(x => (x,x.GetCustomAttribute(attribute))).
+                ToList();
+        }
         
         public static List<Type> GetAssignableWithAttribute<TAttribute>(this Type baseType)
             where TAttribute : Attribute
@@ -222,7 +235,7 @@
         public static List<Type> GetAssignableWithAttributeNonCached(this Type baseType, Type attribute)
         {
             var items = baseType.GetAssignableTypes().
-                Where(node => node.HasAttribute(attribute)).
+                Where(x => x.HasAttribute(attribute)).
                 ToList();
             return items;
         }
@@ -294,6 +307,15 @@
         {
             var array = type.GetCustomAttributes(typeof (T), inherit);
             return array.Length != 0 ? (T) array[0] : default (T);
+        }
+        
+        /// <summary>
+        /// utility method for returning the first matching custom attribute (or <c>null</c>) of the specified member.
+        /// </summary>
+        public static Attribute GetCustomAttribute(this Type type,Type attributeType, bool inherit = true)
+        {
+            var array = type.GetCustomAttributes(attributeType, inherit);
+            return array.Length != 0 ? array[0] as Attribute: default;
         }
         
         /// <summary>
