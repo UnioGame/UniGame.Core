@@ -6,6 +6,7 @@ using Object = UnityEngine.Object;
 
 namespace UniModules.UniGame.Core.EditorTools.Editor.DrawersTools
 {
+    using Runtime.Attributes;
     using UniCore.EditorTools.Editor.Utility;
     using UniCore.Runtime.Utils;
 
@@ -38,6 +39,9 @@ namespace UniModules.UniGame.Core.EditorTools.Editor.DrawersTools
             for (var i = 0; i < propertyTree.RootPropertyCount; i++) {
                 var p            = propertyTree.GetRootProperty(i);
                 var info         = p.Info;
+                if(info.GetAttribute<IgnoreDrawerAttribute>()!=null)
+                    continue;
+
                 var valueType    = info.TypeOfValue;
 
                 if(valueType != type)
@@ -51,6 +55,8 @@ namespace UniModules.UniGame.Core.EditorTools.Editor.DrawersTools
                 var items = child.Children;
                 foreach (var property in items)
                 {
+                    if(property.GetAttribute<IgnoreDrawerAttribute>()!=null)
+                        continue;
                     property.Draw();
                 }
             }

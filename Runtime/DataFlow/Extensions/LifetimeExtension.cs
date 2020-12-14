@@ -13,12 +13,16 @@ public static class LifetimeExtension
 {
     public static LifeTimeDefinition AddTo(this LifeTimeDefinition lifeTimeDefinition, ILifeTime lifeTime)
     {
+        if (lifeTime == null)
+            return lifeTimeDefinition;
         lifeTime.AddCleanUpAction(lifeTimeDefinition.Terminate);
         return lifeTimeDefinition;
     }
 
     public static LifeTimeDefinition ReleaseWith(this LifeTimeDefinition lifeTimeDefinition, ILifeTime lifeTime)
     {
+        if (lifeTime == null)
+            return lifeTimeDefinition;
         lifeTime.AddCleanUpAction(lifeTimeDefinition.Release);
         return lifeTimeDefinition;
     }

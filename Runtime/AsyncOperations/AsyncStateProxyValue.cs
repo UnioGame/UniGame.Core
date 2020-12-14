@@ -44,8 +44,7 @@
         protected sealed override async UniTask<TValue> OnExecute(TData context, ILifeTime lifeTime) {
             if (_command == null)
                 return default;
-            return await _command.ExecuteStateAsync(context).
-                WithCancellation(lifeTime.AsCancellationToken());
+            return await _command.ExecuteStateAsync(context);
         }
 
         protected sealed override async UniTask OnExit(TData data) {

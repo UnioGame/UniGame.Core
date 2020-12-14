@@ -6,11 +6,18 @@ namespace UniModules.UniGame.Core.Runtime.Interfaces
     public interface ITypeData : 
         IPoolable, 
         IMessageBroker,
-        IValueContainerStatus, 
-        IReadOnlyData
+        IReadonlyTypeData
     {
         
         bool Remove<TData>();
+        
+    }
+
+    public interface IReadonlyTypeData :
+        IMessageReceiver,
+        IReadOnlyData,
+        IValueContainerStatus
+    {
         
     }
 }

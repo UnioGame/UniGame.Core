@@ -2,7 +2,7 @@ namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
     using System;
 
-    public interface IConnector<T>
+    public interface IBinder<T>
     {
         /// <summary>
         /// retranslate all data of connecter to target connection
