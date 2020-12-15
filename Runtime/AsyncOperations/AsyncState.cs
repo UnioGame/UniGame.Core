@@ -1,4 +1,5 @@
-﻿namespace UniModules.UniGame.Core.Runtime.AsyncOperations {
+﻿namespace UniModules.UniGame.Core.Runtime.AsyncOperations
+{
     using System.Threading;
     using Cysharp.Threading.Tasks;
     using DataFlow.Interfaces;
@@ -8,12 +9,15 @@
     using UniCore.Runtime.DataFlow;
     using UniRx;
 
-    public class AsyncState<TData> : 
-        AsyncState<TData, AsyncStatus> ,
-        IAsyncState<TData> { }
+    public class AsyncState<TData> :
+        AsyncState<TData, AsyncStatus>,
+        IAsyncState<TData>
+    {
+    }
 
     public class AsyncState<TData, TResult> :
-        IAsyncState<TData, TResult> {
+        IAsyncState<TData, TResult>
+    {
         private LifeTimeDefinition               _lifeTime;
         private bool                             _isActive;
         private bool                             _isInitialized;
@@ -23,7 +27,7 @@
         private UniTask<TResult>                 _taskHandle;
 
         #region public properties
-        
+
         public IReadOnlyReactiveProperty<TResult> Value => _value = (_value ?? new RecycleReactiveProperty<TResult>());
 
         public ILifeTime LifeTime => _lifeTime = (_lifeTime ?? new LifeTimeDefinition());
@@ -32,17 +36,17 @@
 
         #endregion
 
-        public async UniTask<TResult> ExecuteAsync(TData data) {
+        public async UniTask<TResult> ExecuteAsync(TData data)
+        {
             //state already active
-            if (_isActive) {
-                return await UniTaskOperations.Await(
-                    () => this._isActive,
-                    () => _value.Value,
-                    _cancellationSource.Token);
+            if (_isActive)
+            {
+                return await UniTaskOperations
+                    .Await(() => _isActive, () => _value.Value, _cancellationSource.Token);
             }
 
-            _isActive           = true;
-                        
+            _isActive = true;
+
             if (!_isInitialized)
                 Initialize();
 
@@ -53,18 +57,20 @@
             LifeTime.AddCleanUpAction(() => _value.Release());
             //setup default value
             _value.Value = GetInitialExecutionValue();
-            
+
             //if target value contains lifetime, then bind
-            var contextLifetime = data is ILifeTimeContext lifeTimeContext ? 
-                lifeTimeContext.LifeTime.Compose(LifeTime) : 
+            var contextLifetime = data is ILifeTimeContext lifeTimeContext ?
+                lifeTimeContext.LifeTime.Compose(LifeTime) :
                 LifeTime;
 
             _taskHandle = OnExecute(data, contextLifetime).Preserve();
-            var result     = await _taskHandle;
+
+            var result = await _taskHandle;
 
             if (!_isActive) return result;
-            
-            switch (_taskHandle.Status) {
+
+            switch (_taskHandle.Status)
+            {
                 case UniTaskStatus.Succeeded:
                     await OnComplete(result, data, contextLifetime);
                     break;
@@ -79,19 +85,20 @@
             _value.Value = result;
 
             await Finish(data);
-            
+
             return result;
         }
 
-        public async UniTask ExitAsync() {
+        public async UniTask ExitAsync()
+        {
             if (!_isActive)
                 return;
 
             await Finish(_data);
         }
 
-        private async UniTask Finish(TData data) {
-            
+        private async UniTask Finish(TData data)
+        {
             await OnExit(data);
 
             _isActive = false;
@@ -102,17 +109,18 @@
         {
             return default;
         }
-        
+
         protected virtual UniTask<TResult> OnExecute(TData data, ILifeTime executionLifeTime) => UniTask.FromResult<TResult>(default);
 
         protected virtual UniTask OnComplete(TResult value, TData data, ILifeTime lifeTime) => UniTask.CompletedTask;
 
         protected virtual UniTask OnExit(TData data) => UniTask.CompletedTask;
 
-        private void Initialize() {
+        private void Initialize()
+        {
             _isInitialized = true;
-            _lifeTime = (_lifeTime ?? new LifeTimeDefinition());
-            _value    = (_value ?? new RecycleReactiveProperty<TResult>());
+            _lifeTime      = (_lifeTime ?? new LifeTimeDefinition());
+            _value         = (_value ?? new RecycleReactiveProperty<TResult>());
         }
     }
 }
