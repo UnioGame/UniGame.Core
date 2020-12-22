@@ -1,5 +1,4 @@
-﻿
-namespace UniModules.UniGame.Core.Runtime.Interfaces
+﻿namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
     using System;
     using UniRx;
@@ -18,7 +17,7 @@ namespace UniModules.UniGame.Core.Runtime.Interfaces
     
     public interface IContext :
         IMessageContext,
-        IManagedBinder<IMessagePublisher>,
+        IManagedBroadcaster<IMessagePublisher>,
         ITypeData
     {
         

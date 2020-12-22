@@ -8,9 +8,7 @@ namespace UniModules.UniGame.Core.Runtime.Interfaces
         IMessageBroker,
         IReadonlyTypeData
     {
-        
         bool Remove<TData>();
-        
     }
 
     public interface IReadonlyTypeData :
@@ -18,6 +16,5 @@ namespace UniModules.UniGame.Core.Runtime.Interfaces
         IReadOnlyData,
         IValueContainerStatus
     {
-        
     }
 }

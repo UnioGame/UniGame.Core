@@ -2,14 +2,13 @@ namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
     using System;
 
-    public interface IBinder<T>
+    public interface IBroadcaster<in T>
     {
         /// <summary>
         /// retranslate all data of connecter to target connection
         /// </summary>
         /// <param name="connection">target output channel</param>
         /// <returns>disposable connection token</returns>
-        IDisposable Bind(T connection);
-        
+        IDisposable Broadcast(T connection);
     }
 }
