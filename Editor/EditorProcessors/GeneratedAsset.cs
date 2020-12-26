@@ -29,6 +29,8 @@
                 if (selector)
                     return selector;
                 
+                AssetDatabase.Refresh();
+                
                 var info = ProcessorType.GetCustomAttribute<GeneratedAssetInfoAttribute>();
                 var path = info == null || string.IsNullOrEmpty(info.Location) ? AssetPath : 
                     EditorPathConstants.GeneratedContentDefaultPath.CombinePath(info.Location);
