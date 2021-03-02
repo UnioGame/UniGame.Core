@@ -77,7 +77,7 @@
             for (var i = 0; i < commands.Count; i++) {
                 var asyncScenario = commands[i];
                 var task          = asyncScenario.ExecuteAsync(context).
-                    WithCancellation(asCancellationSource.Token);
+                    AttachExternalCancellation(asCancellationSource.Token);
                 
                 result = await task;
                     
