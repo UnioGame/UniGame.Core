@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniGame.Core.Editor.EditorProcessors
+﻿using UniCore.Runtime.ProfilerTools;
+
+namespace UniModules.UniGame.Core.Editor.EditorProcessors
 {
     using System;
     using EditorTools.Editor;
@@ -29,6 +31,8 @@
                 if (selector)
                     return selector;
                 
+                GameLog.Log($"GeneratedAsset Create asset of type {nameof(TAsset)} : with path : {AssetPath}");
+                
                 AssetDatabase.Refresh();
                 
                 var info = ProcessorType.GetCustomAttribute<GeneratedAssetInfoAttribute>();
@@ -38,6 +42,7 @@
                 AssetPath = path;
                 
                 selector  = AssetEditorTools.LoadOrCreate<TAsset>(ProcessorType, path);
+
                 return selector;
             }
         }

@@ -1,4 +1,7 @@
-﻿namespace UniModules.UniGame.Core.Editor.EditorProcessors
+﻿using System.Collections;
+using Unity.EditorCoroutines.Editor;
+
+namespace UniModules.UniGame.Core.Editor.EditorProcessors
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -18,22 +21,7 @@
         [MenuItem(itemName:"UniGame/ScriptableProcessors/Restart")]
         public static void Initialize()
         {
-            var asset = Asset;
-            
-            var allProcessors = AssetEditorTools.
-                GetAssets<ScriptableObject>().
-                Where(x => x is IProcess).
-                ToList();
-            
-            asset.processors.Clear();
-            asset.processors.AddRange(allProcessors);
-            asset.MarkDirty();
-            
-            if (!asset.activateOnLoad)
-                return;
-
-            asset.Stop();
-            asset.Start();
+            EditorCoroutineUtility.StartCoroutineOwnerless(InitializeRoutine());
         }
 
         #endregion
@@ -73,6 +61,34 @@
         {
             processors.OfType<IProcess>().
                 ForEach(x => x.Stop());
+        }
+
+        private static IEnumerator InitializeRoutine()
+        {
+            yield return null;
+            yield return null;
+            yield return null;
+            InitializeInline();
+        }
+
+        private static void InitializeInline()
+        {
+            var asset = Asset;
+            
+            var allProcessors = AssetEditorTools.
+                GetAssets<ScriptableObject>().
+                Where(x => x is IProcess).
+                ToList();
+            
+            asset.processors.Clear();
+            asset.processors.AddRange(allProcessors);
+            asset.MarkDirty();
+            
+            if (!asset.activateOnLoad)
+                return;
+
+            asset.Stop();
+            asset.Start();
         }
     }
 }
