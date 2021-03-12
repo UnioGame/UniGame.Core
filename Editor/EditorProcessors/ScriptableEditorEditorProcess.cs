@@ -2,7 +2,7 @@
 {
     using UnityEngine;
 
-    public abstract class ScriptableEditorProcess : ScriptableObject, IProcess
+    public abstract class ScriptableEditorEditorProcess : ScriptableObject, IEditorProcess
     {
         public     abstract     bool IsRunning { get; }
         

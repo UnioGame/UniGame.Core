@@ -16,7 +16,7 @@
 
     public class ScriptableEditorProcessor<TProcessor, TDataProcessor, TData> :
         GeneratedAsset<TProcessor>,
-        IProcess
+        IEditorProcess
         where TDataProcessor : class, IEditorProcessor<TData>
         where TProcessor : ScriptableEditorProcessor<TProcessor, TDataProcessor, TData>
     {
@@ -111,7 +111,7 @@
                 switch (targetProcessor)
                 {
                     case Type assetType when assetType.IsScriptableObject():
-                        var assetProcessor = ScriptableObject.CreateInstance(targetProcessor);
+                        var assetProcessor = CreateInstance(targetProcessor);
                         assetProcessor.name = targetProcessor.Name;
                         assetProcessor      = assetProcessor.SaveAsset(assetProcessor.name, AssetPath);
                         assetsProcessors.Add(assetProcessor);

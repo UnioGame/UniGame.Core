@@ -1,6 +1,6 @@
 ﻿namespace UniModules.UniGame.Core.Editor.EditorProcessors
 {
-    public interface IProcess
+    public interface IEditorProcess
     {
         bool IsRunning { get; }
         void Start();

@@ -50,7 +50,7 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
 #endif
         public void Start()
         {
-            processors.OfType<IProcess>().
+            processors.OfType<IEditorProcess>().
                 ForEach(x => x.Start());
         }
 
@@ -59,7 +59,7 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
 #endif
         public void Stop()
         {
-            processors.OfType<IProcess>().
+            processors.OfType<IEditorProcess>().
                 ForEach(x => x.Stop());
         }
 
@@ -77,7 +77,7 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
             
             var allProcessors = AssetEditorTools.
                 GetAssets<ScriptableObject>().
-                Where(x => x is IProcess).
+                Where(x => x is IEditorProcess).
                 ToList();
             
             asset.processors.Clear();
