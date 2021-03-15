@@ -86,6 +86,17 @@
                     return string.Empty;
             }
         }
+        
+        public static string GetAssetExtension(this Type asset)
+        {
+            if (asset.IsGameObject())
+                return PrefabExtension;
+            if (asset.IsComponent())
+                return PrefabExtension;
+            if (asset.IsScriptableObject())
+                return AssetExtension;
+            return string.Empty;
+        }
 
         public static void ApplyProgressAssetAction<T>(List<T> assets, string message, Action<T> action)
         {

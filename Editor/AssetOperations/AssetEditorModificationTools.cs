@@ -1,3 +1,5 @@
+using UniModules.UniGame.Core.Runtime.Extension;
+
 namespace UniModules.UniGame.Core.EditorTools.Editor.AssetOperations
 {
     using System;
@@ -47,6 +49,35 @@ namespace UniModules.UniGame.Core.EditorTools.Editor.AssetOperations
             
             AssetDatabase.Refresh();
 
+            return asset;
+        }
+        
+        public static TAsset CopyAsset<TAsset>(this Object source,string name, string targetPath)
+            where TAsset : Object
+        {
+            var path = AssetDatabase.GetAssetPath(source);
+            var assetType = typeof(TAsset);
+            var extension = path.IsFilePath() ? Path.GetExtension(path) : string.Empty;
+            var settingsPath = targetPath.CombinePath($"{name}{extension}");
+            
+            AssetDatabase.CopyAsset(path,settingsPath );
+            if(assetType.IsComponent())
+                return AssetDatabase.LoadAssetAtPath<GameObject>(settingsPath).GetComponent<TAsset>();
+            var asset = AssetDatabase.LoadAssetAtPath<TAsset>(settingsPath);
+            return asset;
+        }
+
+        public static TAsset CopyAsset<TAsset>(string path,string name, string targetPath)
+            where TAsset : Object
+        {
+            var assetType = typeof(TAsset);
+            var extension = path.IsFilePath() ? Path.GetExtension(path) : string.Empty;
+            var settingsPath = targetPath.CombinePath($"{name}.{extension}");
+            
+            AssetDatabase.CopyAsset(path,settingsPath );
+            if(assetType.IsComponent())
+                return AssetDatabase.LoadAssetAtPath<GameObject>(settingsPath).GetComponent<TAsset>();
+            var asset = AssetDatabase.LoadAssetAtPath<TAsset>(settingsPath);
             return asset;
         }
 

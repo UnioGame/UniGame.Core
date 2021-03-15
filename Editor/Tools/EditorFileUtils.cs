@@ -132,6 +132,11 @@ namespace UniModules.UniGame.Core.EditorTools.Editor.Tools
             return path.Replace("\\", "/").TrimEnd('/');
         }
 
+        public static string GetDirectoryPath(this string path)
+        {
+            return path.IsFilePath() ? Path.GetDirectoryName(path) : path;
+        }
+        
         /// <summary>
         /// move dir from source location to dest
         /// dest location will be removed by default
