@@ -8,7 +8,8 @@
 
     public class LifetimeScriptableObject : ScriptableObject, 
         ILifeTime,
-        ILifeTimeContext
+        ILifeTimeContext,
+        IDisposable
     {
         private static Color _logColor = new Color(0.30f, 0.8f, 0.490f);
         
@@ -33,9 +34,14 @@
             _lifeTimeDefinition?.Release();
             OnReset();
         }
+        public void Dispose()
+        {
+            Reset();
+        }
 
         private void OnEnable()
         {
+            // конструкция скорее всего смысла не имеет поскольку дважды OnEnable на ScriptableObject не вызовется
             _lifeTimeDefinition?.Terminate();
             _lifeTimeDefinition = new LifeTimeDefinition();
             OnActivate();
@@ -85,5 +91,6 @@
         {
             
         }
+
     }
 }
