@@ -60,15 +60,13 @@
             }
 #endif
 
-            var fieldRect = EditorGUILayout.GetControlRect();
-            controlPosition   =  fieldRect;
-            var newIndex = EditorGUI.Popup(controlPosition, 
+            var newIndex = EditorGUI.Popup(position, 
                 string.Empty, 
                 index, 
                 assetsItems.ToArray());
             
-            position.height += fieldRect.height;
-            
+            position.height += position.height;
+
             if (newIndex == index) {
                 return;
             }
