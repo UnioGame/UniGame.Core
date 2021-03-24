@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniCore.Runtime.ReflectionUtils
+﻿using UniModules.UniGame.Core.Runtime.Extension;
+
+namespace UniModules.UniCore.Runtime.ReflectionUtils
 {
     using System;
     using System.Collections;
@@ -188,6 +190,22 @@
 
         }
 
+
+        public static object GetDefaultInstance(this Type type)
+        {
+            if (type.IsValueType)
+            {
+                return Activator.CreateInstance(type);
+            }
+
+            if (type.HasDefaultConstructor())
+            {
+                return Activator.CreateInstance(type);
+            }
+
+            return type == typeof(string) ? string.Empty : null;
+        }
+        
         public static List<Type> GetDerivedTypes(this Type aType) {
             
             var  appDomain = AppDomain.CurrentDomain;
