@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniCore.EditorTools.Editor.Utility {
+﻿using UniModules.UniCore.Runtime.ReflectionUtils;
+
+namespace UniModules.UniCore.EditorTools.Editor.Utility {
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -468,6 +470,83 @@
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
             return result;
+        }
+
+
+        public static SerializedProperty ResetToDefault(this SerializedProperty property)
+        {
+
+            switch (property.propertyType)
+            {
+                case SerializedPropertyType.Generic:
+                    break;
+                case SerializedPropertyType.Integer:
+                    property.intValue = 0;
+                    break;
+                case SerializedPropertyType.Boolean:
+                    property.boolValue = false;
+                    break;
+                case SerializedPropertyType.Float:
+                    property.floatValue = 0f;
+                    break;
+                case SerializedPropertyType.String:
+                    property.stringValue = String.Empty;
+                    break;
+                case SerializedPropertyType.Color:
+                    property.colorValue = Color.white;
+                    break;
+                case SerializedPropertyType.ObjectReference:
+                    property.objectReferenceValue = null;
+                    break;
+                case SerializedPropertyType.Enum:
+                    property.enumValueIndex = 0;
+                    break;
+                case SerializedPropertyType.Vector2:
+                    property.vector2Value = Vector2.zero;
+                    break;
+                case SerializedPropertyType.Vector3:
+                    property.vector3Value = Vector3.zero;
+                    break;
+                case SerializedPropertyType.Vector4:
+                    property.vector4Value = Vector4.zero;
+                    break;
+                case SerializedPropertyType.Rect:
+                    property.rectValue = Rect.zero;
+                    break;
+                case SerializedPropertyType.AnimationCurve:
+                    property.animationCurveValue = new AnimationCurve();
+                    break;
+                case SerializedPropertyType.Bounds:
+                    property.boundsValue = new Bounds();
+                    break;
+                case SerializedPropertyType.Quaternion:
+                    property.quaternionValue = Quaternion.identity;
+                    break;
+                case SerializedPropertyType.ExposedReference:
+                    property.exposedReferenceValue = null;
+                    break;
+                case SerializedPropertyType.Vector2Int:
+                    property.vector2IntValue = Vector2Int.zero;
+                    break;
+                case SerializedPropertyType.Vector3Int:
+                    property.vector3IntValue = Vector3Int.zero;
+                    break;
+                case SerializedPropertyType.RectInt:
+                    property.rectIntValue = new RectInt();
+                    break;
+                case SerializedPropertyType.BoundsInt:
+                    property.boundsIntValue = new BoundsInt();
+                    break;
+                case SerializedPropertyType.ManagedReference:
+                    property.managedReferenceValue = property.
+                        GetTypeReflection().
+                        GetDefaultInstance();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return property;
         }
         
     }

@@ -10,7 +10,8 @@ namespace UniModules.UniGame.Core.Runtime.DataStructure
     [Serializable]
     public class SerializableDictionary<TKey, TValue> : 
         Dictionary<TKey, TValue>,
-        ISerializationCallbackReceiver
+        ISerializationCallbackReceiver,
+        ISerializableDictionaryObject
     {
         
         [SerializeField] protected List<TKey>   keys   = new List<TKey>();
@@ -44,7 +45,7 @@ namespace UniModules.UniGame.Core.Runtime.DataStructure
             }
 
             for (var i = 0; i < keys.Count; i++) {
-                try {
+                try { 
                     this.Add(keys[i], values[i]);
                 }
                 catch (Exception e) {
