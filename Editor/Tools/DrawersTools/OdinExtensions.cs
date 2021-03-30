@@ -59,6 +59,10 @@ namespace UniModules.UniGame.Core.EditorTools.Editor.DrawersTools
                         continue;
                     property.Draw();
                 }
+
+                propertyTree.ApplyChanges();
+                
+                break;
             }
 #endif
         }

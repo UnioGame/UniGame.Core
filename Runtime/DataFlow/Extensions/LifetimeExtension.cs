@@ -19,6 +19,7 @@ public static class LifetimeExtension
         return lifeTimeDefinition;
     }
 
+    
     public static LifeTimeDefinition ReleaseWith(this LifeTimeDefinition lifeTimeDefinition, ILifeTime lifeTime)
     {
         if (lifeTime == null)
