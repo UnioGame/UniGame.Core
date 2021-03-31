@@ -33,7 +33,8 @@ namespace UniModules.UniGame.Core.EditorTools.Editor.DrawersTools
 
         public static void DrawAssetChildWithOdin(this Object asset, Type type, int childIndex)
         {
-#if ODIN_INSPECTOR               
+#if ODIN_INSPECTOR
+
             var propertyTree = asset.GetPropertyTree();
             
             for (var i = 0; i < propertyTree.RootPropertyCount; i++) {
@@ -53,17 +54,20 @@ namespace UniModules.UniGame.Core.EditorTools.Editor.DrawersTools
                 
                 var child = children[childIndex];
                 var items = child.Children;
+                
                 foreach (var property in items)
                 {
                     if(property.GetAttribute<IgnoreDrawerAttribute>()!=null)
                         continue;
+                    property.Update(true);
                     property.Draw();
                 }
 
-                propertyTree.ApplyChanges();
-                
                 break;
             }
+            
+            propertyTree.ApplyChanges();
+            propertyTree.UpdateTree();
 #endif
         }
         
