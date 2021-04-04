@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 namespace UniModules.UniCore.Tests.IntegrationTests.ClassPoolTests
 {
@@ -6,7 +7,6 @@ namespace UniModules.UniCore.Tests.IntegrationTests.ClassPoolTests
     using System.Collections.Generic;
     using Runtime.ObjectPool.Runtime;
     using Runtime.ObjectPool.Runtime.Extensions;
-    using UniRoutine.Runtime;
 
     public class ClassPoolPrefomanceTest : MonoBehaviour
     {
@@ -17,7 +17,7 @@ namespace UniModules.UniCore.Tests.IntegrationTests.ClassPoolTests
         // Start is called before the first frame update
         private void Start()
         {
-            OnUpdate().ExecuteRoutine(RoutineType.Update, false);
+            OnUpdate().ToUniTask();
         }
 
         private IEnumerator OnUpdate()
