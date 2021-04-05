@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniGame.Core.Runtime.Common
+﻿using System;
+
+namespace UniModules.UniGame.Core.Runtime.Common
 {
     using UniCore.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
@@ -9,5 +11,12 @@
         ILifeTimeContext, 
         ILifeTime
     {
+    }
+
+    public interface IDisposableLifetimeContext:
+        ILifeTimeContext,
+        IDisposable
+    {
+        
     }
 }
