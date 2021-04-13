@@ -12,7 +12,7 @@
     {
 
         public static T AddTo<T>(this T disposable, ILifeTime lifeTime)
-            where T : class, IDisposable
+            where T : IDisposable
         {
             if (disposable != null)
                 lifeTime.AddDispose(disposable);
