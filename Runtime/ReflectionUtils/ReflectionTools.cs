@@ -1,4 +1,7 @@
-﻿using UniModules.UniGame.Core.Runtime.Extension;
+﻿using Sirenix.Utilities;
+using UniModules.UniCore.Runtime.ObjectPool.Runtime;
+using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
+using UniModules.UniGame.Core.Runtime.Extension;
 
 namespace UniModules.UniCore.Runtime.ReflectionUtils
 {
@@ -12,6 +15,7 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
     using UnityEngine;
     using Utils;
     using Object = UnityEngine.Object;
+    using Microsoft.CSharp;
 
     public static class ReflectionTools
     {
@@ -25,10 +29,18 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
                 return fields;
             });
 
+        private static Dictionary<Type, string> simpleTypeNames = new Dictionary<Type, string>()
+        {
+            {typeof(Boolean), "bool"},
+            {typeof(Int32), "int"},
+            {typeof(String), "string"},
+        };
         
         private static MemorizeItem<Type, List<Type>> assignableTypesCache = MemorizeTool.Memorize<Type, List<Type>>(x => x.GetAssignableTypesNonCached().ToList());
 
         private static MemorizeItem<Type, List<Type>> attributeTypes = MemorizeTool.Memorize<Type, List<Type>>(GetAttributesTypes);
+        
+        private static MemorizeItem<Type, List<string>> typeUsings = MemorizeTool.Memorize<Type, List<string>>(GetAllUsingsNonChached);
         
         private static MemorizeItem<(Type source,Type attribute), List<Type>> assignableAttributesTypesCache = 
             MemorizeTool.Memorize<(Type source,Type attribute), List<Type>>(x => x.source.GetAssignableWithAttributeNonCached(x.attribute).ToList());
@@ -66,6 +78,29 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
             }
         }
         
+        /// <summary>
+        /// Returns the type name. If this is a generic type, appends
+        /// the list of generic type arguments between angle brackets.
+        /// (Does not account for embedded / inner generic arguments.)
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>System.String.</returns>
+        public static string GetFormattedName(this Type type)
+        {
+            if (!type.IsGenericType)
+            {
+                if (simpleTypeNames.TryGetValue(type, out var typeName))
+                    return typeName;
+                return type.Name;
+            }
+            
+            var genericArguments = type.GetGenericArguments()
+                .Select(x => x.GetFormattedName())
+                .Aggregate((x1, x2) => $"{x1}, {x2}");
+            return $"{type.Name.Substring(0, type.Name.IndexOf("`"))}"
+                   + $"<{genericArguments}>";
+        }
+        
         public static FieldInfo GetFieldInfoCached(this object target,string name) => GetFieldInfoCached(target.GetType(),name);
         
         public static FieldInfo GetFieldInfoCached<T>(string name) => GetFieldInfoCached(typeof(T),name);
@@ -81,6 +116,42 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
             fieldInfos.Add(type,name,info);
             return info;
         }
+
+        public static List<string> GetAllUsings(this Type type) => typeUsings[type];
+        
+        public static List<string> GetAllUsingsNonChached(Type type)
+        {
+
+           var namespaces = ClassPool.Spawn<HashSet<string>>();
+
+            var members = type.GetAllMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic);
+
+            foreach (var memberInfo in members)
+            {
+                switch (memberInfo)
+                {
+                    case MethodInfo methodInfo:
+                        var mb = methodInfo.GetMethodBody();
+                        if(mb == null)
+                            break;
+                        foreach (var p in mb.LocalVariables)
+                        {
+                            if(p == null || p.LocalType == null)continue;
+                            namespaces.Add(p.LocalType.Namespace);
+                        }
+                        break;
+                    case FieldInfo fieldInfo:
+                        var ns = fieldInfo.FieldType.Namespace;
+                        namespaces.Add(ns);
+                        break;
+                }
+            }
+
+            var result = namespaces.ToList();
+            namespaces.Despawn();
+            return result;
+        }
+        
         
         public static void SearchInFieldsRecursively<T>(object target, Object parent, Action<Object, T> onFoundAction, HashSet<object> validatedObjects, Func<T, T> resourceAction = null)
         {
@@ -295,6 +366,28 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
             return types;
         }
 
+        public static bool HasCustomAttribute<TAttribute>(this PropertyInfo info) 
+            where TAttribute : Attribute
+        {
+            return info.GetCustomAttribute<TAttribute>() != null;
+        }
+
+        public static bool HasCustomAttribute(this PropertyInfo info,Type attributeType) 
+        {
+            return info.GetCustomAttribute(attributeType) != null;
+        }
+        
+        public static bool HasCustomAttribute<TAttribute>(this FieldInfo info) 
+            where TAttribute : Attribute
+        {
+            return info.GetCustomAttribute<TAttribute>() != null;
+        }
+        
+        public static bool HasCustomAttribute<TAttribute>(this Type info) 
+            where TAttribute : Attribute
+        {
+            return info.GetCustomAttribute<TAttribute>() != null;
+        }
 
         public static List<Type> GetAttributesTypes(Type attributeType)
         {

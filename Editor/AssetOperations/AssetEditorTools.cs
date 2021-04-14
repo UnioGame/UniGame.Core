@@ -176,6 +176,21 @@
             return asset;
         }
 
+
+        public static void ApplyAssetEditing(Action action)
+        {
+            if (action == null) return;
+            try
+            {
+                AssetDatabase.StartAssetEditing();
+                action();
+            }
+            finally
+            {
+                AssetDatabase.StopAssetEditing();
+            }            
+        }
+        
         public static bool OpenScript<T>(params string[] folders)
         {
             return OpenScript(typeof(T), folders);

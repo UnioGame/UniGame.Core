@@ -16,7 +16,11 @@
             this.disposableAction = disposableAction;
         }
 
-        public TData this[TKey x] => GetValue(x);
+        public TData this[TKey x]
+        {
+            get =>  GetValue(x);
+            set => _cache[x] = value;
+        }
 
         public TData GetValue(TKey key)
         {
