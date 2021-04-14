@@ -26,18 +26,12 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
             });
 
         
-        private static MemorizeItem<Type, List<Type>> assignableTypesCache = MemorizeTool.Memorize<Type, List<Type>>(x => {
-            var items = x.GetAssignableTypesNonCached().
-                ToList();
-            return items;
-        });
+        private static MemorizeItem<Type, List<Type>> assignableTypesCache = MemorizeTool.Memorize<Type, List<Type>>(x => x.GetAssignableTypesNonCached().ToList());
+
+        private static MemorizeItem<Type, List<Type>> attributeTypes = MemorizeTool.Memorize<Type, List<Type>>(GetAttributesTypes);
         
         private static MemorizeItem<(Type source,Type attribute), List<Type>> assignableAttributesTypesCache = 
-            MemorizeTool.Memorize<(Type source,Type attribute), List<Type>>(x => 
-            {
-                var items = x.source.GetAssignableWithAttributeNonCached(x.attribute).ToList();
-                return items;
-            });
+            MemorizeTool.Memorize<(Type source,Type attribute), List<Type>>(x => x.source.GetAssignableWithAttributeNonCached(x.attribute).ToList());
         
         public const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
 
@@ -239,14 +233,26 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
                 Select(x => (x,x.GetCustomAttribute(attribute))).
                 ToList();
         }
+
+        public static IReadOnlyList<Type> GetAllWithAttributes<TAttribute>(this object source)
+            where TAttribute : Attribute
+        {
+            return GetAllWithAttributes<TAttribute>();
+        }
         
-        public static List<Type> GetAssignableWithAttribute<TAttribute>(this Type baseType)
+        public static IReadOnlyList<Type> GetAllWithAttributes<TAttribute>()
+            where TAttribute : Attribute
+        {
+            return attributeTypes[typeof(TAttribute)];
+        }
+        
+        public static IReadOnlyList<Type> GetAssignableWithAttribute<TAttribute>(this Type baseType)
             where TAttribute : Attribute
         {
             return baseType.GetAssignableWithAttribute(typeof(TAttribute));
         }
         
-        public static List<Type> GetAssignableWithAttribute(this Type baseType, Type attribute) {
+        public static IReadOnlyList<Type> GetAssignableWithAttribute(this Type baseType, Type attribute) {
             return assignableAttributesTypesCache.GetValue((baseType, attribute));
         }
         
@@ -279,6 +285,27 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
                     var asmTypes = assembly.GetTypes();
                     var items    = asmTypes.Where(t => !t.IsAbstract && baseType.IsAssignableFrom(t));
                     types.AddRange(items);
+                }
+                catch (ReflectionTypeLoadException e)
+                {
+                    Debug.LogWarning(e);
+                };
+            }
+            
+            return types;
+        }
+
+
+        public static List<Type> GetAttributesTypes(Type attributeType)
+        {
+            var types      = new List<Type>();
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var assembly in assemblies)
+            {
+                try
+                {
+                    var asmTypes = assembly.GetTypes();
+                    types.AddRange(asmTypes.Where(t => t.HasAttribute(attributeType)));
                 }
                 catch (ReflectionTypeLoadException e)
                 {

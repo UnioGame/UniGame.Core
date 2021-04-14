@@ -1,7 +1,6 @@
 ﻿namespace UniModules.UniCore.EditorTools.Editor.PropertiesDrawers
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using Runtime.Utils;
@@ -35,6 +34,11 @@
             return temp;
         }
 
+        public static InspectorEditor GetInspectorDrawer(this UnityEngine.Object target,Type type)
+        {
+            return new InspectorEditor(target, type);
+        }
+        
         public static Type CreateDrawerType(Type targetType)
         {
             var typeInfo = AppDomain.CurrentDomain.GetAssemblies().
