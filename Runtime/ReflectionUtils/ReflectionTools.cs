@@ -1,21 +1,17 @@
-﻿using Sirenix.Utilities;
-using UniModules.UniCore.Runtime.ObjectPool.Runtime;
-using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
-using UniModules.UniGame.Core.Runtime.Extension;
-
-namespace UniModules.UniCore.Runtime.ReflectionUtils
+﻿namespace UniModules.UniCore.Runtime.ReflectionUtils
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
+    using UniModules.UniCore.Runtime.ObjectPool.Runtime;
+    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
     using System.Reflection;
     using DataStructure;
     using UnityEngine;
     using Utils;
     using Object = UnityEngine.Object;
-    using Microsoft.CSharp;
 
     public static class ReflectionTools
     {
@@ -126,6 +122,38 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
 
         public static List<string> GetAllUsings(this Type type) => typeUsings[type];
 
+        /// <summary>
+        /// Gets all members from a given type, including members from all base types if the <see cref="F:System.Reflection.BindingFlags.DeclaredOnly" /> flag isn't set.
+        /// </summary>
+        public static IEnumerable<MemberInfo> GetAllMembers(
+            this Type type,
+            BindingFlags flags = BindingFlags.Default)
+        {
+            System.Type currentType = type;
+            MemberInfo[] memberInfoArray;
+            int index;
+            if ((flags & BindingFlags.DeclaredOnly) == BindingFlags.DeclaredOnly)
+            {
+                memberInfoArray = currentType.GetMembers(flags);
+                for (index = 0; index < memberInfoArray.Length; ++index)
+                    yield return memberInfoArray[index];
+                memberInfoArray = (MemberInfo[]) null;
+            }
+            else
+            {
+                flags |= BindingFlags.DeclaredOnly;
+                do
+                {
+                    memberInfoArray = currentType.GetMembers(flags);
+                    for (index = 0; index < memberInfoArray.Length; ++index)
+                        yield return memberInfoArray[index];
+                    memberInfoArray = (MemberInfo[]) null;
+                    currentType = currentType.BaseType;
+                }
+                while (currentType != null);
+            }
+        }
+        
         public static List<string> GetAllUsingsNonChached(Type type)
         {
             var namespaces = ClassPool.Spawn<HashSet<string>>();
