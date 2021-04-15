@@ -21,10 +21,11 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
     {
         private static Type _stringType = typeof(string);
 
-        public static MemorizeItem<Type, IReadOnlyList<FieldInfo>> InstanceFields = MemorizeTool.
-            Memorize<Type, IReadOnlyList<FieldInfo>>(x => {
+        public static MemorizeItem<Type, IReadOnlyList<FieldInfo>> InstanceFields =
+            MemorizeTool.Memorize<Type, IReadOnlyList<FieldInfo>>(x =>
+            {
                 var fields = new List<FieldInfo>();
-                if(x == null) return fields;
+                if (x == null) return fields;
                 fields.AddRange(x.GetFields(bindingFlags));
                 return fields;
             });
@@ -35,19 +36,24 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
             {typeof(Int32), "int"},
             {typeof(String), "string"},
         };
-        
-        private static MemorizeItem<Type, List<Type>> assignableTypesCache = MemorizeTool.Memorize<Type, List<Type>>(x => x.GetAssignableTypesNonCached().ToList());
 
-        private static MemorizeItem<Type, List<Type>> attributeTypes = MemorizeTool.Memorize<Type, List<Type>>(GetAttributesTypes);
-        
-        private static MemorizeItem<Type, List<string>> typeUsings = MemorizeTool.Memorize<Type, List<string>>(GetAllUsingsNonChached);
-        
-        private static MemorizeItem<(Type source,Type attribute), List<Type>> assignableAttributesTypesCache = 
-            MemorizeTool.Memorize<(Type source,Type attribute), List<Type>>(x => x.source.GetAssignableWithAttributeNonCached(x.attribute).ToList());
-        
+        private static MemorizeItem<Type, List<Type>> assignableTypesCache =
+            MemorizeTool.Memorize<Type, List<Type>>(x => x.GetAssignableTypesNonCached().ToList());
+
+        private static MemorizeItem<Type, List<Type>> attributeTypes =
+            MemorizeTool.Memorize<Type, List<Type>>(GetAttributesTypes);
+
+        private static MemorizeItem<Type, List<string>> typeUsings =
+            MemorizeTool.Memorize<Type, List<string>>(GetAllUsingsNonChached);
+
+        private static MemorizeItem<(Type source, Type attribute), List<Type>> assignableAttributesTypesCache =
+            MemorizeTool.Memorize<(Type source, Type attribute), List<Type>>(x =>
+                x.source.GetAssignableWithAttributeNonCached(x.attribute).ToList());
+
         public const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
 
-        public static DoubleKeyDictionary<Type,string,FieldInfo> fieldInfos = new DoubleKeyDictionary<Type,string,FieldInfo>();
+        public static DoubleKeyDictionary<Type, string, FieldInfo> fieldInfos =
+            new DoubleKeyDictionary<Type, string, FieldInfo>();
 
         public static void Clear()
         {
@@ -68,7 +74,7 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
 
             try
             {
-                var v    = Expression.Variable(otherType);
+                var v = Expression.Variable(otherType);
                 var expr = Expression.Convert(v, type);
                 return expr.Method != null && expr.Method.Name != "op_Implicit";
             }
@@ -77,7 +83,7 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
                 return false;
             }
         }
-        
+
         /// <summary>
         /// Returns the type name. If this is a generic type, appends
         /// the list of generic type arguments between angle brackets.
@@ -93,38 +99,39 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
                     return typeName;
                 return type.Name;
             }
-            
+
             var genericArguments = type.GetGenericArguments()
                 .Select(x => x.GetFormattedName())
                 .Aggregate((x1, x2) => $"{x1}, {x2}");
             return $"{type.Name.Substring(0, type.Name.IndexOf("`"))}"
                    + $"<{genericArguments}>";
         }
-        
-        public static FieldInfo GetFieldInfoCached(this object target,string name) => GetFieldInfoCached(target.GetType(),name);
-        
-        public static FieldInfo GetFieldInfoCached<T>(string name) => GetFieldInfoCached(typeof(T),name);
-        
-        public static FieldInfo GetFieldInfoCached(this Type type,string name)
+
+        public static FieldInfo GetFieldInfoCached(this object target, string name) =>
+            GetFieldInfoCached(target.GetType(), name);
+
+        public static FieldInfo GetFieldInfoCached<T>(string name) => GetFieldInfoCached(typeof(T), name);
+
+        public static FieldInfo GetFieldInfoCached(this Type type, string name)
         {
             var info = fieldInfos.Get(type, name);
             if (info != null) return info;
-            info = type.GetField(name,bindingFlags);
+            info = type.GetField(name, bindingFlags);
 
             if (info == null) return null;
-            
-            fieldInfos.Add(type,name,info);
+
+            fieldInfos.Add(type, name, info);
             return info;
         }
 
         public static List<string> GetAllUsings(this Type type) => typeUsings[type];
-        
+
         public static List<string> GetAllUsingsNonChached(Type type)
         {
-
-           var namespaces = ClassPool.Spawn<HashSet<string>>();
-
-            var members = type.GetAllMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic);
+            var namespaces = ClassPool.Spawn<HashSet<string>>();
+            namespaces.Add(type.Namespace);
+            var members = type.GetAllMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static |
+                                             BindingFlags.NonPublic);
 
             foreach (var memberInfo in members)
             {
@@ -132,13 +139,14 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
                 {
                     case MethodInfo methodInfo:
                         var mb = methodInfo.GetMethodBody();
-                        if(mb == null)
+                        if (mb == null)
                             break;
                         foreach (var p in mb.LocalVariables)
                         {
-                            if(p == null || p.LocalType == null)continue;
+                            if (p == null || p.LocalType == null) continue;
                             namespaces.Add(p.LocalType.Namespace);
                         }
+
                         break;
                     case FieldInfo fieldInfo:
                         var ns = fieldInfo.FieldType.Namespace;
@@ -151,9 +159,10 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
             namespaces.Despawn();
             return result;
         }
-        
-        
-        public static void SearchInFieldsRecursively<T>(object target, Object parent, Action<Object, T> onFoundAction, HashSet<object> validatedObjects, Func<T, T> resourceAction = null)
+
+
+        public static void SearchInFieldsRecursively<T>(object target, Object parent, Action<Object, T> onFoundAction,
+            HashSet<object> validatedObjects, Func<T, T> resourceAction = null)
         {
             if (target == null || !validatedObjects.Add(target)) return;
 
@@ -161,18 +170,15 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
             var fields = targetType.GetFields();
             foreach (var fieldInfo in fields)
             {
-
                 SearchInObject<T>(target, parent, fieldInfo, onFoundAction, validatedObjects, resourceAction);
-
             }
         }
 
-        private static void SearchInObject<T>(object target, Object parent, FieldInfo fieldInfo, Action<Object, T> onFoundAction, HashSet<object> validatedObjects, Func<T, T> resourceAction)
+        private static void SearchInObject<T>(object target, Object parent, FieldInfo fieldInfo,
+            Action<Object, T> onFoundAction, HashSet<object> validatedObjects, Func<T, T> resourceAction)
         {
-
             try
             {
-
                 if (target == null) return;
 
                 var searchType = typeof(T);
@@ -200,7 +206,6 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
                 parent = assetItem == null ? parent : assetItem;
 
                 SearchInFieldsRecursively(item, parent, onFoundAction, validatedObjects);
-
             }
             catch (Exception e)
             {
@@ -208,9 +213,9 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
             }
         }
 
-        private static void SearchInCollection<T>(object target, Object parent, ICollection collection, Action<Object, T> onFoundAction, HashSet<object> validatedObjects, Func<T, T> resourceAction)
+        private static void SearchInCollection<T>(object target, Object parent, ICollection collection,
+            Action<Object, T> onFoundAction, HashSet<object> validatedObjects, Func<T, T> resourceAction)
         {
-
             if (collection.Count > 0)
             {
                 var searchingType = typeof(T);
@@ -233,9 +238,9 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
             }
         }
 
-        private static bool ProcessItem<T>(object target, FieldInfo fieldInfo, object item, out T result, Func<T, T> resourceAction)
+        private static bool ProcessItem<T>(object target, FieldInfo fieldInfo, object item, out T result,
+            Func<T, T> resourceAction)
         {
-
             var resultItem = default(T);
             var searchingType = typeof(T);
 
@@ -243,7 +248,7 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
 
             if (item == null || searchingType.IsInstanceOfType(item) == false) return false;
 
-            result = (T)item;
+            result = (T) item;
             if (resourceAction != null)
             {
                 result = resourceAction(result);
@@ -252,7 +257,6 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
             }
 
             return true;
-
         }
 
 
@@ -270,39 +274,41 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
 
             return type == typeof(string) ? string.Empty : null;
         }
-        
-        public static List<Type> GetDerivedTypes(this Type aType) {
-            
-            var  appDomain = AppDomain.CurrentDomain;
+
+        public static List<Type> GetDerivedTypes(this Type aType)
+        {
+            var appDomain = AppDomain.CurrentDomain;
             var result = new List<Type>();
             var assemblies = appDomain.GetAssemblies();
-            
-            for(var i = 0; i<assemblies.Length; i++)
+
+            for (var i = 0; i < assemblies.Length; i++)
             {
                 var assembly = assemblies[i];
                 var types = assembly.GetTypes();
-                for (var j = 0; j < types.Length; j++) {
+                for (var j = 0; j < types.Length; j++)
+                {
                     var type = types[j];
                     if (type.IsSubclassOf(aType))
                         result.Add(type);
                 }
             }
+
             return result;
         }
 
-        public static List<(Type type,TAttribute attribute)> GetAssignableWithAttributeMap<TAttribute>(this Type baseType)
+        public static List<(Type type, TAttribute attribute)> GetAssignableWithAttributeMap<TAttribute>(
+            this Type baseType)
             where TAttribute : Attribute
         {
-            return baseType.GetAssignableWithAttribute(typeof(TAttribute)).
-                Select(x => (x,x.GetCustomAttribute<TAttribute>())).
-                ToList();
+            return baseType.GetAssignableWithAttribute(typeof(TAttribute))
+                .Select(x => (x, x.GetCustomAttribute<TAttribute>())).ToList();
         }
-        
-        public static List<(Type type,Attribute attribute)> GetAssignableWithAttributeMap(this Type baseType, Type attribute)
+
+        public static List<(Type type, Attribute attribute)> GetAssignableWithAttributeMap(this Type baseType,
+            Type attribute)
         {
-            return baseType.GetAssignableWithAttribute(attribute).
-                Select(x => (x,x.GetCustomAttribute(attribute))).
-                ToList();
+            return baseType.GetAssignableWithAttribute(attribute).Select(x => (x, x.GetCustomAttribute(attribute)))
+                .ToList();
         }
 
         public static IReadOnlyList<Type> GetAllWithAttributes<TAttribute>(this object source)
@@ -310,80 +316,82 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
         {
             return GetAllWithAttributes<TAttribute>();
         }
-        
+
         public static IReadOnlyList<Type> GetAllWithAttributes<TAttribute>()
             where TAttribute : Attribute
         {
             return attributeTypes[typeof(TAttribute)];
         }
-        
+
         public static IReadOnlyList<Type> GetAssignableWithAttribute<TAttribute>(this Type baseType)
             where TAttribute : Attribute
         {
             return baseType.GetAssignableWithAttribute(typeof(TAttribute));
         }
-        
-        public static IReadOnlyList<Type> GetAssignableWithAttribute(this Type baseType, Type attribute) {
+
+        public static IReadOnlyList<Type> GetAssignableWithAttribute(this Type baseType, Type attribute)
+        {
             return assignableAttributesTypesCache.GetValue((baseType, attribute));
         }
-        
+
         public static List<Type> GetAssignableWithAttributeNonCached(this Type baseType, Type attribute)
         {
-            var items = baseType.GetAssignableTypes().
-                Where(x => x.HasAttribute(attribute)).
-                ToList();
+            var items = baseType.GetAssignableTypes().Where(x => x.HasAttribute(attribute)).ToList();
             return items;
         }
-        
+
         /// <summary>
         /// Get all classes deriving from baseType via reflection
         /// </summary>
-        public static List<Type> GetAssignableTypes(this Type baseType) {
+        public static List<Type> GetAssignableTypes(this Type baseType)
+        {
             return assignableTypesCache.GetValue(baseType);
         }
-        
+
         /// <summary>
         /// Get all classes deriving from baseType via reflection
         /// </summary>
         public static List<Type> GetAssignableTypesNonCached(this Type baseType)
         {
-            var types      = new List<Type>();
+            var types = new List<Type>();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var assembly in assemblies)
             {
                 try
                 {
                     var asmTypes = assembly.GetTypes();
-                    var items    = asmTypes.Where(t => !t.IsAbstract && baseType.IsAssignableFrom(t));
+                    var items = asmTypes.Where(t => !t.IsAbstract && baseType.IsAssignableFrom(t));
                     types.AddRange(items);
                 }
                 catch (ReflectionTypeLoadException e)
                 {
                     Debug.LogWarning(e);
-                };
+                }
+
+                ;
             }
-            
+
             return types;
         }
 
-        public static bool HasCustomAttribute<TAttribute>(this PropertyInfo info) 
+        public static bool HasCustomAttribute<TAttribute>(this PropertyInfo info)
             where TAttribute : Attribute
         {
             return info.GetCustomAttribute<TAttribute>() != null;
         }
 
-        public static bool HasCustomAttribute(this PropertyInfo info,Type attributeType) 
+        public static bool HasCustomAttribute(this PropertyInfo info, Type attributeType)
         {
             return info.GetCustomAttribute(attributeType) != null;
         }
-        
-        public static bool HasCustomAttribute<TAttribute>(this FieldInfo info) 
+
+        public static bool HasCustomAttribute<TAttribute>(this FieldInfo info)
             where TAttribute : Attribute
         {
             return info.GetCustomAttribute<TAttribute>() != null;
         }
-        
-        public static bool HasCustomAttribute<TAttribute>(this Type info) 
+
+        public static bool HasCustomAttribute<TAttribute>(this Type info)
             where TAttribute : Attribute
         {
             return info.GetCustomAttribute<TAttribute>() != null;
@@ -391,7 +399,7 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
 
         public static List<Type> GetAttributesTypes(Type attributeType)
         {
-            var types      = new List<Type>();
+            var types = new List<Type>();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var assembly in assemblies)
             {
@@ -403,9 +411,11 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
                 catch (ReflectionTypeLoadException e)
                 {
                     Debug.LogWarning(e);
-                };
+                }
+
+                ;
             }
-            
+
             return types;
         }
 
@@ -414,7 +424,7 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
             var constructor = target.GetConstructor(Type.EmptyTypes);
             return constructor != null;
         }
-        
+
         public static bool Validate(object item, Type searchType)
         {
             if (item == null)
@@ -435,6 +445,7 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
             {
                 return false;
             }
+
             return true;
         }
 
@@ -443,34 +454,35 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
         /// </summary>
         public static T GetCustomAttribute<T>(this Type type, bool inherit = true)
         {
-            var array = type.GetCustomAttributes(typeof (T), inherit);
-            return array.Length != 0 ? (T) array[0] : default (T);
+            var array = type.GetCustomAttributes(typeof(T), inherit);
+            return array.Length != 0 ? (T) array[0] : default(T);
         }
-        
+
         /// <summary>
         /// utility method for returning the first matching custom attribute (or <c>null</c>) of the specified member.
         /// </summary>
-        public static Attribute GetCustomAttribute(this Type type,Type attributeType, bool inherit = true)
+        public static Attribute GetCustomAttribute(this Type type, Type attributeType, bool inherit = true)
         {
             var array = type.GetCustomAttributes(attributeType, inherit);
-            return array.Length != 0 ? array[0] as Attribute: default;
+            return array.Length != 0 ? array[0] as Attribute : default;
         }
-        
+
         /// <summary>
         /// is type has target attribute
         /// </summary>
         public static bool HasAttribute<T>(this Type type, bool inherit = true) where T : Attribute
         {
-            return type.HasAttribute(typeof(T),inherit);
+            return type.HasAttribute(typeof(T), inherit);
         }
-        
-        public static bool HasAttribute(this Type type,Type attribute, bool inherit = true) 
+
+        public static bool HasAttribute(this Type type, Type attribute, bool inherit = true)
         {
             var array = type.GetCustomAttributes(attribute, inherit);
-            return array.Length != 0 ;
+            return array.Length != 0;
         }
-        
-        public static void FindResources<TData>(List<Object> assets, Action<Object, TData> onFoundAction, HashSet<object> excludedItems = null, Func<TData, TData> resourceAction = null) where TData : class
+
+        public static void FindResources<TData>(List<Object> assets, Action<Object, TData> onFoundAction,
+            HashSet<object> excludedItems = null, Func<TData, TData> resourceAction = null) where TData : class
         {
             GUI.changed = true;
             var cache = excludedItems == null ? new HashSet<object>() : excludedItems;
@@ -485,7 +497,6 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
             {
                 Debug.LogError(e);
             }
-
         }
 
         /// <summary>
@@ -498,7 +509,7 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
         /// <param name="assetAction">allow change searching field value</param>
         /// <returns></returns>
         public static void FindResource<T>(Object asset, Action<Object, T> onFoundAction, HashSet<object> cache = null,
-                                                Func<T, T> assetAction = null)
+            Func<T, T> assetAction = null)
         {
             GUI.changed = true;
             var resourceCache = cache == null ? new HashSet<object>() : cache;
@@ -509,9 +520,10 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
                 if (seachingType.IsInstanceOfType(asset))
                 {
                     if (onFoundAction != null)
-                        onFoundAction(asset, (T)(object)asset);
+                        onFoundAction(asset, (T) (object) asset);
                     return;
                 }
+
                 SearchInFieldsRecursively(asset, asset, onFoundAction, resourceCache, assetAction);
             }
             catch (Exception e)
@@ -535,11 +547,5 @@ namespace UniModules.UniCore.Runtime.ReflectionUtils
                 .Where(p => type.IsAssignableFrom(p));
             return types.ToList();
         }
-
-        
-        
     }
-
-
 }
-

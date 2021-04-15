@@ -188,7 +188,9 @@
             finally
             {
                 AssetDatabase.StopAssetEditing();
-            }            
+            }           
+            
+            AssetDatabase.Refresh();
         }
         
         public static bool OpenScript<T>(params string[] folders)
