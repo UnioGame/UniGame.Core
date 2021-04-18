@@ -81,6 +81,19 @@ namespace UniModules.UniGame.Core.EditorTools.Editor.Tools
             assetPath = Combine(assetsFolderName, assetPath);
             return assetPath;
         }
+        
+        public static string ToProjectAssetsPath(this string globalPath)
+        {
+            var assetPath = globalPath.Replace(Application.dataPath, string.Empty);
+            assetPath = Combine(assetsFolderName, assetPath);
+            return assetPath;
+        }
+        
+        public static string ToProjectRootPath(this string globalPath)
+        {
+            var assetPath = globalPath.Replace(Application.dataPath, string.Empty);
+            return assetPath;
+        }
 
         /// <summary>
         /// Combines two paths, and replaces all backslases with forward slash.
