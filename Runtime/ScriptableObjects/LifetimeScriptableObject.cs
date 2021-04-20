@@ -1,4 +1,7 @@
-﻿namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
+﻿using System.Diagnostics;
+using UniCore.Runtime.ProfilerTools;
+
+namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
 {
     using System;
     using DataFlow.Interfaces;
@@ -34,6 +37,7 @@
             _lifeTimeDefinition?.Release();
             OnReset();
         }
+        
         public void Dispose()
         {
             Reset();
@@ -41,18 +45,31 @@
 
         private void OnEnable()
         {
-            // конструкция скорее всего смысла не имеет поскольку дважды OnEnable на ScriptableObject не вызовется
             _lifeTimeDefinition?.Terminate();
             _lifeTimeDefinition = new LifeTimeDefinition();
+
+#if UNITY_EDITOR
+            LifetimeObjectData.Add(this);
+            LogLifeTimeScriptableMessage(nameof(OnEnable));
+            _lifeTimeDefinition.AddCleanUpAction(() => LogLifeTimeScriptableMessage("LifeTime Terminated"));
+#endif
+            
             OnActivate();
         }
 
+        [Conditional("UNITY_EDITOR")]
+        private void LogLifeTimeScriptableMessage(string message)
+        {
+            GameLog.Log($"LifetimeScriptableObject Name: {name} Type: {GetType().Name}  Message {message}",_logColor);
+        }
+        
         private void OnDisable()
         {
             _lifeTimeDefinition?.Terminate();
             
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.playModeStateChanged -= PlayModeChanged;
+            LogLifeTimeScriptableMessage(nameof(OnDisable));
 #endif
             
             OnDisabled();
@@ -76,7 +93,7 @@
         {
             switch (state) {
                 case UnityEditor.PlayModeStateChange.ExitingPlayMode:
-                    _lifeTimeDefinition?.Release();
+                    Reset();
                     break;
             }
         }
@@ -87,10 +104,7 @@
 
         protected virtual void OnReset() {}
 
-        protected virtual void OnDisabled()
-        {
-            
-        }
+        protected virtual void OnDisabled() {}
 
     }
 }
