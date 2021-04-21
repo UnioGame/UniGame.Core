@@ -37,17 +37,20 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
             _lifeTimeDefinition?.Release();
             OnReset();
         }
-        
-        public void Dispose()
-        {
-            Reset();
-        }
+
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.Button]
+#endif
+        public void Dispose() => Reset();
 
         private void OnEnable()
         {
+            _lifeTimeDefinition ??= new LifeTimeDefinition();
             _lifeTimeDefinition?.Terminate();
-            _lifeTimeDefinition = new LifeTimeDefinition();
 
+            if (!Application.isPlaying)
+                return;
+            
 #if UNITY_EDITOR
             LifetimeObjectData.Add(this);
             LogLifeTimeScriptableMessage(nameof(OnEnable));
@@ -67,11 +70,14 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
         {
             _lifeTimeDefinition?.Terminate();
             
+            if (!Application.isPlaying)
+                return;
+            
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.playModeStateChanged -= PlayModeChanged;
             LogLifeTimeScriptableMessage(nameof(OnDisable));
+            LifetimeObjectData.Remove(this);
 #endif
-            
             OnDisabled();
         }
 

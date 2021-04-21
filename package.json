@@ -12,6 +12,8 @@
     "com.unigame.neuecc.unirx": "7.1.1",
     "com.unigame.neuecc.unitask": "2.2.3",
     "com.unigame.neuecc.zstring": "1.0.0",
-    "com.unity.editorcoroutines": "1.0.0"
+    "com.unity.editorcoroutines": "1.0.0",
+    "com.unity.textmeshpro": "3.0.5",
+    "com.unity.ugui" : "1.0.0"
   }
 }
