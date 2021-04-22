@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using UniCore.Runtime.ProfilerTools;
+using UniModules.UniGame.Core.Runtime.Utils;
 
 namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
 {
@@ -48,8 +49,11 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
             _lifeTimeDefinition ??= new LifeTimeDefinition();
             _lifeTimeDefinition?.Terminate();
 
-            if (!Application.isPlaying)
+            if (!UniApplication.IsPlaying)
+            {
+                OnEditorActivate();
                 return;
+            }
             
 #if UNITY_EDITOR
             LifetimeObjectData.Add(this);
@@ -69,9 +73,11 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
         private void OnDisable()
         {
             _lifeTimeDefinition?.Terminate();
-            
-            if (!Application.isPlaying)
-                return;
+
+            if (!UniApplication.IsPlaying)
+            {
+                OnEditorDisabled();
+            }
             
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.playModeStateChanged -= PlayModeChanged;
@@ -111,6 +117,10 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
         protected virtual void OnReset() {}
 
         protected virtual void OnDisabled() {}
+        
+        protected virtual void OnEditorDisabled() {}
+        
+        protected virtual void OnEditorActivate() {}
 
     }
 }
