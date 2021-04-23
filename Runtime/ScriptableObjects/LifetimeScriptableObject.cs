@@ -46,9 +46,9 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
 
         private void OnEnable()
         {
-            _lifeTimeDefinition ??= new LifeTimeDefinition();
-            _lifeTimeDefinition?.Terminate();
-
+            _lifeTimeDefinition?.Release();
+            _lifeTimeDefinition = _lifeTimeDefinition ?? new LifeTimeDefinition();
+            
             if (!UniApplication.IsPlaying)
             {
                 OnEditorActivate();
