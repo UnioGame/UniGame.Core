@@ -5,6 +5,7 @@ namespace UniModules.UniGame.Core.Runtime.Utils
 #endif
     using System;
     
+    [InitializeOnLoad]
     public static class UniApplication
     {
         private static bool _isPlaying = true;
