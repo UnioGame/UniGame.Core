@@ -71,6 +71,28 @@ public static class LifetimeExtension
         this ILifeTime source,
         ILifeTime additional,
         Action cleanup) => ComposeCleanUp(source, cleanup, additional);
+
+    public static bool IsTerminatedLifeTime(this ILifeTime lifeTime)
+    {
+        return lifeTime == null || lifeTime.IsTerminated || lifeTime == LifeTime.TerminatedLifetime;
+    }
+
+    public static ILifeTime GetLifeTime(this object source)
+    {
+        if (source == null)
+            return LifeTime.TerminatedLifetime;
+        
+        switch (source)
+        {
+            case ILifeTime lifeTime:
+                return lifeTime;
+            case ILifeTimeContext lifeTimeContext:
+                return lifeTimeContext.LifeTime;
+        }
+        
+        return LifeTime.TerminatedLifetime;
+    }
+    
     
     public static ILifeTime ComposeCleanUp(
         this ILifeTime source, 
