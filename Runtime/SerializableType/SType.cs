@@ -19,7 +19,8 @@
             set {
                 type = value;
                 #if UNITY_EDITOR
-                fullTypeName = type.AssemblyQualifiedName;
+                fullTypeName = type == null ? 
+                    string.Empty : type.AssemblyQualifiedName;
                 #endif
             }
         }
