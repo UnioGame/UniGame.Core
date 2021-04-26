@@ -5,7 +5,6 @@ namespace UniModules.UniGame.Core.Runtime.Utils
 #endif
     using System;
     
-    [InitializeOnLoad]
     public static class UniApplication
     {
         private static bool _isPlaying = true;
@@ -33,10 +32,14 @@ namespace UniModules.UniGame.Core.Runtime.Utils
         }
 
 
-        static UniApplication()
+#if UNITY_EDITOR
+        [InitializeOnLoadMethod]
+#endif
+        static void Initialize()
         {
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged += PlayModeChanged;
+            _isPlaying = UnityEditor.EditorApplication.isPlaying;
 #endif
         }
         
