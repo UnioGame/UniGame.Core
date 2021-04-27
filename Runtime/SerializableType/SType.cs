@@ -5,13 +5,13 @@
     using UnityEngine;
 
 #if ODIN_INSPECTOR
-    [Sirenix.OdinInspector.DrawWithUnity]
+    //[Sirenix.OdinInspector.LabelText()]
 #endif
     [Serializable]
     public class SType : ISerializationCallbackReceiver, IReadOnlyType
     {
         public string fullTypeName;
-
+        
         public Type type;
 
         public Type Type {
