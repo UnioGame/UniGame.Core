@@ -63,7 +63,8 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
         [Conditional("UNITY_EDITOR")]
         private void LogLifeTimeScriptableMessage(string message,Color color)
         {
-            GameLog.Log($"LifetimeScriptableObject Name: {name} Type: {GetType().Name}  Message {message}",color);
+            if(Application.isPlaying)
+                GameLog.Log($"LifetimeScriptableObject Name: {name} Type: {GetType().Name}  Message {message}",color);
         }
         
         private void OnDisable()
