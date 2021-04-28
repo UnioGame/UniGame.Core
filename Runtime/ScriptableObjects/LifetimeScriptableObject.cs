@@ -22,17 +22,17 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
 
         #region LifeTime API
 
-        public ILifeTime AddCleanUpAction(Action cleanAction) => _lifeTimeDefinition.AddCleanUpAction(cleanAction);
+        public ILifeTime AddCleanUpAction(Action cleanAction) => LifeTime.AddCleanUpAction(cleanAction);
 
-        public ILifeTime AddDispose(IDisposable item) => _lifeTimeDefinition.AddDispose(item);
+        public ILifeTime AddDispose(IDisposable item) => LifeTime.AddDispose(item);
 
-        public ILifeTime AddRef(object o) => _lifeTimeDefinition.AddRef(o);
+        public ILifeTime AddRef(object o) => LifeTime.AddRef(o);
 
-        public bool IsTerminated => _lifeTimeDefinition.IsTerminated;
+        public bool IsTerminated => LifeTime.IsTerminated;
         
         #endregion
                 
-        public ILifeTime LifeTime => _lifeTimeDefinition;
+        public ILifeTime LifeTime => _lifeTimeDefinition = _lifeTimeDefinition ?? new LifeTimeDefinition();
 
         public void Reset()
         {
@@ -48,18 +48,13 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
         private void OnEnable()
         {
             _lifeTimeDefinition?.Release();
-            _lifeTimeDefinition = new LifeTimeDefinition();
-            
-            if (!UniApplication.IsPlaying)
-            {
-                OnEditorActivate();
-                return;
-            }
+            _lifeTimeDefinition = _lifeTimeDefinition ?? new LifeTimeDefinition();
             
 #if UNITY_EDITOR
+            UnityEditor.EditorApplication.playModeStateChanged += PlayModeChanged;
             LifetimeObjectData.Add(this);
             LogLifeTimeScriptableMessage(nameof(OnEnable),_logColorEnable);
-            _lifeTimeDefinition.AddCleanUpAction(() => LogLifeTimeScriptableMessage("LifeTime Terminated",_logColorDisable));
+            LifeTime.AddCleanUpAction(() => LogLifeTimeScriptableMessage("LifeTime Terminated",_logColorDisable));
 #endif
             
             OnActivate();
@@ -87,16 +82,7 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
 #endif
             OnDisabled();
         }
-
-        private void Awake()
-        {
-
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.playModeStateChanged += PlayModeChanged;
-#endif
-            
-        }
-
+        
 #if UNITY_EDITOR
         
         private void PlayModeChanged(UnityEditor.PlayModeStateChange state)
