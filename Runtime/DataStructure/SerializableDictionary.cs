@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UniModules.UniCore.Runtime.ReflectionUtils;
 using UnityEngine;
 
 namespace UniModules.UniGame.Core.Runtime.DataStructure
@@ -40,7 +41,7 @@ namespace UniModules.UniGame.Core.Runtime.DataStructure
             this.Clear();
 
             if (keys.Count != values.Count) {
-                throw new System.Exception("there are " + keys.Count + " keys and " + values.Count +
+                throw new System.Exception($"there are {typeof(TKey).GetFormattedName()}" + keys.Count + $" keys and {typeof(TValue).GetFormattedName()}" + values.Count +
                                            " values after deserialization. Make sure that both key and value types are serializable.");
             }
 
