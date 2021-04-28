@@ -231,38 +231,20 @@ namespace UniModules.UniGame.Core.EditorTools.Editor.Tools
         {
             if (string.IsNullOrEmpty(sourcePath))
                 return;
-
+            
             var isFile        = isFilePath || IsFilePath(sourcePath);
             var directory     = new DirectoryInfo(sourcePath);
             var directoryPath = isFile ? Path.GetDirectoryName(sourcePath) : directory.FullName;
-
-            var directories  = directoryPath.FixUnityPath();
-            var path         = string.Empty;
             var applyRefresh = false;
-
-            if (string.IsNullOrEmpty(directoryPath) == false)
+            
+            if (!Directory.Exists(directoryPath))
             {
-                var folders = SplitPath(directories);
-
-                foreach (var folder in folders)
-                {
-                    if (string.IsNullOrEmpty(path))
-                    {
-                        path = folder;
-                        continue;
-                    }
-
-                    path = Combine(path, folder);
-                    if (Directory.Exists(path) || File.Exists(path))
-                    {
-                        continue;
-                    }
-                    applyRefresh = true;
-                    Directory.CreateDirectory(path);
-                }
+                applyRefresh = true;
+                Directory.CreateDirectory(directoryPath);
             }
-
-            if (applyRefresh) AssetDatabase.Refresh();
+            
+            if (applyRefresh) 
+                AssetDatabase.Refresh();
         }
 
         public static void DeleteDirectoryFiles(string path)
