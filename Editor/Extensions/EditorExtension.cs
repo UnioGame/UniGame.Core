@@ -227,6 +227,40 @@
             selection.Remove(item);
             Selection.objects = selection.ToArray();
         }
+
+        public static IEnumerable<Type> GetClassItems(Type type) {
+            return Assembly.GetAssembly(type).GetTypes().Where(t => t.IsSubclassOf(type));
+        }
+        
+        public static void DestroyNestedAsset(this Object asset) {
+            
+            Object.DestroyImmediate(asset,true);
+            AssetDatabase.SaveAssets();
+            
+        }
+        
+        public static TTarget AddNested<TTarget>(this ScriptableObject root, string name = null)
+            where TTarget : ScriptableObject {
+            return AssetEditorTools.SaveAssetAsNested<TTarget>(root, name);
+        }
+        
+        public static Object AddNested(this ScriptableObject root,Type assetType, string name = null)
+        {
+            return AssetEditorTools.SaveAssetAsNested(root,assetType, name);
+        }
+
+        public static Editor ShowCustomEditor(this Object target) {
+            if (!target) return null;
+            var editor = Editor.CreateEditor(target);
+            editor.OnInspectorGUI();
+            return editor;
+        }
+        
+        public static Editor GetEditor(this Object target) {
+            if (!target) return null;
+            var editor = Editor.CreateEditor(target);
+            return editor;
+        }
         
         public static void DrawDefaultEditor(this GameObject target) {
             if (!target) return;
@@ -238,41 +272,6 @@
             if (!target) return null;
             var editor = Editor.CreateEditor(target);
             editor.DrawDefaultInspector();
-            return editor;
-        }
-
-        public static IEnumerable<Type> GetClassItems(Type type) {
-            return Assembly.GetAssembly(type).GetTypes().Where(t => t.IsSubclassOf(type));
-        }
-
-        public static Editor ShowCustomEditor(this Object target) {
-            if (!target) return null;
-            var editor = Editor.CreateEditor(target);
-            editor.OnInspectorGUI();
-            return editor;
-        }
-
-        public static void DestroyNestedAsset(this Object asset) {
-            
-            Object.DestroyImmediate(asset,true);
-            AssetDatabase.SaveAssets();
-            
-        }
-        
-        public static TTarget AddNeted<TTarget>(this ScriptableObject root, string name = null)
-            where TTarget : ScriptableObject {
-            return AssetEditorTools.SaveAssetAsNested<TTarget>(root, name);
-        }
-        
-        public static Object AddNeted(this ScriptableObject root,Type assetType, string name = null)
-        {
-            return AssetEditorTools.SaveAssetAsNested(root,assetType, name);
-            
-        }
-
-        public static Editor GetEditor(this Object target) {
-            if (!target) return null;
-            var editor = Editor.CreateEditor(target);
             return editor;
         }
 

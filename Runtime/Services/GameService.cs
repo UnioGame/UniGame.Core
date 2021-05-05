@@ -1,4 +1,6 @@
-﻿namespace UniGame.UniNodes.GameFlow.Runtime
+﻿using Cysharp.Threading.Tasks;
+
+namespace UniGame.UniNodes.GameFlow.Runtime
 {
     using System;
     using UniModules.UniCore.Runtime.DataFlow;
@@ -42,5 +44,10 @@
 
         public IReadOnlyReactiveProperty<bool> IsReady => isReady;
 
+        public virtual async UniTask InitializeAsync()
+        {
+            
+        }
+        
     }
 }
