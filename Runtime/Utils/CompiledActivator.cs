@@ -6,7 +6,7 @@ namespace UniModules.UniCore.Runtime.Utils
     public static class CompiledActivator
     {
 
-        private static MemorizeItem<Type, LambdaExpression> lambdaActivator = MemorizeTool.Memorize<Type, LambdaExpression>(type =>
+        private static MemorizeItem<Type, Delegate> lambdaActivator = MemorizeTool.Memorize<Type, Delegate>(type =>
         {
             //get default constructor
             var ctor = type.GetConstructor(Type.EmptyTypes);
@@ -17,14 +17,16 @@ namespace UniModules.UniCore.Runtime.Utils
             var newExp = Expression.New(ctor);                  
 
             // Create a lambda with the New expression as body and our param object[] as arg
-            var lambda = Expression.Lambda(type, newExp);
+            var lambda = Expression.Lambda(newExp);
 
-            return lambda;
+            var delegateObject = lambda.Compile();
+            
+            return delegateObject;
         });
         
         public static object CreateInstance(Type type)
         {
-            return lambdaActivator[type]?.Compile();
+            return lambdaActivator[type]?.DynamicInvoke();
         }
 
         public static TType CreateInstance<TType>(Type type) 
