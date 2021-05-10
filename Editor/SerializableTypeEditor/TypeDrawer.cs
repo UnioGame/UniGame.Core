@@ -10,7 +10,7 @@
     public static class TypeDrawer
     {
 
-        private static Func<Type, List<Type>> getAssagnableTypes = MemorizeTool.Create<Type, List<Type>>(ReflectionTools.GetAssignableTypes);
+        private static Func<Type, List<Type>> getAssagnableTypes = MemorizeTool.Create<Type, List<Type>>(x => x.GetAssignableTypes());
 
         private const string filterLabel = "filter";
         private const string noneValue   = "none";

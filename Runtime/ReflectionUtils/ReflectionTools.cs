@@ -36,6 +36,9 @@
         private static MemorizeItem<Type, List<Type>> assignableTypesCache =
             MemorizeTool.Memorize<Type, List<Type>>(x => x.GetAssignableTypesNonCached().ToList());
 
+        private static MemorizeItem<Type, List<Type>> assignableTypesWithAbstractCache =
+            MemorizeTool.Memorize<Type, List<Type>>(x => x.GetAssignableTypesNonCachedWithAbstract());
+        
         private static MemorizeItem<Type, List<Type>> attributeTypes =
             MemorizeTool.Memorize<Type, List<Type>>(GetAttributesTypes);
 
@@ -371,15 +374,27 @@
         /// <summary>
         /// Get all classes deriving from baseType via reflection
         /// </summary>
-        public static List<Type> GetAssignableTypes(this Type baseType)
+        public static List<Type> GetAssignableTypes(this Type baseType,bool excludeAbstract = true)
         {
-            return assignableTypesCache.GetValue(baseType);
+            return excludeAbstract
+                ? assignableTypesCache.GetValue(baseType)
+                : assignableTypesWithAbstractCache.GetValue(baseType);
         }
 
         /// <summary>
         /// Get all classes deriving from baseType via reflection
         /// </summary>
         public static List<Type> GetAssignableTypesNonCached(this Type baseType)
+        {
+            var types = GetAssignableTypesNonCachedWithAbstract(baseType);
+            types = types.Where(x => !x.IsAbstract).ToList();
+            return types;
+        }
+        
+        /// <summary>
+        /// Get all classes deriving from baseType via reflection
+        /// </summary>
+        public static List<Type> GetAssignableTypesNonCachedWithAbstract(this Type baseType)
         {
             var types = new List<Type>();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -388,15 +403,13 @@
                 try
                 {
                     var asmTypes = assembly.GetTypes();
-                    var items = asmTypes.Where(t => !t.IsAbstract && baseType.IsAssignableFrom(t));
+                    var items = asmTypes.Where(baseType.IsAssignableFrom);
                     types.AddRange(items);
                 }
                 catch (ReflectionTypeLoadException e)
                 {
                     Debug.LogWarning(e);
                 }
-
-                ;
             }
 
             return types;
@@ -445,12 +458,6 @@
             }
 
             return types;
-        }
-
-        public static bool HasDefaultConstructor(this Type target)
-        {
-            var constructor = target.GetConstructor(Type.EmptyTypes);
-            return constructor != null;
         }
 
         public static bool Validate(object item, Type searchType)

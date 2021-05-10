@@ -1,15 +1,25 @@
-﻿using System;
-using System.Linq.Expressions;
+﻿
 
 namespace UniModules.UniCore.Runtime.Utils
 {
+    using System;
+    using System.Linq.Expressions;
+    using System.Reflection;
+    
     public static class CompiledActivator
     {
 
-        private static MemorizeItem<Type, Delegate> lambdaActivator = MemorizeTool.Memorize<Type, Delegate>(type =>
+        private static readonly MemorizeItem<Type, ConstructorInfo> getDefaultConstructor = MemorizeTool.Memorize<Type, ConstructorInfo>(
+            x =>
+            {
+                var ctor = x.GetConstructor(Type.EmptyTypes);
+                return ctor;
+            });
+
+        private static readonly MemorizeItem<Type, Delegate> lambdaActivator = MemorizeTool.Memorize<Type, Delegate>(type =>
         {
             //get default constructor
-            var ctor = type.GetConstructor(Type.EmptyTypes);
+            var ctor = getDefaultConstructor[type];
             if (ctor == null) 
                 return null;
             
@@ -23,20 +33,27 @@ namespace UniModules.UniCore.Runtime.Utils
             
             return delegateObject;
         });
+
+        #region extensions
         
-        public static object CreateInstance(Type type)
+                
+        public static bool HasDefaultConstructor(this Type type)
         {
-            return lambdaActivator[type]?.DynamicInvoke();
+            var cnstr = getDefaultConstructor[type];
+            return cnstr != null;
         }
 
-        public static TType CreateInstance<TType>(Type type) 
-            where TType : class => CreateInstance(type) as TType;
-
-
         public static object CreateWithDefaultConstructor(this Type type) => CreateInstance(type);
-        
+
         public static TType CreateWithDefaultConstructor<TType>(this Type type)
             where TType : class => CreateInstance<TType>(type);
+
+        #endregion
+
+        public static object CreateInstance(Type type) => lambdaActivator[type]?.DynamicInvoke();
+
+        public static TType CreateInstance<TType>(Type type) where TType : class => CreateInstance(type) as TType;
+
 
     }
 }
