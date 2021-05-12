@@ -4,27 +4,32 @@
     using UnityEngine;
 
     [AttributeUsage(AttributeTargets.Field)]
-    public class STypeFilterAttribute : PropertyAttribute
+    public class STypeFilterAttribute : PropertyAttribute, ISerializedTypeFilter
     {
-        public readonly Type   Type;
-        public readonly string FieldName;
-        public readonly bool   UseFilter;
+        public readonly Type   type;
+        public readonly string fieldName;
+        public readonly bool   useFilter;
 
         public STypeFilterAttribute(Type type,
             bool useFilter,
             string fieldName = nameof(SType.fullTypeName))
         {
-            this.Type      = type;
-            this.UseFilter = useFilter;
-            this.FieldName = fieldName;
+            this.type      = type;
+            this.useFilter = useFilter;
+            this.fieldName = fieldName;
         }
         
-        public STypeFilterAttribute(Type type,
-            string fieldName = nameof(SType.fullTypeName))
+        public STypeFilterAttribute(Type type, string fieldName = nameof(SType.fullTypeName))
         {
-            this.Type      = type;
-            this.UseFilter = false;
-            this.FieldName = fieldName;
+            this.type      = type;
+            this.useFilter = false;
+            this.fieldName = fieldName;
         }
+
+        public Type Type => type;
+
+        public string FieldName => fieldName;
+
+        public bool UseFilter => useFilter;
     }
 }

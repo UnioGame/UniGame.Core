@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniGame.Core.Runtime.SerializableType.Editor.SerializableTypeEditor
+﻿using UniModules.UniGame.CoreModules.UniGame.Core.Editor.SerializableTypeEditor;
+
+namespace UniModules.UniGame.Core.Runtime.SerializableType.Editor.SerializableTypeEditor
 {
     using System;
     using Attributes;
@@ -14,7 +16,7 @@
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var targetAttribute = attribute as STypeFilterAttribute;
-            var targetType      = targetAttribute?.Type;
+            var targetType      = targetAttribute?.type;
 
             if (targetType == null)
             {
@@ -22,30 +24,20 @@
                 return;
             }
 
-            var fieldName = targetAttribute.FieldName;
-            //get type name field
-            var targetProperty = property.FindPropertyRelative(fieldName);
-            if (targetProperty == null)
-            {
-                Debug.LogError($"property field with name {fieldName} not found");
-                return;
-            }
+            selection = targetAttribute.GetSerializedType(property);
 
-            selection = Type.GetType(targetProperty.stringValue, false, true);
-
-            var newSelection = targetAttribute.UseFilter ?
+            var newSelection = targetAttribute.useFilter ?
                 TypeDrawer.DrawTypeFilterPopup(position, _filter,label, targetType, selection) : 
                 TypeDrawer.DrawTypePopup(position,label,targetType,selection);
             
             _filter = newSelection.filter;
             
             if (newSelection.type == selection)
-            {
                 return;
-            }
 
             selection                  = newSelection.type;
-            targetProperty.stringValue = selection == null ? string.Empty : selection.AssemblyQualifiedName;
+            
+            targetAttribute.SetSerializedType(property, selection);
             
             property.serializedObject.ApplyModifiedProperties();
         }

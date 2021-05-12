@@ -33,19 +33,22 @@
             {typeof(String), "string"},
         };
 
-        private static MemorizeItem<Type, List<Type>> assignableTypesCache =
+        private static MemorizeItem<string, Type> _stringToTypeConverter =
+            MemorizeTool.Memorize<string, Type>(x => Type.GetType(x, false, true));
+
+        private static MemorizeItem<Type, List<Type>> _assignableTypesCache =
             MemorizeTool.Memorize<Type, List<Type>>(x => x.GetAssignableTypesNonCached().ToList());
 
-        private static MemorizeItem<Type, List<Type>> assignableTypesWithAbstractCache =
+        private static MemorizeItem<Type, List<Type>> _assignableTypesWithAbstractCache =
             MemorizeTool.Memorize<Type, List<Type>>(x => x.GetAssignableTypesNonCachedWithAbstract());
         
-        private static MemorizeItem<Type, List<Type>> attributeTypes =
+        private static MemorizeItem<Type, List<Type>> _attributeTypes =
             MemorizeTool.Memorize<Type, List<Type>>(GetAttributesTypes);
 
-        private static MemorizeItem<Type, List<string>> typeUsings =
+        private static MemorizeItem<Type, List<string>> _typeUsings =
             MemorizeTool.Memorize<Type, List<string>>(GetAllUsingsNonChached);
 
-        private static MemorizeItem<(Type source, Type attribute), List<Type>> assignableAttributesTypesCache =
+        private static MemorizeItem<(Type source, Type attribute), List<Type>> _assignableAttributesTypesCache =
             MemorizeTool.Memorize<(Type source, Type attribute), List<Type>>(x =>
                 x.source.GetAssignableWithAttributeNonCached(x.attribute).ToList());
 
@@ -123,7 +126,7 @@
             return info;
         }
 
-        public static List<string> GetAllUsings(this Type type) => typeUsings[type];
+        public static List<string> GetAllUsings(this Type type) => _typeUsings[type];
 
         /// <summary>
         /// Gets all members from a given type, including members from all base types if the <see cref="F:System.Reflection.BindingFlags.DeclaredOnly" /> flag isn't set.
@@ -351,7 +354,7 @@
         public static IReadOnlyList<Type> GetAllWithAttributes<TAttribute>()
             where TAttribute : Attribute
         {
-            return attributeTypes[typeof(TAttribute)];
+            return _attributeTypes[typeof(TAttribute)];
         }
 
         public static IReadOnlyList<Type> GetAssignableWithAttribute<TAttribute>(this Type baseType)
@@ -362,7 +365,7 @@
 
         public static IReadOnlyList<Type> GetAssignableWithAttribute(this Type baseType, Type attribute)
         {
-            return assignableAttributesTypesCache.GetValue((baseType, attribute));
+            return _assignableAttributesTypesCache.GetValue((baseType, attribute));
         }
 
         public static List<Type> GetAssignableWithAttributeNonCached(this Type baseType, Type attribute)
@@ -377,10 +380,15 @@
         public static List<Type> GetAssignableTypes(this Type baseType,bool excludeAbstract = true)
         {
             return excludeAbstract
-                ? assignableTypesCache.GetValue(baseType)
-                : assignableTypesWithAbstractCache.GetValue(baseType);
+                ? _assignableTypesCache.GetValue(baseType)
+                : _assignableTypesWithAbstractCache.GetValue(baseType);
         }
 
+        public static Type ConvertType(string fullTypeName)
+        {
+            return _stringToTypeConverter[fullTypeName];
+        }
+        
         /// <summary>
         /// Get all classes deriving from baseType via reflection
         /// </summary>
