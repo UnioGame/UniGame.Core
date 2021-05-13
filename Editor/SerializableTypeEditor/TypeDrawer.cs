@@ -1,13 +1,8 @@
-﻿using System.Linq;
-using UniModules.UniGame.CoreModules.UniGame.Core.Editor.UiElements;
-using UnityEngine.UIElements;
-
-namespace UniModules.UniGame.Core.Runtime.SerializableType.Editor.SerializableTypeEditor
+﻿namespace UniModules.UniGame.Core.Runtime.SerializableType.Editor.SerializableTypeEditor
 {
     using System;
     using System.Collections.Generic;
     using UniCore.Runtime.ReflectionUtils;
-    using UniCore.Runtime.Utils;
     using UnityEditor;
     using UnityEngine;
 
@@ -57,24 +52,6 @@ namespace UniModules.UniGame.Core.Runtime.SerializableType.Editor.SerializableTy
             return (filter, resultType);
         }
 
-        public static VisualElement DrawVisualElementTypePopup(string label, Type baseType, Type selectedType,Action<Type> typeSelected)
-        {
-            //all assignable types
-            var types = baseType.GetAssignableTypes();
-            var typeNames = types.Select(x => x.Name).ToList();
-            var selectedTypeItem = types.FirstOrDefault(x => x == selectedType) ?? types.FirstOrDefault();
-            var selectedName = selectedTypeItem == null ? string.Empty : selectedTypeItem.Name;
-            
-            var field = typeNames.CreateDropDownValue(selectedName, (x, index) =>
-            {
-                typeSelected?.Invoke(types[index]);
-                return x;
-            });
-
-            field.label = label;
-            
-            return field;
-        }
         
         public static (string filter,Type type) DrawTypePopup(Rect position,GUIContent label, Type baseType, Type selectedType)
         {
@@ -99,8 +76,7 @@ namespace UniModules.UniGame.Core.Runtime.SerializableType.Editor.SerializableTy
             var resultType = newSelection == 0 ? null : types[newSelection - 1];
             return (string.Empty, resultType);
         }
-        
-        
+
         
     }
 }

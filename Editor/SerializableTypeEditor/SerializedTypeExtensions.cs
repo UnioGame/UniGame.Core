@@ -25,15 +25,6 @@ namespace UniModules.UniGame.CoreModules.UniGame.Core.Editor.SerializableTypeEdi
             SetSerializedType(property,type,fieldName);
         }
 
-        public static VisualElement DrawSerializedTypeDropDown(Type baseType,SerializedProperty property)
-        {
-            var type = GetSerializedType(property);
-            return TypeDrawer.DrawVisualElementTypePopup(property.displayName, baseType,type , x =>
-            {
-                SetSerializedType(property, x);
-            });
-        }
-        
         public static Type GetSerializedType(SerializedProperty property,string fieldName)
         {
             //get type name field
