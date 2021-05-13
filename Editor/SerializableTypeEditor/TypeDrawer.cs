@@ -52,6 +52,30 @@
             return (filter, resultType);
         }
 
+        public static (string filter,Type type) DrawLayoutTypePopup(GUIContent label, Type baseType, Type selectedType)
+        {
+            //all assignable types
+            var types = baseType.GetAssignableTypes();
+
+            var selectedIndex = 0;
+            
+            popupValues.Clear();
+            popupValues.Add(noneValue);
+            for (var i = 0; i < types.Count; i++) {
+                var item      = types[i];
+                var itemIndex = i + 1;
+                
+                popupValues.Add(item.Name);
+                selectedIndex = item == selectedType ? 
+                    itemIndex : selectedIndex;
+            }
+            
+            var newSelection = EditorGUILayout.Popup(label.text, selectedIndex, popupValues.ToArray());
+
+            var resultType = newSelection == 0 ? null : types[newSelection - 1];
+            return (string.Empty, resultType);
+        }
+
         
         public static (string filter,Type type) DrawTypePopup(Rect position,GUIContent label, Type baseType, Type selectedType)
         {
