@@ -8,7 +8,7 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
 
     public static class LifeTimeComponentExtension 
     {
-        public static ILifeTime GetLifeTime(this GameObject gameObject)
+        public static ILifeTime GetAssetLifeTime(this GameObject gameObject)
         {
             var lifetimeComponent = 
                 gameObject.GetComponent<ILifeTime>() ?? 
@@ -42,16 +42,16 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
             return lifeTime;
         }
 
-        public static ILifeTime GetLifeTime(this Component component) => component.gameObject.GetLifeTime();
+        public static ILifeTime GetAssetLifeTime(this Component component) => component.gameObject.GetAssetLifeTime();
         
         public static ILifeTime AddTo(this GameObject gameObject, IDisposable disposable)
         {
-            return gameObject.GetLifeTime().AddDispose(disposable);
+            return gameObject.GetAssetLifeTime().AddDispose(disposable);
         }
         
         public static ILifeTime AddCleanUp(this GameObject gameObject, Action cleanupAction)
         {
-            return gameObject.GetLifeTime().AddCleanUpAction(cleanupAction);
+            return gameObject.GetAssetLifeTime().AddCleanUpAction(cleanupAction);
         }
         
         public static ILifeTime AddTo(this Component component, IDisposable disposable) => AddTo(component.gameObject, disposable);

@@ -42,9 +42,9 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
                 case Scene scene:
                     return scene.GetLifeTime();
                 case GameObject gameObject:
-                    return gameObject.GetLifeTime();
+                    return gameObject.GetAssetLifeTime();
                 case Component component:
-                    return component.gameObject.GetLifeTime();
+                    return component.gameObject.GetAssetLifeTime();
                 case ILifeTime lifeTime:
                     return lifeTime;
                 case ILifeTimeContext lifeTimeContext:
