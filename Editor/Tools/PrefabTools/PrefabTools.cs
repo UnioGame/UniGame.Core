@@ -111,6 +111,9 @@
                     case {IsInstance: true}:
                         PrefabUtility.ApplyPrefabInstance(asset, InteractionMode.UserAction);
                         break;
+                    case {IsRegularPrefab: true, InstanceStatus:PrefabInstanceStatus.NotAPrefab}:
+                        asset.MarkDirty();
+                        break;
                     case {IsRegularPrefab: true}:
                         PrefabUtility.ApplyObjectOverride(asset,path, InteractionMode.UserAction);
                         break;
