@@ -1,19 +1,17 @@
-﻿namespace UniModules.UniCore.EditorTools.Editor.PrefabTools
+﻿namespace UniGame.Tools
 {
     using System;
     using System.Diagnostics;
-    using global::UniCore.Runtime.ProfilerTools;
-    using Runtime.ProfilerTools;
+    using UniCore.Runtime.ProfilerTools;
     using UnityEditor;
     using UnityEditor.SceneManagement;
     using UnityEngine;
-    using Utility;
     using Debug = UnityEngine.Debug;
+    using UniModules.UniCore.EditorTools.Editor.PrefabTools;
+    using UniModules.UniCore.EditorTools.Editor.Utility;
 
     public static class PrefabTools 
     {
-        
-
         public static TAsset Save<TAsset>(this TAsset asset)
             where TAsset : Component
         {
@@ -101,13 +99,24 @@
                 return;
             }
 
-            try {
-                //prefab instance on scene
-                if (prefabDefinition.IsInstance) {
-                    PrefabUtility.ApplyPrefabInstance(prefabDefinition.Asset, InteractionMode.UserAction);
-                }
-                else {
-                    prefabDefinition.Asset = PrefabUtility.SaveAsPrefabAssetAndConnect(prefabDefinition.SourcePrefab, prefabDefinition.AssetPath,InteractionMode.UserAction);
+            try
+            {
+                var asset = prefabDefinition.Asset;
+                var path = prefabDefinition.AssetPath;
+                switch (prefabDefinition)
+                {
+                    case {IsVariantPrefab: true}:
+                        PrefabUtility.ApplyObjectOverride(asset,path,InteractionMode.UserAction);
+                        break;
+                    case {IsInstance: true}:
+                        PrefabUtility.ApplyPrefabInstance(asset, InteractionMode.UserAction);
+                        break;
+                    case {IsRegularPrefab: true}:
+                        PrefabUtility.ApplyObjectOverride(asset,path, InteractionMode.UserAction);
+                        break;
+                    default:
+                        prefabDefinition.Asset = PrefabUtility.SaveAsPrefabAssetAndConnect(prefabDefinition.SourcePrefab, prefabDefinition.AssetPath,InteractionMode.UserAction);
+                        break;
                 }
             }
             catch (Exception e) { 
