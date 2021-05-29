@@ -1,5 +1,4 @@
 ﻿using System;
-using Sirenix.OdinInspector.Editor.Drawers;
 using UniModules.UniCore.Runtime.ReflectionUtils;
 using UniModules.UniGame.Core.Runtime.SerializableType;
 using UniModules.UniGame.Core.Runtime.SerializableType.Attributes;
