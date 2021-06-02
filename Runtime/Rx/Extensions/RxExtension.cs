@@ -77,9 +77,43 @@
             observer.Initialize(onNext,onComplete,onError);
 
             return observer;
-            
+
         }
-        
-        
+
+        public static IObservable<T> When<T>(this IObservable<T> source, Predicate<T> predicate, Action<T> action)
+        {
+            return source.Do(x =>
+            {
+                if (predicate(x))
+                {
+                    action(x);
+                }
+            });
+        }
+
+        public static IObservable<T> When<T>(this IObservable<T> source, Predicate<T> predicate, Action<T> actionIfTrue, Action<T> actionIfFalse)
+        {
+            return source.Do(x =>
+            {
+                if (predicate(x))
+                {
+                    actionIfTrue(x);
+                }
+                else
+                {
+                    actionIfFalse(x);
+                }
+            });
+        }
+
+        public static IObservable<bool> WhenTrue(this IObservable<bool> source, Action<bool> action)
+        {
+            return source.When(x => x, action);
+        }
+
+        public static IObservable<bool> WhenFalse(this IObservable<bool> source, Action<bool> action)
+        {
+            return source.When(x => !x, action);
+        }
     }
 }
