@@ -106,14 +106,14 @@
             });
         }
 
-        public static IObservable<T> WhenTrue<T>(this IObservable<T> source, Action<T> action)
+        public static IObservable<bool> WhenTrue(this IObservable<bool> source, Action<bool> action)
         {
-            return source.When<T>(x => x, action);
+            return source.When(x => x, action);
         }
 
-        public static IObservable<T> WhenFalse<T>(this IObservable<T> source, Action<T> action)
+        public static IObservable<bool> WhenFalse(this IObservable<bool> source, Action<bool> action)
         {
-            return source.When<T>(x => !x, action);
+            return source.When(x => !x, action);
         }
     }
 }
