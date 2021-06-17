@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniGame.Core.Runtime.DataFlow
+﻿using System.Threading;
+
+namespace UniModules.UniGame.Core.Runtime.DataFlow
 {
     using System;
     using System.Collections.Generic;
@@ -23,6 +25,8 @@
 
         public bool IsTerminated => _lifeTime.IsTerminated;
         
+        public CancellationTokenSource CancellationTokenSource => _lifeTime.CancellationTokenSource;
+
         #endregion
 
         public IComposedLifeTime Bind(ILifeTime lifeTime)

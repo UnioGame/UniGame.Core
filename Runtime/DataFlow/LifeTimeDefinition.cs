@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniCore.Runtime.DataFlow
+﻿using System.Threading;
+
+namespace UniModules.UniCore.Runtime.DataFlow
 {
     using System;
     using Interfaces;
@@ -22,6 +24,8 @@
         }
         
         public bool IsTerminated => lifeTime.isTerminated;
+
+        public CancellationTokenSource CancellationTokenSource => lifeTime.CancellationTokenSource;
 
         public ILifeTime LifeTime => lifeTime;
 

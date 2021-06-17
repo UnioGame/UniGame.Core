@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Threading;
+using UnityEngine;
 
 namespace UniModules.UniGame.Core.Runtime.DataFlow
 {
@@ -19,6 +20,8 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow
         public ILifeTime AddRef(object o) => _lifeTime.AddRef(o);
 
         public bool IsTerminated => _lifeTime.IsTerminated;
+        
+        public CancellationTokenSource CancellationTokenSource => _lifeTime.CancellationTokenSource;
 
         private void OnDestroy()
         {
