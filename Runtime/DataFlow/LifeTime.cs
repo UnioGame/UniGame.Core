@@ -125,6 +125,7 @@
             disposables.Clear();
             referencies.Clear();
 
+            _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = null;
         }
