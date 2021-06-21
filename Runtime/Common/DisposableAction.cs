@@ -10,7 +10,7 @@
     {
         private Action _onDisposed;
 
-        public bool IsComplete { get; protected set; } = true;
+        public bool IsComplete { get; private set; } = true;
     
         public void Initialize(Action action)
         {
@@ -36,9 +36,6 @@
             _onDisposed = null;
         }
 
-        public void Release()
-        {
-            Complete();
-        }
+        public void Release() => Complete();
     }
 }

@@ -15,7 +15,7 @@
         {
             if (!prototype) return default(TComponent);
             
-            var pawn = ObjectPool.Spawn<TComponent>(prototype);
+            var pawn = ObjectPoolAsset.Spawn<TComponent>(prototype);
             return pawn;
         }
 
@@ -23,7 +23,7 @@
             where T : Object
         {
             if (!prototype) return null;
-            var pawn = ObjectPool.Spawn<T>(prototype, Vector3.zero, Quaternion.identity, null, false);
+            var pawn = ObjectPoolAsset.Spawn<T>(prototype, Vector3.zero, Quaternion.identity, null, false);
             return pawn;
         }
         
@@ -32,7 +32,7 @@
             where T : Object
         {
             if (!prototype) return null;
-            var pawn = ObjectPool.Spawn<T>(prototype, position, rotation, parent, stayWorldPosition);
+            var pawn = ObjectPoolAsset.Spawn<T>(prototype, position, rotation, parent, stayWorldPosition);
             return pawn;
         }
 
@@ -40,7 +40,7 @@
         public static GameObject Spawn(this GameObject prototype, Transform parent = null, bool stayWorldPosition = false)
         {
             if (!prototype) return null;
-            var pawn = ObjectPool.Spawn(prototype, Vector3.zero, Quaternion.identity,
+            var pawn = ObjectPoolAsset.Spawn(prototype, Vector3.zero, Quaternion.identity,
                                                     parent, stayWorldPosition);
             return pawn;
         }
@@ -48,7 +48,7 @@
         public static GameObject Spawn(this GameObject prototype,Vector3 position, Transform parent = null, bool stayWorldPosition = false)
         {
             if (!prototype) return null;
-            var pawn = ObjectPool.Spawn(prototype, position, Quaternion.identity,
+            var pawn = ObjectPoolAsset.Spawn(prototype, position, Quaternion.identity,
                                         parent, stayWorldPosition);
             return pawn;
         }
@@ -56,7 +56,7 @@
         public static GameObject Spawn(this GameObject prototype, Vector3 position, Quaternion rotation, Transform parent = null, bool stayWorldPosition = false)
         {
             if (!prototype) return null;
-            var pawn = ObjectPool.Spawn(prototype, position, rotation, parent, stayWorldPosition);
+            var pawn = ObjectPoolAsset.Spawn(prototype, position, rotation, parent, stayWorldPosition);
             return pawn;
         }
         
@@ -64,7 +64,7 @@
             where T : Object
         {
             if (!prototype) return null;
-            var pawn = ObjectPool.Spawn<T>(prototype, Vector3.zero, Quaternion.identity,
+            var pawn = ObjectPoolAsset.Spawn<T>(prototype, Vector3.zero, Quaternion.identity,
                 parent, stayWorldPosition);
             return pawn;
         }
@@ -83,7 +83,7 @@
                 Object.DestroyImmediate(instance);
                 return;
             }
-            ObjectPool.Despawn(instance);
+            ObjectPoolAsset.Despawn(instance);
         }
 
         public static void DespawnComponent(this Component data, bool destroy = false)
@@ -93,7 +93,7 @@
                 Object.DestroyImmediate(data.gameObject);
                 return;
             }
-            ObjectPool.Despawn(data.gameObject);
+            ObjectPoolAsset.Despawn(data.gameObject);
         }
         
         public static void Despawn<T>(this T data, bool destroy = false)
