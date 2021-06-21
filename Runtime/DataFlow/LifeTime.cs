@@ -16,11 +16,14 @@
         private List<IDisposable> disposables = new List<IDisposable>();
         private List<object> referencies = new List<object>();
         private List<Action> cleanupActions = new List<Action>();
+        private CancellationTokenSource _cancellationTokenSource;
         
         public readonly int id;
         
         public bool isTerminated;
-
+        
+#region static data
+        
         static LifeTime()
         {
             var completedLifetime = new LifeTime();
@@ -33,11 +36,22 @@
             return new LifeTime();
         }
         
-        protected LifeTime()
+#endregion
+        
+        private LifeTime()
         {
             id = Unique.GetId();
         }
 
+        
+        /// <summary>
+        /// is lifetime terminated
+        /// </summary>
+        public bool IsTerminated => isTerminated;
+
+        public CancellationTokenSource CancellationTokenSource =>
+            _cancellationTokenSource ??= new CancellationTokenSource();
+        
         /// <summary>
         /// cleanup action, call when life time terminated
         /// </summary>
@@ -80,11 +94,6 @@
         }
 
         /// <summary>
-        /// is lifetime terminated
-        /// </summary>
-        public bool IsTerminated => isTerminated;
-
-        /// <summary>
         /// restart lifetime
         /// </summary>
         public void Restart()
@@ -115,16 +124,17 @@
             cleanupActions.Clear();
             disposables.Clear();
             referencies.Clear();
+
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
         }
 
-                
         #region type convertion
 
         public static implicit operator CancellationTokenSource(LifeTime lifeTime)
         {
-            var tokenSource = new CancellationTokenSource();
-            lifeTime.AddDispose(tokenSource);
-            return tokenSource;
+            return lifeTime.CancellationTokenSource;
         } 
 
         #endregion

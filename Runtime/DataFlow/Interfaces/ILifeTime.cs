@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniGame.Core.Runtime.DataFlow.Interfaces
+﻿using System.Threading;
+
+namespace UniModules.UniGame.Core.Runtime.DataFlow.Interfaces
 {
     using System;
 
@@ -23,5 +25,7 @@
         /// is lifetime terminated
         /// </summary>
         bool IsTerminated { get; }
+        
+        CancellationTokenSource CancellationTokenSource { get; }
     }
 }

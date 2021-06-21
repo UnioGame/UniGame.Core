@@ -70,14 +70,14 @@
 
         protected sealed override async UniTask<AsyncStatus> OnExecute(TData context, ILifeTime executionLifeTime) {
 
-            var asCancellationSource = executionLifeTime.AsCancellationSource();
+            var token = executionLifeTime.AsCancellationToken();
             var result               = AsyncStatus.Pending;
             _activeScenarioIndex = 0;
             
             for (var i = 0; i < commands.Count; i++) {
                 var asyncScenario = commands[i];
                 var task          = asyncScenario.ExecuteAsync(context).
-                    AttachExternalCancellation(asCancellationSource.Token);
+                    AttachExternalCancellation(token);
                 
                 result = await task;
                     

@@ -532,7 +532,6 @@
         public static IDisposable ShowActionProgress(IObservable<ProgressData> progressObservable, ILifeTime lifeTime)
         {
             var disposable  = Disposable.Empty;
-            var cancelation = lifeTime.AsCancellationSource();
             var isCanceled  = EditorUtility.DisplayCancelableProgressBar(string.Empty, string.Empty, 0);
             if (isCanceled)
                 return Disposable.Empty;
@@ -543,9 +542,10 @@
                 if (isCanceled)
                 {
                     disposable.Cancel();
-                    cancelation.Cancel();
                 }
-            }).Finally(() => disposable.Cancel()).Finally(EditorUtility.ClearProgressBar).Subscribe().AddTo(lifeTime);
+            }).Finally(() => disposable.Cancel())
+                .Finally(EditorUtility.ClearProgressBar)
+                .Subscribe().AddTo(lifeTime);
 
             return disposable;
         }
