@@ -1,33 +1,39 @@
-﻿using System.Collections.Generic;
-using UniModules.UniCore.Runtime.Common;
-using UniModules.UniCore.Runtime.ProfilerTools;
-using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-using UnityEngine;
+﻿using UniCore.Runtime.ProfilerTools;
+using UniModules.UniCore.Runtime.DataFlow;
+using UniModules.UniGame.Core.Runtime.Interfaces;
 
 namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 {
     using System;
-    using global::UniCore.Runtime.ProfilerTools;
+    using System.Collections.Generic;
+    using ProfilerTools;
+    using Common;
     using Interfaces;
-    using Object = Object;
-
-
-    public class AssetsPool : MonoBehaviour
+    using ProfilerTools;
+    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+    using UnityEngine;
+    using Object = UnityEngine.Object;
+    
+    [Serializable]
+    public class AssetsPoolObject
     {
-        private GameObject gameObjectAsset;
-        private Component componentAsset;
+        private LifeTimeDefinition _lifeTime;
+        private GameObject _gameObjectAsset;
+        private Component _componentAsset;
         private DisposableAction _disposableAction;
         
-        private Func<Vector3, Quaternion, Transform, bool, Object> factoryMethod;
+        private Func<Vector3, Quaternion, Transform, bool, Object> _factoryMethod;
         
         [Tooltip("The prefab the clones will be based on")]
-        public Object Asset;
+        public Object asset;
 
         [Tooltip("Should this pool preload some clones?")]
-        public int Preload;
+        public int preload;
 
+        private Transform containerObject;
+        
         [Tooltip("Should this pool have a maximum amount of spawnable clones?")]
-        public int Capacity;
+        public int capacity;
 
         // The total amount of created prefabs
         public int total;
@@ -35,8 +41,10 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         // All the currently cached prefab instances
         public Stack<Object> cache = new Stack<Object>();
 
+
+        public ILifeTime LifeTime => _lifeTime;
         
-        public AssetsPool AttackLifeTime(ILifeTime lifeTime)
+        public AssetsPoolObject AttachLifeTime(ILifeTime lifeTime)
         {
             var disposableAction = ClassPool.Spawn<DisposableAction>();
             disposableAction.Initialize(Dispose);
@@ -44,44 +52,47 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             return this;
         }
 
-        public AssetsPool ResetLifeTime()
+        public AssetsPoolObject ResetLifeTime()
         {
             _disposableAction?.Complete();
             return this;
         }
 
-        public void Dispose()
-        {
-            Destroy(gameObject);
-        }
+        public void Dispose() =>  _lifeTime.Release();
         
-        public void Initialize(Object asset, int preloadCount = 0)
+        public void Initialize(Object objectAsset, int preloadCount = 0,Transform container = null)
         {
-            Asset = asset;
-            Preload = preloadCount;
+            _lifeTime ??= new LifeTimeDefinition();
+            
+            asset = objectAsset;
+            preload = preloadCount;
+            containerObject = container;
             
             switch (asset) {
                 case GameObject gameObjectTarget:
-                    factoryMethod = CreateGameObject;
-                    gameObjectAsset = gameObjectTarget;
+                    _factoryMethod = CreateGameObject;
+                    _gameObjectAsset = gameObjectTarget;
                     break;
                 case Component componentTarget:
-                    componentAsset = componentTarget;
-                    gameObjectAsset = componentTarget.gameObject;
-                    factoryMethod = CreateGameObject;
+                    _componentAsset = componentTarget;
+                    _gameObjectAsset = componentTarget.gameObject;
+                    _factoryMethod = CreateGameObject;
                     break;
                 default:
-                    factoryMethod = CreateAsset;
+                    _factoryMethod = CreateAsset;
                     break;
             }
 
+            _lifeTime.AddCleanUpAction(OnDisable);
+            
+            ObjectPoolAsset.AllPools.Add(this);
             UpdatePreload();
         }
 
         // This will return a clone from the cache, or create a new instance
         public Object FastSpawn(Vector3 position, Quaternion rotation, Transform parent = null, bool stayWorld = false)
         {
-            if (!Asset) {
+            if (!asset) {
                 Debug.LogError("Attempting to spawn null");
                 return null;
             }
@@ -91,7 +102,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             
                 var clone = cache.Pop();
                 if (!clone) {
-                    GameLog.LogErrorFormat("The {0} pool contained a null cache entry",name);
+                    GameLog.LogErrorFormat("The {0} pool contained a null cache entry");
                     continue;
                 }
 
@@ -105,7 +116,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             }
 
             // Make a new clone?
-            if (Capacity <= 0 || total < Capacity) {
+            if (capacity <= 0 || total < capacity) {
                 var clone = FastClone(position, rotation, parent, stayWorld);
                 return clone;
             }
@@ -124,7 +135,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             }
 
             if (destroy) {
-                Destroy(clone);
+                Object.Destroy(clone);
                 return;
             }
 
@@ -137,7 +148,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         // This allows you to make another clone and add it to the cache
         public void PreloadAsset()
         {
-            if (!Asset) return;
+            if (!asset) return;
             // Create clone
             var clone = FastClone(Vector3.zero, Quaternion.identity, null);
             // Add it to the cache
@@ -147,47 +158,38 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         // Makes sure the right amount of prefabs have been preloaded
         public void UpdatePreload()
         {
-            if (Asset == null) return;
-            for (var i = total; i < Preload; i++) {
+            if (asset == null) return;
+            for (var i = total; i < preload; i++) {
                 PreloadAsset();
             }
         }
 
         private Object FastClone(Vector3 position, Quaternion rotation, Transform parent, bool stayWorldPosition = false)
         {
-            if (!Asset) return null;
+            if (!asset) return null;
 
-            GameProfiler.BeginSample("UniPool.FastClone");
-
-            var clone = factoryMethod(position, rotation, parent, stayWorldPosition);
+            var clone = _factoryMethod(position, rotation, parent, stayWorldPosition);
 
             total += 1;
-
-            GameProfiler.EndSample();
 
             return clone;
         }
 
-        // Execute preloaded count
-        protected virtual void Awake() => UpdatePreload();
-
-        // Adds pool to list
-        protected virtual void OnEnable() => ObjectPoolAsset.AllPools.Add(this);
-
         // Remove pool from list
-        protected virtual void OnDisable()
+        protected void OnDisable()
         {
             ObjectPoolAsset.AllPools.Remove(this);
-            ObjectPoolAsset.AllSourceLinks.Remove(Asset);
+            ObjectPoolAsset.AllSourceLinks.Remove(asset);
         }
 
-        private void OnDestroy() => ObjectPoolAsset.AllLinks.Clear();
-
-        private Object CreateGameObject(Vector3 position,
-            Quaternion rotation, Transform parent = null, bool stayWorldPosition = false)
+        private Object CreateGameObject(
+            Vector3 position,
+            Quaternion rotation, 
+            Transform parent = null, 
+            bool stayWorldPosition = false)
         {
-            if (!Asset) return null;
-            var result = Instantiate(gameObjectAsset, position, rotation);
+            if (!asset) return null;
+            var result = Object.Instantiate(_gameObjectAsset, position, rotation);
             var resultTransform = result.transform;
             if (resultTransform.parent != parent)
                 resultTransform.SetParent(parent, stayWorldPosition);
@@ -195,8 +197,11 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         }
 
         private void ApplyGameAssetProperties(
-            Object target, Vector3 position,
-            Quaternion rotation, Transform parent, bool stayWorldPosition = false)
+            Object target, 
+            Vector3 position,
+            Quaternion rotation, 
+            Transform parent, 
+            bool stayWorldPosition = false)
         {
             switch (target) {
                 case Component componentTarget:
@@ -229,7 +234,8 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             
             targetGameObject.SetActive(false);
             // Move it under this GO
-            if (targetGameObject.transform.parent != null) targetGameObject.transform.SetParent(transform, false);
+            if (targetGameObject.transform.parent != null) 
+                targetGameObject.transform.SetParent(containerObject, false);
 
             return targetGameObject;
         }
@@ -251,7 +257,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         private Object CreateAsset(Vector3 position,
             Quaternion rotation, Transform parent = null, bool stayWorldPosition = false)
         {
-            return !Asset ? null : Instantiate(Asset);
+            return !asset ? null : Instantiate(asset);
         }
     }
 }

@@ -1,23 +1,22 @@
 ﻿namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 {
     using System.Collections.Generic;
-    using ProfilerTools;
     using UnityEngine;
 
     // This component allows you to pool Unity objects for fast instantiation and destruction
-    [AddComponentMenu("Utils/ObjectPool/Pool")]
-    public class ObjectPool : MonoBehaviour
+    [AddComponentMenu("UniGame/ObjectPool/Pool")]
+    public class ObjectPoolAsset : MonoBehaviour
     {
         private static GameObject poolsRoot;
 
         // All the currently active pools in the scene
-        public static List<AssetsPool> AllPools = new List<AssetsPool>();
+        public static List<AssetsPoolObject> AllPools = new List<AssetsPoolObject>();
         
         // The reference between a spawned GameObject and its pool
-        public static Dictionary<Object, AssetsPool> AllLinks = new Dictionary<Object, AssetsPool>();
+        //public static Dictionary<Object, AssetsPoolObject> AllLinks = new Dictionary<Object, AssetsPoolObject>();
         
         //The reference between a spawned source GameObject and its pool
-        public static Dictionary<Object, AssetsPool> AllSourceLinks = new Dictionary<Object, AssetsPool>();
+        public static Dictionary<Object, AssetsPoolObject> AllSourceLinks = new Dictionary<Object, AssetsPoolObject>();
 
         // These methods allows you to spawn prefabs via Component with varying levels of transform data
         public static T Spawn<T>(Object asset)
@@ -74,31 +73,23 @@
 
         public static Object Spawn(Object prefab, Vector3 position, Quaternion rotation, Transform parent,bool stayWorld, int preload)
         {
+#if UNITY_EDITOR
             if (!prefab)
             {
                 Debug.LogError("Attempting to spawn a null prefab");
                 return null;
             }
-
-            GameProfiler.BeginSample("Tools ObjectPool.Spawn");
-
+#endif
             var pool = CreatePool(prefab, preload);
             // Spawn a clone from this pool
             var clone = pool.FastSpawn(position, rotation, parent,stayWorld);
-
-            GameProfiler.EndSample();
-
             // Was a clone created?
             // NOTE: This will be null if the pool's capacity has been reached
-            if (clone == null) return null;
-            // Associate this clone with this pool
-            AllLinks.Add(clone, pool);
-            // Return the clone
             return clone;
         }
 
 
-        public static AssetsPool CreatePool(Object targetPrefab, int preloads = 0)
+        public static AssetsPoolObject CreatePool(Object targetPrefab, int preloads = 0)
         {
             if (!targetPrefab) return null;
 
@@ -112,6 +103,7 @@
                 }
                 return pool;
             }
+            
             //create root
             if (!poolsRoot)
             {
@@ -119,14 +111,29 @@
             }
 
             // Create a new pool for this prefab?
-            pool = new GameObject(targetPrefab.name).AddComponent<AssetsPool>();
-            pool.transform.SetParent(poolsRoot.transform,false);
-            pool.Initialize(targetPrefab,preloads);
+            var container = new GameObject(targetPrefab.name);
+            var containerTransform = container.transform;
+            pool = new AssetsPoolObject();
+            containerTransform.SetParent(poolsRoot.transform,false);
+            pool.Initialize(targetPrefab,preloads,containerTransform);
 
             AllSourceLinks.Add(targetPrefab, pool);
             
             return pool;
             
+        }
+
+        public static void DestroyPool(Object poolAsset)
+        {
+            if (!poolAsset) return;
+
+            // Try and find the pool associated with this clone
+            if (!AllSourceLinks.TryGetValue(poolAsset, out var pool)) return;
+            
+            // Remove the association
+            AllSourceLinks.Remove(poolAsset);
+            // Despawn it
+            pool.Dispose();
         }
         
         // This allows you to despawn a clone via GameObject, with optional delay
