@@ -23,7 +23,6 @@
         private bool                             _isInitialized;
         private TData                            _data;
         private RecycleReactiveProperty<TResult> _value;
-        private CancellationTokenSource          _cancellationSource;
         private UniTask<TResult>                 _taskHandle;
 
         #region public properties
@@ -42,7 +41,7 @@
             if (_isActive)
             {
                 return await UniTaskOperations
-                    .Await(() => _isActive, () => _value.Value, _cancellationSource.Token);
+                    .Await(() => _isActive, () => _value.Value, LifeTime.AsCancellationToken());
             }
 
             _isActive = true;
@@ -51,7 +50,6 @@
                 Initialize();
 
             _data               = data;
-            _cancellationSource = LifeTime.AsCancellationSource();
 
             //cleanup value on reset
             LifeTime.AddCleanUpAction(() => _value.Release());

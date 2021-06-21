@@ -64,7 +64,7 @@
             var allItems = filesCount;
             var progressIndex = 0;
             var referencesCount = 0;
-            var cancelationToken = lifetime.AsCancellationSource().Token;
+            var cancelationToken = lifetime.AsCancellationToken();
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             

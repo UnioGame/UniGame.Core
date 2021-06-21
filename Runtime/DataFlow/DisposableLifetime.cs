@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniGame.Core.Runtime.Common
+﻿using System.Threading;
+
+namespace UniModules.UniGame.Core.Runtime.Common
 {
     using System;
     using UniCore.Runtime.DataFlow;
@@ -49,6 +51,8 @@
 
         public bool IsTerminated => lifeTime == null || lifeTime.IsTerminated;
         
+        public CancellationTokenSource CancellationTokenSource => lifeTime?.CancellationTokenSource;
+
         public ILifeTime AddCleanUpAction(Action cleanAction) => lifeTime.AddCleanUpAction(cleanAction);
 
         public ILifeTime AddDispose(IDisposable item) => lifeTime.AddDispose(item);

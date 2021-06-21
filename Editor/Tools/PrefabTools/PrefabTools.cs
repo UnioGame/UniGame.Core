@@ -1,4 +1,6 @@
-﻿namespace UniGame.Tools
+﻿using UnityEditor.Experimental.SceneManagement;
+
+namespace UniGame.Tools
 {
     using System;
     using System.Diagnostics;
@@ -64,24 +66,28 @@
             
             definition.Asset = target;
 
-            var instanceStatus  = PrefabUtility.GetPrefabInstanceStatus(target);
-            var prefabAssetType = PrefabUtility.GetPrefabAssetType(target);
-            var isVariant = PrefabUtility.IsPartOfVariantPrefab(target);
+            var prefabStage = PrefabStageUtility.GetPrefabStage(target);
+            
+            var targetAsset = prefabStage == null ? target : prefabStage.openedFromInstanceObject;
+            
+            var instanceStatus  = PrefabUtility.GetPrefabInstanceStatus(targetAsset);
+            var prefabAssetType = PrefabUtility.GetPrefabAssetType(targetAsset);
+            var isVariant = PrefabUtility.IsPartOfVariantPrefab(targetAsset);
   
-            var resultAsset = PrefabUtility.GetOutermostPrefabInstanceRoot(target);
+            var resultAsset = PrefabUtility.GetOutermostPrefabInstanceRoot(targetAsset);
             var assetPath = string.Empty;    
             
-            if (resultAsset!=null) {
+            if (resultAsset != null) {
                 assetPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(resultAsset);
             }
             else {
-                assetPath = AssetDatabase.GetAssetPath(target);
+                assetPath = AssetDatabase.GetAssetPath(targetAsset);
             }
 
             definition.AssetPath = assetPath;
             definition.InstanceStatus = instanceStatus;
             definition.PrefabAssetType = prefabAssetType;
-            definition.Asset = target;
+            definition.Asset = targetAsset;
             
             definition.IsRegularPrefab = prefabAssetType != PrefabAssetType.NotAPrefab;
             definition.IsVariantPrefab = isVariant || prefabAssetType == PrefabAssetType.Variant;

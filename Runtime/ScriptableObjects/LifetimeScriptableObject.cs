@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading;
 using UniCore.Runtime.ProfilerTools;
 using UniModules.UniGame.Core.Runtime.Utils;
 
@@ -30,6 +31,8 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
 
         public bool IsTerminated => LifeTime.IsTerminated;
         
+        public CancellationTokenSource CancellationTokenSource => LifeTime.CancellationTokenSource;
+
         #endregion
                 
         public ILifeTime LifeTime => _lifeTimeDefinition = _lifeTimeDefinition ?? new LifeTimeDefinition();
