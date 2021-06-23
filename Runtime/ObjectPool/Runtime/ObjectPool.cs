@@ -16,6 +16,13 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         {
             return PoolAsset.AttachToLifeTime(poolAsset, lifeTime, createIfEmpty);
         }
+
+        public static bool HasCustomPoolLifeTimeFor(this Object poolAsset)
+        {
+            var originLifeTime = PoolAsset.LifeTime;
+            var pool = PoolAsset.GetPool(poolAsset);
+            return pool != null && pool.Owner != originLifeTime;
+        }
         
         public static ILifeTime ApplyPoolAssetLifeTime(this ILifeTime lifeTime)
         {
