@@ -32,7 +32,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Examples.SpawnDemo
         private void Start()
         {
             foreach (var spawnItem in SpawnItems) {
-                ObjectPoolAsset.CreatePool(spawnItem, Count);
+                ObjectPool.CreatePool(spawnItem, Count);
             }
             
             var item = childItem.Spawn(Vector3.one, Quaternion.identity, transform);

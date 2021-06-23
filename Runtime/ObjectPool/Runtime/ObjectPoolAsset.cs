@@ -1,31 +1,70 @@
 ﻿namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 {
+    using DataFlow;
+    using UniModules.UniCore.Runtime.Rx.Extensions;
+    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+    using UniModules.UniGame.Core.Runtime.Extension;
+    using UniModules.UniGame.Core.Runtime.Interfaces;
+    using UniRx;
+    using UnityEngine.SceneManagement;
     using System.Collections.Generic;
     using UnityEngine;
 
     // This component allows you to pool Unity objects for fast instantiation and destruction
     [AddComponentMenu("UniGame/ObjectPool/Pool")]
-    public class ObjectPoolAsset : MonoBehaviour
+    public class ObjectPoolAsset : MonoBehaviour, ILifeTimeContext
     {
-        private static GameObject poolsRoot;
+        #region private fields
 
-        // All the currently active pools in the scene
-        public static List<AssetsPoolObject> AllPools = new List<AssetsPoolObject>();
+        private const string RootObjectName = "PoolsRootObject";
         
+        private LifeTimeDefinition _lifeTime;
+        
+        private GameObject _poolsRoot;
+
+        #endregion
+
+        #region static data
+
+                
         // The reference between a spawned GameObject and its pool
-        //public static Dictionary<Object, AssetsPoolObject> AllLinks = new Dictionary<Object, AssetsPoolObject>();
+        public static readonly Dictionary<Object, AssetsPoolObject> allCloneLinks = new Dictionary<Object, AssetsPoolObject>(128);
         
         //The reference between a spawned source GameObject and its pool
-        public static Dictionary<Object, AssetsPoolObject> AllSourceLinks = new Dictionary<Object, AssetsPoolObject>();
+        public static Dictionary<Object, AssetsPoolObject> allSourceLinks = new Dictionary<Object, AssetsPoolObject>(128);
 
+        private static void RemovePool(AssetsPoolObject poolObject)
+        {
+            allCloneLinks.RemoveWithValue(poolObject);
+            allSourceLinks.RemoveWithValue(poolObject);
+        }
+
+        #endregion
+
+        #region public properties
+
+        public ILifeTime LifeTime => _lifeTime;
+        
+        #endregion
+        
+        public ILifeTime AttachToLifeTime(Object poolAsset, ILifeTime lifeTime, bool createIfEmpty = false)
+        {
+            var pool = GetPool(poolAsset);
+            pool = pool != null 
+                ? pool :
+                createIfEmpty ? CreatePool(poolAsset) : null;
+
+            pool?.AttachLifeTime(LifeTime);
+            return lifeTime;
+        }
+        
         // These methods allows you to spawn prefabs via Component with varying levels of transform data
-        public static T Spawn<T>(Object asset)
-            where T : Object
+        public T Spawn<T>(Object asset) where T : Object
         {
             return Spawn<T>(asset, Vector3.zero, Quaternion.identity, null,false) as T;
         }
 
-        public static T Spawn<T>(GameObject prefab)
+        public T Spawn<T>(GameObject prefab)
         {
             var item = Spawn(prefab, Vector3.zero, Quaternion.identity, null, false);
             var result = item.GetComponent<T>();
@@ -37,41 +76,41 @@
         }
         
 
-        public static T Spawn<T>(Object target, Vector3 position, Quaternion rotation, Transform parent = null,bool stayWorld = false)
+        public T Spawn<T>(Object target, Vector3 position, Quaternion rotation, Transform parent = null,bool stayWorld = false)
             where T : Object
         {
-            var isComponent = target is Component;
+            var component = target as Component;
+            var isComponent = component != null;
+            
             // Clone this prefabs's GameObject
-            var asset = target ? isComponent ? 
-                    ((Component)target).gameObject : target : target;
+            var asset = isComponent ? component.gameObject : target;
             
             var clone = Spawn(asset, position, rotation, parent, stayWorld, 0);
 
-            if (isComponent && clone is GameObject gameAsset) {
-                return gameAsset.GetComponent<T>();
-            }
+            var result = isComponent && clone is GameObject gameAsset ? 
+                gameAsset.GetComponent<T>() : clone;
             
             // Return the same component from the clone
-            return clone as T;
+            return result as T;
         }
 
         // These methods allows you to spawn prefabs via GameObject with varying levels of transform data
-        public static GameObject Spawn(GameObject prefab)
+        public GameObject Spawn(GameObject prefab)
         {
             return Spawn(prefab, Vector3.zero, Quaternion.identity, null,false, 0) as GameObject;
         }
 
-        public static GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation,bool stayWorld = false)
+        public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation,bool stayWorld = false)
         {
             return Spawn(prefab, position, rotation, null, stayWorld, 0) as GameObject;
         }
 
-        public static GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent,bool stayWorld)
+        public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent,bool stayWorld)
         {
             return Spawn(prefab, position, rotation, parent, stayWorld, 0) as GameObject;
         }
 
-        public static Object Spawn(Object prefab, Vector3 position, Quaternion rotation, Transform parent,bool stayWorld, int preload)
+        public Object Spawn(Object prefab, Vector3 position, Quaternion rotation, Transform parent,bool stayWorld, int preload)
         {
 #if UNITY_EDITOR
             if (!prefab)
@@ -87,16 +126,15 @@
             // NOTE: This will be null if the pool's capacity has been reached
             return clone;
         }
-
-
-        public static AssetsPoolObject CreatePool(Object targetPrefab, int preloads = 0)
+        
+        public AssetsPoolObject CreatePool(Object targetPrefab, int preloads = 0)
         {
             if (!targetPrefab) return null;
 
             // Find the pool that handles this prefab
-            if (AllSourceLinks.TryGetValue(targetPrefab, out var pool))
+            if (allSourceLinks.TryGetValue(targetPrefab, out var pool))
             {
-                var preloadCount = preloads - pool.cache.Count;
+                var preloadCount = preloads - pool.Cache.Count;
                 for (var i = 0; i < preloadCount; i++)
                 {
                     pool.PreloadAsset();
@@ -105,47 +143,71 @@
             }
             
             //create root
-            if (!poolsRoot)
+            if (!_poolsRoot)
             {
-                poolsRoot = new GameObject("PoolsRootObject");
+                _poolsRoot = new GameObject(RootObjectName);
             }
 
             // Create a new pool for this prefab?
             var container = new GameObject(targetPrefab.name);
             var containerTransform = container.transform;
-            pool = new AssetsPoolObject();
-            containerTransform.SetParent(poolsRoot.transform,false);
-            pool.Initialize(targetPrefab,preloads,containerTransform);
-
-            AllSourceLinks.Add(targetPrefab, pool);
+            containerTransform.SetParent(ObjectPoolData.RootContainer.transform);
             
+            pool = new AssetsPoolObject();
+            allSourceLinks.Add(targetPrefab, pool);
+            
+            containerTransform.SetParent(_poolsRoot.transform,false);
+            pool.Initialize(targetPrefab,LifeTime,preloads,containerTransform);
+            pool.LifeTime.AddCleanUpAction(() => RemovePool(pool));
+
             return pool;
             
         }
 
-        public static void DestroyPool(Object poolAsset)
+        public AssetsPoolObject GetPool(Object poolAsset)
+        {
+
+#if UNITY_EDITOR
+            if (!poolAsset)
+            {
+                Debug.LogError($"EMPTY {nameof(poolAsset)}",this);
+                return null;
+            }
+#endif
+            
+            if (allSourceLinks.TryGetValue(poolAsset, out var pool))
+                return pool;
+            if (allCloneLinks.TryGetValue(poolAsset, out var poolLink))
+                return poolLink;
+
+            return null;
+        }
+        
+        public void DestroyPool(Object poolAsset)
         {
             if (!poolAsset) return;
 
             // Try and find the pool associated with this clone
-            if (!AllSourceLinks.TryGetValue(poolAsset, out var pool)) return;
+            if (!allSourceLinks.TryGetValue(poolAsset, out var pool)) return;
             
             // Remove the association
-            AllSourceLinks.Remove(poolAsset);
+            allSourceLinks.Remove(poolAsset);
+            allCloneLinks.Remove(poolAsset);
+            
             // Despawn it
             pool.Dispose();
         }
         
         // This allows you to despawn a clone via GameObject, with optional delay
-        public static void Despawn(Object clone,bool destroy = false)
+        public void Despawn(Object clone,bool destroy = false)
         {
             if (!clone) return;
 
             // Try and find the pool associated with this clone
-            if (AllLinks.TryGetValue(clone, out var pool))
+            if (allCloneLinks.TryGetValue(clone, out var pool))
             {
                 // Remove the association
-                AllLinks.Remove(clone);
+                allCloneLinks.Remove(clone);
                 // Despawn it
                 pool.FastDespawn(clone,destroy);
                 return;
@@ -168,13 +230,50 @@
             }
         }
 
-
-        public static void RemoveFromPool(GameObject target)
+        public void RemoveFromPool(GameObject target)
         {
-            if (!AllLinks.TryGetValue(target, out var pool)) return;
+            if (!allCloneLinks.TryGetValue(target, out var pool)) return;
             // Remove the association
-            AllLinks.Remove(target);
+            allCloneLinks.Remove(target);
         }
 
+        #region private methods
+
+        private void Awake()
+        {
+            _lifeTime = new LifeTimeDefinition();
+            
+            Observable.FromEvent(x => SceneManager.sceneLoaded += OnSceneLoaded,
+                x => SceneManager.sceneLoaded -= OnSceneLoaded)
+                .Subscribe()
+                .AddTo(LifeTime);
+
+            _lifeTime.AddCleanUpAction(OnDestroyAction);
+        }
+
+        private void OnDestroy() => _lifeTime.Terminate();
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            OnCleanUp();
+        }
+        
+        private void OnCleanUp()
+        {
+            allCloneLinks.RemoveAll(ClearCollectionPredicate);
+        }
+
+        private void OnDestroyAction()
+        {
+            
+        }
+        
+        private static bool ClearCollectionPredicate(Object asset, AssetsPoolObject poolObject)
+        {
+            return !asset;
+        }
+        
+        #endregion
+        
     }
 }
