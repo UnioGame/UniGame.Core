@@ -9,6 +9,7 @@
             return behaviour.transform as RectTransform;
         }
         
+        
         public static Object GetRootAsset(this Object target)
         {
             if (target is Component component) return component.gameObject;
