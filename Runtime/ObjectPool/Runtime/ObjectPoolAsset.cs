@@ -55,7 +55,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
                 ? pool :
                 createIfEmpty ? CreatePool(poolAsset) : null;
 
-            pool?.AttachLifeTime(LifeTime);
+            pool?.AttachLifeTime(lifeTime);
             return lifeTime;
         }
         
