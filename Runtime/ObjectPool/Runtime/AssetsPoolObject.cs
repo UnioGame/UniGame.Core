@@ -46,17 +46,18 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         public AssetsPoolObject AttachLifeTime(ILifeTime lifeTime)
         {
             //de-attach from current lifetime
-            ResetLifeTime();
+            ResetParentLifeTime();
 
-            Owner = LifeTime;
+            Owner = lifeTime;
             //bind new lifetime
-            var disposableAction = ClassPool.Spawn<DisposableAction>();
-            disposableAction.Initialize(Dispose);
-            lifeTime.AddDispose(disposableAction);
+            _disposableAction = ClassPool.Spawn<DisposableAction>();
+            _disposableAction.Initialize(Dispose);
+            Owner.AddDispose(_disposableAction);
+            
             return this;
         }
 
-        public AssetsPoolObject ResetLifeTime()
+        public AssetsPoolObject ResetParentLifeTime()
         {
             _disposableAction?.Complete();
             return this;
@@ -125,21 +126,28 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         public void FastDespawn(Object clone, bool destroy = false)
         {
             if (!clone) return;
-                        
+            
             if (clone is IPoolable poolable)
             {
                 poolable.Release();
             }
 
+            var target = GetAsset(clone);
+            
             if (destroy) {
-                Object.Destroy(clone);
+                Object.Destroy(target);
                 return;
             }
 
-            var target = OnObjectDespawn(clone);
+            OnObjectDespawn(clone);
             // Add it to the cache
             Cache.Push(target);
+        }
 
+        public Object GetAsset(Object target)
+        {
+            if (target is Component component) return component.gameObject;
+            return target;
         }
 
         // This allows you to make another clone and add it to the cache

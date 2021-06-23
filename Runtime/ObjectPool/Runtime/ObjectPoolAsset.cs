@@ -201,12 +201,6 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         {
             if (!clone) return;
 
-            if (allSourceLinks.ContainsKey(clone))
-            {
-                DestroyPool(clone);
-                return;
-            }
-            
             // Try and find the pool associated with this clone
             if (allCloneLinks.TryGetValue(clone, out var pool))
             {
@@ -217,21 +211,8 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
                 return;
             }
             
-            if(destroy)
-            {
-                // Fall back to normal destroying
-                Destroy(clone);
-                return;
-            }
-
-            switch (clone) {
-                case GameObject gameObjectAsset:
-                    gameObjectAsset.SetActive(false);
-                    break;
-                case Component componentAsset:
-                    componentAsset.gameObject.SetActive(false);
-                    break;
-            }
+            //despawn without pool
+            Destroy(clone);
         }
 
         public void RemoveFromPool(GameObject target)
