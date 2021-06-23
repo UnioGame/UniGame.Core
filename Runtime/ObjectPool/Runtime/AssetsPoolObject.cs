@@ -1,5 +1,6 @@
 ﻿using UniCore.Runtime.ProfilerTools;
 using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
+using UniModules.UniGame.Core.Runtime.Extension;
 
 namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 {
@@ -132,7 +133,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
                 poolable.Release();
             }
 
-            var target = GetAsset(clone);
+            var target = clone.GetRootAsset();
             
             if (destroy) {
                 Object.Destroy(target);
@@ -143,12 +144,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             // Add it to the cache
             Cache.Push(target);
         }
-
-        public Object GetAsset(Object target)
-        {
-            if (target is Component component) return component.gameObject;
-            return target;
-        }
+        
 
         // This allows you to make another clone and add it to the cache
         public void PreloadAsset()

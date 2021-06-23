@@ -13,6 +13,11 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
     public static class ObjectPoolExtension
     {
 
+        public static void CreatePool(this GameObject asset, int preloadCount = 0)
+        {
+            ObjectPool.CreatePool(asset,preloadCount);
+        }
+        
         public static TComponent Spawn<TComponent>(this GameObject prototype)
         {
             if (!prototype) return default(TComponent);
@@ -30,7 +35,9 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
         }
         
         public static T Spawn<T>(this T prototype, Vector3 position,
-            Quaternion rotation, Transform parent = null, bool stayWorldPosition = false)
+            Quaternion rotation, 
+            Transform parent = null,
+            bool stayWorldPosition = false)
             where T : Object
         {
             if (!prototype) return null;
@@ -38,6 +45,16 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
             return pawn;
         }
 
+        public static T SpawnActive<T>(this T prototype, Vector3 position,
+            Quaternion rotation, 
+            Transform parent = null,
+            bool stayWorldPosition = false)
+            where T : Component
+        {
+            if (!prototype) return null;
+            var pawn = ObjectPool.Spawn<T>(prototype,true, position, rotation, parent, stayWorldPosition);
+            return pawn;
+        }
         
         public static GameObject Spawn(this GameObject prototype, Transform parent = null, bool stayWorldPosition = false)
         {
@@ -70,11 +87,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
         public static GameObject Spawn(this GameObject prototype,bool activateOnSpawn, Vector3 position, Quaternion rotation, Transform parent = null, bool stayWorldPosition = false)
         {
             if (!prototype) return null;
-            var pawn = ObjectPool.Spawn(prototype, position, rotation, parent, stayWorldPosition);
-            if (activateOnSpawn)
-            {
-                pawn.SetActive(activateOnSpawn);
-            }
+            var pawn = ObjectPool.Spawn(prototype,activateOnSpawn, position, rotation, parent, stayWorldPosition,0);
             return pawn;
         }
         

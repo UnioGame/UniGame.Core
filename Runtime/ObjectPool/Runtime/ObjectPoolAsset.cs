@@ -111,6 +111,20 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             return Spawn(prefab, position, rotation, parent, stayWorld, 0) as GameObject;
         }
 
+        public GameObject Spawn(GameObject prefab,bool activate, Vector3 position, Quaternion rotation, Transform parent,bool stayWorld, int preload)
+        {
+            var pawn = Spawn(prefab, position, rotation, parent, stayWorld, preload) as GameObject;
+            pawn?.SetActive(activate);
+            return pawn;
+        }
+        
+        public GameObject Spawn(GameObject prefab,bool activate, Vector3 position, Quaternion rotation, Transform parent,bool stayWorld)
+        {
+            var pawn = Spawn(prefab, position, rotation, parent, stayWorld, 0) as GameObject;
+            pawn?.SetActive(activate);
+            return pawn;
+        }
+        
         public Object Spawn(Object prefab, Vector3 position, Quaternion rotation, Transform parent,bool stayWorld, int preload)
         {
 #if UNITY_EDITOR
@@ -129,10 +143,11 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             return clone;
         }
         
-        public AssetsPoolObject CreatePool(Object targetPrefab, int preloads = 0)
+        public AssetsPoolObject CreatePool(Object targetAsset, int preloads = 0)
         {
-            if (!targetPrefab) return null;
+            if (!targetAsset) return null;
 
+            var targetPrefab = targetAsset.GetRootAsset();
             // Find the pool that handles this prefab
             if (allSourceLinks.TryGetValue(targetPrefab, out var pool))
             {

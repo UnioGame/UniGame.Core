@@ -1,4 +1,5 @@
 ﻿using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+using UniModules.UniGame.Core.Runtime.Extension;
 using UnityEngine;
 
 namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
@@ -34,8 +35,17 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             return PoolAsset.Spawn<T>(target,position,rotation,parent,stayWorld);
         }
 
+        public static  T Spawn<T>(Object target,bool activate, Vector3 position, Quaternion rotation, Transform parent = null,bool stayWorld = false)
+            where T : Object
+        {
+            var asset = PoolAsset.Spawn<T>(target,position,rotation,parent,stayWorld);
+            var gameObjectAsset = asset.GetRootAsset() as GameObject;
+            gameObjectAsset?.SetActive(activate);
+            return asset;
+        }
+        
         // These methods allows you to spawn prefabs via GameObject with varying levels of transform data
-        public static  GameObject Spawn(GameObject prefab)
+        public static GameObject Spawn(GameObject prefab)
         {
             return PoolAsset.Spawn(prefab);
         }
@@ -55,7 +65,11 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             return PoolAsset.Spawn(prefab,position,rotation,parent,stayWorld,preload);
         }
 
-
+        public static  GameObject Spawn(GameObject prefab,bool activate, Vector3 position, Quaternion rotation, Transform parent = null,bool stayWorld = false,int preload = 0)
+        {
+            return PoolAsset.Spawn(prefab,activate,position,rotation,parent,stayWorld,preload);
+        }
+        
         public static void CreatePool(Object targetPrefab, int preloads = 0)
         {
             PoolAsset.CreatePool(targetPrefab,preloads);
