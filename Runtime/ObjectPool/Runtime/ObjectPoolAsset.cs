@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using UniModules.UniCore.Runtime.Common;
 
 namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 {
@@ -21,7 +23,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         private const string RootObjectName = "PoolsRootObject";
         
         private LifeTimeDefinition _lifeTime;
-        
+        private DisposableAction _disposableAction;
         private GameObject _poolsRoot;
 
         #endregion
@@ -47,6 +49,23 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         public ILifeTime LifeTime => _lifeTime;
         
         #endregion
+
+        public void Destroy()
+        {
+            Destroy(this.gameObject);
+        }
+        
+        public ILifeTime AttachToLifeTime(ILifeTime lifeTime)
+        {
+            //de-attach from current lifetime
+            _disposableAction?.Complete();
+            //bind new lifetime
+            _disposableAction = ClassPool.Spawn<DisposableAction>();
+            _disposableAction.Initialize(Destroy);
+            lifeTime.AddDispose(_disposableAction);
+            
+            return lifeTime;
+        }
         
         public ILifeTime AttachToLifeTime(Object poolAsset, ILifeTime lifeTime, bool createIfEmpty = false)
         {
@@ -251,7 +270,10 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             _lifeTime.AddCleanUpAction(OnDestroyAction);
         }
 
-        private void OnDestroy() => _lifeTime.Terminate();
+        private void OnDestroy()
+        {
+            _lifeTime.Terminate();
+        }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
@@ -265,6 +287,8 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 
         private void OnDestroyAction()
         {
+            _disposableAction?.Complete();
+            
             var myPools = allSourceLinks
                 .Where(x => x.Value.Owner == LifeTime)
                 .Select(x => x.Value)

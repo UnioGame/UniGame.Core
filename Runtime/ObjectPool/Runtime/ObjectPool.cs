@@ -17,6 +17,11 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             return PoolAsset.AttachToLifeTime(poolAsset, lifeTime, createIfEmpty);
         }
         
+        public static ILifeTime ApplyPoolAssetLifeTime(this ILifeTime lifeTime)
+        {
+            return PoolAsset.AttachToLifeTime(lifeTime);
+        }
+        
         // These methods allows you to spawn prefabs via Component with varying levels of transform data
         public static T Spawn<T>(Object asset) where T : Object
         {
