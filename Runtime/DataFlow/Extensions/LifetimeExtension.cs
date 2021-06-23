@@ -118,7 +118,7 @@ public static class LifetimeExtension
     
     public static CancellationToken AsCancellationToken(this ILifeTime lifeTime)
     {
-        return lifeTime.CancellationTokenSource.Token;
+        return lifeTime.TokenSource;
     } 
     
     #endregion

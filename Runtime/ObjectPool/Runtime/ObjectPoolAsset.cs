@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
+﻿using System.Linq;
+
+namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 {
     using DataFlow;
     using UniModules.UniCore.Runtime.Rx.Extensions;
@@ -25,8 +27,7 @@
         #endregion
 
         #region static data
-
-                
+        
         // The reference between a spawned GameObject and its pool
         public static readonly Dictionary<Object, AssetsPoolObject> allCloneLinks = new Dictionary<Object, AssetsPoolObject>(128);
         
@@ -36,7 +37,7 @@
         private static void RemovePool(AssetsPoolObject poolObject)
         {
             allCloneLinks.RemoveWithValue(poolObject);
-            allSourceLinks.RemoveWithValue(poolObject);
+            allSourceLinks.Remove(poolObject.asset);
         }
 
         #endregion
@@ -190,10 +191,6 @@
             // Try and find the pool associated with this clone
             if (!allSourceLinks.TryGetValue(poolAsset, out var pool)) return;
             
-            // Remove the association
-            allSourceLinks.Remove(poolAsset);
-            allCloneLinks.Remove(poolAsset);
-            
             // Despawn it
             pool.Dispose();
         }
@@ -203,6 +200,12 @@
         {
             if (!clone) return;
 
+            if (allSourceLinks.ContainsKey(clone))
+            {
+                DestroyPool(clone);
+                return;
+            }
+            
             // Try and find the pool associated with this clone
             if (allCloneLinks.TryGetValue(clone, out var pool))
             {
@@ -265,7 +268,15 @@
 
         private void OnDestroyAction()
         {
+            var myPools = allSourceLinks
+                .Where(x => x.Value.Owner == LifeTime)
+                .Select(x => x.Value)
+                .ToList();
             
+            foreach (var poolObjectValue in myPools)
+            {
+                poolObjectValue.Dispose();
+            }
         }
         
         private static bool ClearCollectionPredicate(Object asset, AssetsPoolObject poolObject)
