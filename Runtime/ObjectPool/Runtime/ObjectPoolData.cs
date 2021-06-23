@@ -12,7 +12,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
                 if (_root) return _root;
                 var asset = new GameObject(nameof(ObjectPoolData));
                 Object.DontDestroyOnLoad(asset);
-                _root = RootContainer;
+                _root = asset.transform;
                 return _root;
             }
         }

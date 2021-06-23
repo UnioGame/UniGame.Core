@@ -165,7 +165,9 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         
         private void OnDestroy()
         {
-            _disposableAction.Complete();
+            _disposableAction?.Complete();
+            
+            Owner = null;
 
             foreach (var item in Cache)
             {
@@ -259,9 +261,9 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             return targetGameObject;
         }
         
-        private Object OnObjectDespawn(Object asset)
+        private Object OnObjectDespawn(Object target)
         {
-            switch (asset) {
+            switch (target) {
                 case Component componentTarget:
                     ResetGameObjectState(componentTarget.gameObject);
                     break;
@@ -269,8 +271,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
                     ResetGameObjectState(gameObjectTarget);
                     break;
             }
-
-            return asset;
+            return target;
         }
         
         private Object CreateAsset(Vector3 position, Quaternion rotation, Transform parent = null, bool stayWorldPosition = false)

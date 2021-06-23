@@ -123,8 +123,9 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             var pool = CreatePool(prefab, preload);
             // Spawn a clone from this pool
             var clone = pool.FastSpawn(position, rotation, parent,stayWorld);
-            // Was a clone created?
-            // NOTE: This will be null if the pool's capacity has been reached
+
+            allCloneLinks[clone] = pool;
+            
             return clone;
         }
         
