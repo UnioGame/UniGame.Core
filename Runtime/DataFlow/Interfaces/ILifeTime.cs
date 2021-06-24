@@ -26,6 +26,6 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow.Interfaces
         /// </summary>
         bool IsTerminated { get; }
         
-        CancellationTokenSource CancellationTokenSource { get; }
+        CancellationToken TokenSource { get; }
     }
 }
