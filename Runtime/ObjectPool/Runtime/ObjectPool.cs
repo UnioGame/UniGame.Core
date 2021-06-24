@@ -12,9 +12,9 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 
         public static ObjectPoolAsset PoolAsset => GetPool();
 
-        public static ILifeTime AttachToLifeTime(Object poolAsset, ILifeTime lifeTime, bool createIfEmpty = false)
+        public static ILifeTime AttachToLifeTime(Object poolAsset, ILifeTime lifeTime, bool createIfEmpty = false,int preload = 0)
         {
-            return PoolAsset.AttachToLifeTime(poolAsset, lifeTime, createIfEmpty);
+            return PoolAsset.AttachToLifeTime(poolAsset, lifeTime, createIfEmpty,preload);
         }
 
         public static bool HasCustomPoolLifeTimeFor(this Object poolAsset)

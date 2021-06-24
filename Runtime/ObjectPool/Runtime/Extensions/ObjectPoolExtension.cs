@@ -91,9 +91,9 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
             return pawn;
         }
 
-        public static ILifeTime AttachPoolToLifeTime(this GameObject prototype, ILifeTime lifeTime, bool createPoolIfNone = false)
+        public static ILifeTime AttachPoolToLifeTime(this GameObject prototype, ILifeTime lifeTime, bool createPoolIfNone = false, int preload = 0)
         {
-            return ObjectPool.AttachToLifeTime(prototype, lifeTime,createPoolIfNone);
+            return ObjectPool.AttachToLifeTime(prototype, lifeTime,createPoolIfNone,preload);
         }
         
         public static GameObject Spawn(this GameObject prototype,bool activateOnSpawn, Vector3 position, Quaternion rotation, Transform parent = null, bool stayWorldPosition = false)

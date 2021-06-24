@@ -152,6 +152,13 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             if (!asset) return;
             // Create clone
             var clone = FastClone(Vector3.zero, Quaternion.identity, null);
+
+            var rootAsset = clone.GetRootAsset();
+            if (rootAsset is GameObject gameObjectClone)
+            {
+                gameObjectClone.transform.SetParent(containerObject);
+            }
+            
             // Add it to the cache
             Cache.Push(OnObjectDespawn(clone));
         }

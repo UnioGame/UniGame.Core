@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
+﻿using UnityEngine;
+
+namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
 {
     using System;
     using System.Collections.Generic;
@@ -20,6 +22,15 @@
             where T : class
         {
             if (data == null) return;
+            switch (data)
+            {
+                case GameObject gameObject:
+                    gameObject.DespawnAsset();
+                    return;
+                case Component component:
+                    component.gameObject.DespawnAsset();
+                    return;
+            }
             ClassPool.Despawn(data);
         }
         

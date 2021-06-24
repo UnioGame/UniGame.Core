@@ -67,12 +67,12 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             return lifeTime;
         }
         
-        public ILifeTime AttachToLifeTime(Object poolAsset, ILifeTime lifeTime, bool createIfEmpty = false)
+        public ILifeTime AttachToLifeTime(Object poolAsset, ILifeTime lifeTime, bool createIfEmpty = false, int preload = 0)
         {
             var pool = GetPool(poolAsset);
             pool = pool != null 
                 ? pool :
-                createIfEmpty ? CreatePool(poolAsset) : null;
+                createIfEmpty ? CreatePool(poolAsset,preload) : null;
 
             pool?.AttachLifeTime(lifeTime);
             return lifeTime;
