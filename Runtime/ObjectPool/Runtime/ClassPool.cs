@@ -93,16 +93,12 @@
 		{
 			if (instance == null)
 				return;
-			
-			GameProfiler.BeginSample("ObjectPool.Despawn");
 
 			if(instance is IPoolable poolable) 
 				poolable.Release();
 
 			// Add to _cache
 			Container.Push(instance);
-			
-			GameProfiler.EndSample();
 		}
 
 		public static void Despawn<T>(ref T instance, T defaultValue = null) where T : class

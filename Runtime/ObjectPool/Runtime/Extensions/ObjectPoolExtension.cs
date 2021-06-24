@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
+﻿using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+
+namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
 {
     using System;
     using System.Collections;
@@ -11,6 +13,11 @@
     public static class ObjectPoolExtension
     {
 
+        public static void CreatePool(this GameObject asset, int preloadCount = 0)
+        {
+            ObjectPool.CreatePool(asset,preloadCount);
+        }
+        
         public static TComponent Spawn<TComponent>(this GameObject prototype)
         {
             if (!prototype) return default(TComponent);
@@ -28,7 +35,9 @@
         }
         
         public static T Spawn<T>(this T prototype, Vector3 position,
-            Quaternion rotation, Transform parent = null, bool stayWorldPosition = false)
+            Quaternion rotation, 
+            Transform parent = null,
+            bool stayWorldPosition = false)
             where T : Object
         {
             if (!prototype) return null;
@@ -36,6 +45,28 @@
             return pawn;
         }
 
+        public static GameObject SpawnActive(this GameObject prototype, 
+            Vector3 position,
+            Quaternion rotation, 
+            Transform parent = null,
+            bool stayWorldPosition = false)
+        {
+            if (!prototype) return null;
+            var pawn = ObjectPool.Spawn(prototype,true, position, rotation, parent, stayWorldPosition);
+            return pawn;
+        }
+        
+        public static T SpawnActive<T>(this T prototype, 
+            Vector3 position,
+            Quaternion rotation, 
+            Transform parent = null,
+            bool stayWorldPosition = false)
+            where T : Component
+        {
+            if (!prototype) return null;
+            var pawn = ObjectPool.Spawn<T>(prototype,true, position, rotation, parent, stayWorldPosition);
+            return pawn;
+        }
         
         public static GameObject Spawn(this GameObject prototype, Transform parent = null, bool stayWorldPosition = false)
         {
@@ -56,7 +87,19 @@
         public static GameObject Spawn(this GameObject prototype, Vector3 position, Quaternion rotation, Transform parent = null, bool stayWorldPosition = false)
         {
             if (!prototype) return null;
-            var pawn = ObjectPool.Spawn(prototype, position, rotation, parent, stayWorldPosition);
+            var pawn = Spawn(prototype,false, position, rotation, parent, stayWorldPosition);
+            return pawn;
+        }
+
+        public static ILifeTime AttachPoolToLifeTime(this GameObject prototype, ILifeTime lifeTime, bool createPoolIfNone = false, int preload = 0)
+        {
+            return ObjectPool.AttachToLifeTime(prototype, lifeTime,createPoolIfNone,preload);
+        }
+        
+        public static GameObject Spawn(this GameObject prototype,bool activateOnSpawn, Vector3 position, Quaternion rotation, Transform parent = null, bool stayWorldPosition = false)
+        {
+            if (!prototype) return null;
+            var pawn = ObjectPool.Spawn(prototype,activateOnSpawn, position, rotation, parent, stayWorldPosition,0);
             return pawn;
         }
         
@@ -76,30 +119,25 @@
             return item ?? new T();
         }
 
-        public static void DespawnAsset(this Object instance, bool destroy = false)
+        public static void DestroyPool(this Object data)
         {
-            if (destroy)
-            {
-                Object.DestroyImmediate(instance);
-                return;
+            switch (data) {
+                case Component target :
+                    ObjectPool.DestroyPool(target.gameObject);
+                    break;
+                case { } target:
+                    ObjectPool.DestroyPool(target);
+                    break;
             }
-            ObjectPool.Despawn(instance);
         }
 
         public static void DespawnComponent(this Component data, bool destroy = false)
         {
-            if (destroy)
-            {
-                Object.DestroyImmediate(data.gameObject);
-                return;
-            }
-            ObjectPool.Despawn(data.gameObject);
+            ObjectPool.Despawn(data.gameObject,destroy);
         }
         
-        public static void Despawn<T>(this T data, bool destroy = false)
-            where T:Object
+        public static void DespawnAsset(this Object data, bool destroy = false)
         {
-
             if (data == null) {
                 return;
             }
@@ -108,11 +146,16 @@
                 case Component target :
                     DespawnComponent(target, destroy);
                     break;
-                case Object target:
-                    DespawnAsset(target, destroy);
+                case { } target:
+                    DespawnRegularAsset(target, destroy);
                     break;
             }
 
+        }
+        
+        private static void DespawnRegularAsset(this Object instance, bool destroy = false)
+        {
+            ObjectPool.Despawn(instance,destroy);
         }
     }
 }
