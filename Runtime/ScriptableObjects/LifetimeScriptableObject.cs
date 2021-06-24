@@ -31,7 +31,7 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
 
         public bool IsTerminated => LifeTime.IsTerminated;
         
-        public CancellationTokenSource CancellationTokenSource => LifeTime.CancellationTokenSource;
+        public CancellationToken TokenSource => LifeTime.TokenSource;
 
         #endregion
                 

@@ -49,8 +49,16 @@
         /// </summary>
         public bool IsTerminated => isTerminated;
 
-        public CancellationTokenSource CancellationTokenSource =>
-            _cancellationTokenSource ??= new CancellationTokenSource();
+        public CancellationToken TokenSource
+        {
+            get
+            {
+                if (isTerminated)
+                    return new CancellationToken(true);
+                _cancellationTokenSource ??= new CancellationTokenSource();
+                return _cancellationTokenSource.Token;
+            }
+        }
         
         /// <summary>
         /// cleanup action, call when life time terminated
@@ -132,9 +140,9 @@
 
         #region type convertion
 
-        public static implicit operator CancellationTokenSource(LifeTime lifeTime)
+        public static implicit operator CancellationToken(LifeTime lifeTime)
         {
-            return lifeTime.CancellationTokenSource;
+            return lifeTime.TokenSource;
         } 
 
         #endregion

@@ -10,9 +10,8 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
     {
         public static ILifeTime GetAssetLifeTime(this GameObject gameObject)
         {
-            var lifetimeComponent = 
-                gameObject.GetComponent<ILifeTime>() ?? 
-                gameObject.gameObject.AddComponent<LifeTimeComponent>();
+            var lifetimeComponent = gameObject.GetComponent<ILifeTime>() ?? 
+                                    gameObject.AddComponent<LifeTimeComponent>();
             return lifetimeComponent;
         }
 
