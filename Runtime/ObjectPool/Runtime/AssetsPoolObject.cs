@@ -25,6 +25,8 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         private Func<Vector3, Quaternion, Transform, bool, Object> _factoryMethod;
         
         #endregion
+
+        public string sourceName;
         
         [Tooltip("The prefab the clones will be based on")]
         public Object asset;
@@ -72,6 +74,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             _lifeTime.Release();
             _lifeTime.AddCleanUpAction(OnDestroy);
 
+            sourceName = objectAsset.name;
             asset = objectAsset;
             preload = preloadCount;
             containerObject = root;
@@ -112,7 +115,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             
                 var clone = Cache.Pop();
                 if (!clone) {
-                    GameLog.LogErrorFormat("The {0} pool contained a null cache entry");
+                    GameLog.LogWarningFormat("The {0} pool contained a null cache entry",sourceName);
                     continue;
                 }
 

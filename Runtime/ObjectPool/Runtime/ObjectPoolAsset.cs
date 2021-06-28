@@ -270,20 +270,11 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             _lifeTime.AddCleanUpAction(OnDestroyAction);
         }
 
-        private void OnDestroy()
-        {
-            _lifeTime.Terminate();
-        }
+        private void OnDestroy() => _lifeTime?.Terminate();
 
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            OnCleanUp();
-        }
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode) => OnCleanUp();
         
-        private void OnCleanUp()
-        {
-            allCloneLinks.RemoveAll(ClearCollectionPredicate);
-        }
+        private void OnCleanUp() => allCloneLinks.RemoveAll(ClearCollectionPredicate);
 
         private void OnDestroyAction()
         {
@@ -300,10 +291,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             }
         }
         
-        private static bool ClearCollectionPredicate(Object asset, AssetsPoolObject poolObject)
-        {
-            return !asset;
-        }
+        private static bool ClearCollectionPredicate(Object asset, AssetsPoolObject poolObject) => !asset;
         
         #endregion
         
