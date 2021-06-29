@@ -50,10 +50,6 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         
         #endregion
 
-        public void Destroy()
-        {
-            Destroy(this.gameObject);
-        }
         
         public ILifeTime AttachToLifeTime(ILifeTime lifeTime)
         {
@@ -258,6 +254,15 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 
         #region private methods
 
+        private void Destroy()
+        {
+            if(_poolsRoot)
+            {
+                Destroy(_poolsRoot);
+            }
+            Destroy(gameObject);
+        }
+        
         private void Awake()
         {
             _lifeTime = new LifeTimeDefinition();
