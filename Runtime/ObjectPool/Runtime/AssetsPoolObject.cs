@@ -185,6 +185,8 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 
             foreach (var item in Cache)
             {
+                if (!item) continue;
+                
                 switch (item)
                 {
                     case GameObject gameObject when gameObject.transform != containerObject:
