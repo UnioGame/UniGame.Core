@@ -99,21 +99,64 @@ public static class LifetimeExtension
         return LifeTime.TerminatedLifetime;
     }
     
+    /// <summary>
+    /// release lifetime when all dependencies released
+    /// </summary>
+    public static ILifeTime MergeLifeTime(
+        this ILifeTime source, 
+        Action cleanup,
+        params ILifeTime[] additional)
+    {
+        var mergedLifeTime = source.MergeLifeTime(additional);
+        mergedLifeTime.AddCleanUpAction(cleanup);
+        
+        return mergedLifeTime;
+    }
+
+    /// <summary>
+    /// release lifetime when all dependencies released
+    /// </summary>
+    public static ILifeTime MergeLifeTime(
+        this ILifeTime source, 
+        params ILifeTime[] additional)
+    {
+        var mergedLifeTime = new MergedLifeTime();
+        
+        mergedLifeTime.Add(source);
+        mergedLifeTime.Add(additional);
+        
+        return mergedLifeTime;
+    }
     
+    /// <summary>
+    /// call release with first released lifetime
+    /// </summary>
     public static ILifeTime ComposeCleanUp(
         this ILifeTime source, 
         Action cleanup,
         params ILifeTime[] additional)
     {
-        var composeAction = new LifeTimeCompose();
-        
+        var composeAction = source.ComposeCleanUp(additional);
         composeAction.AddCleanUpAction(cleanup);
-        composeAction.Add(source);
-        composeAction.Add(additional);
         
         return source;
     }
 
+    /// <summary>
+    /// call release with first released lifetime
+    /// </summary>
+    public static ILifeTime ComposeCleanUp(
+        this ILifeTime source, 
+        params ILifeTime[] additional)
+    {
+        var composeAction = new LifeTimeCompose();
+        
+        composeAction.Add(source);
+        composeAction.Add(additional);
+        
+        return composeAction;
+    }
+    
     #region type convertion
     
     public static CancellationToken AsCancellationToken(this ILifeTime lifeTime)

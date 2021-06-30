@@ -1,16 +1,14 @@
 ﻿using System;
+using System.Threading;
+using UniModules.UniCore.Runtime.DataFlow;
+using UniModules.UniCore.Runtime.ObjectPool.Runtime;
+using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
 
 namespace UniModules.UniGame.Core.Runtime.DataFlow
 {
-    using System.Threading;
-    using Interfaces;
-    using UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniCore.Runtime.DataFlow.Interfaces;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
-
     [Serializable]
-    public class LifeTimeCompose : IDisposable, IPoolable,ILifeTime
+    public class MergedLifeTime : IDisposable, IPoolable, ILifeTime
     {
         private int _counter;
         private LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
@@ -24,15 +22,14 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow
         public ILifeTime AddRef(object o) => _lifeTime.AddRef(o);
 
         public bool IsTerminated => _lifeTime.IsTerminated;
-
+        
         public CancellationToken TokenSource => _lifeTime.TokenSource;
 
         #endregion
-        
+
         public void Release()
         {
-            _lifeTime.Release();
-            _counter = 0;
+            
         }
         
         public void Add(params ILifeTime[] lifeTimes)
@@ -51,11 +48,12 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow
         public void Dispose()
         {
             Interlocked.Decrement(ref _counter);
-            _lifeTime.Terminate();
             
             if (_counter > 0) {
                 return;
             }
+            
+            _lifeTime.Release();
             
             //despawn when counter <= 0
             ClassPool.Despawn(this);
