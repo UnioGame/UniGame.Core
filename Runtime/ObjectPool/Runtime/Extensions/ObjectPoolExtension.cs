@@ -131,31 +131,14 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
             }
         }
 
-        public static void DespawnComponent(this Component data, bool destroy = false)
-        {
-            ObjectPool.Despawn(data.gameObject,destroy);
-        }
-        
         public static void DespawnAsset(this Object data, bool destroy = false)
         {
             if (data == null) {
                 return;
             }
 
-            switch (data) {
-                case Component target :
-                    DespawnComponent(target, destroy);
-                    break;
-                case { } target:
-                    DespawnRegularAsset(target, destroy);
-                    break;
-            }
+            ObjectPool.Despawn(data,destroy);
 
-        }
-        
-        private static void DespawnRegularAsset(this Object instance, bool destroy = false)
-        {
-            ObjectPool.Despawn(instance,destroy);
         }
     }
 }

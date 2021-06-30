@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using UniModules.UniCore.Runtime.Common;
+using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
 
 namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 {
@@ -227,13 +228,18 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         }
         
         // This allows you to despawn a clone via GameObject, with optional delay
-        public void Despawn(Object clone,bool destroy = false)
+        public void Despawn(Object asset,bool destroy = false)
         {
-            if (!clone) return;
+            if (!asset) return;
 
+            var clone = asset.GetRootAsset();
+            
             // Try and find the pool associated with this clone
             if (allCloneLinks.TryGetValue(clone, out var pool))
             {
+                if(asset is IPoolable poolable)
+                    poolable.Release();
+
                 // Remove the association
                 allCloneLinks.Remove(clone);
                 // Despawn it
