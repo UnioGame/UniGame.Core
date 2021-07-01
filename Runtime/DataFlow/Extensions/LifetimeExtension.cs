@@ -10,6 +10,7 @@ using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
 using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
 using UniModules.UniGame.Core.Runtime.Interfaces;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class LifetimeExtension
 {
@@ -86,6 +87,8 @@ public static class LifetimeExtension
         
         switch (source)
         {
+            case Scene scene:
+                return scene.GetSceneLifeTime();
             case ILifeTime lifeTime:
                 return lifeTime;
             case ILifeTimeContext lifeTimeContext:
@@ -116,13 +119,22 @@ public static class LifetimeExtension
     /// <summary>
     /// release lifetime when all dependencies released
     /// </summary>
+    public static UnionLifeTime ToUnionLifeTime(this ILifeTime source)
+    {
+        var mergedLifeTime = new UnionLifeTime();
+        mergedLifeTime.Add(source);
+        
+        return mergedLifeTime;
+    }
+    
+    /// <summary>
+    /// release lifetime when all dependencies released
+    /// </summary>
     public static ILifeTime MergeLifeTime(
         this ILifeTime source, 
         params ILifeTime[] additional)
     {
-        var mergedLifeTime = new MergedLifeTime();
-        
-        mergedLifeTime.Add(source);
+        var mergedLifeTime = source.ToUnionLifeTime();
         mergedLifeTime.Add(additional);
         
         return mergedLifeTime;
