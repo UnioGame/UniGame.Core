@@ -5,15 +5,40 @@ using UniGame.Core.Runtime.DataFlow;
 using UniModules.UniCore.Runtime.DataFlow;
 using UniModules.UniCore.Runtime.DataFlow.Interfaces;
 using UniModules.UniCore.Runtime.ObjectPool.Runtime;
+using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
 using UniModules.UniGame.Core.Runtime.DataFlow;
 using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
 using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
 using UniModules.UniGame.Core.Runtime.Interfaces;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
 public static class LifetimeExtension
 {
+
+    public static ILifeTime DestroyWith(this ILifeTime lifeTime, GameObject gameObject)
+    {
+        if (!gameObject) return lifeTime;
+        lifeTime.AddCleanUpAction(() => Despawn(gameObject,true));
+        return lifeTime;
+    }
+    
+    public static ILifeTime DestroyWith(this ILifeTime lifeTime, Component component)
+    {
+        if (!component) return lifeTime;
+        lifeTime.AddCleanUpAction(() =>  Despawn(component.gameObject,true));
+        return lifeTime;
+    }
+    
+    public static ILifeTime DespawnWith(this ILifeTime lifeTime, GameObject gameObject)
+    {
+        if (!gameObject) return lifeTime;
+        lifeTime.AddCleanUpAction(() => Despawn(gameObject,false));
+        return lifeTime;
+    }
+
+    
     public static LifeTimeDefinition AddTo(this LifeTimeDefinition lifeTimeDefinition, ILifeTime lifeTime)
     {
         if (lifeTime == null)
@@ -177,4 +202,18 @@ public static class LifetimeExtension
     } 
     
     #endregion
+    
+    
+    private static void Despawn(GameObject gameObject,bool destroy)
+    {
+        if (!gameObject) return;
+        
+        if (destroy)
+        {
+            Object.Destroy(gameObject);
+            return;
+        }
+        
+        gameObject.DespawnAsset();
+    }
 }

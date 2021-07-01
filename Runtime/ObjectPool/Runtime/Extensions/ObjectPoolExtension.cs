@@ -45,6 +45,16 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
             return pawn;
         }
 
+        public static GameObject SpawnActive(this GameObject prototype,
+            Transform parent = null,
+            bool stayWorldPosition = false)
+        {
+            if (!prototype) return null;
+            var transform = prototype.transform;
+            var pawn = ObjectPool.Spawn(prototype,true, transform.position, transform.rotation, parent, stayWorldPosition);
+            return pawn;
+        }
+        
         public static GameObject SpawnActive(this GameObject prototype, 
             Vector3 position,
             Quaternion rotation, 
