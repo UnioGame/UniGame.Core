@@ -8,7 +8,7 @@ using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
 namespace UniModules.UniGame.Core.Runtime.DataFlow
 {
     [Serializable]
-    public class MergedLifeTime : IDisposable, IPoolable, ILifeTime
+    public class UnionLifeTime : IDisposable, IPoolable, ILifeTime
     {
         private int _counter;
         private LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
@@ -31,6 +31,8 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow
         {
             
         }
+
+        public void Terminate() => _lifeTime.Terminate();
         
         public void Add(params ILifeTime[] lifeTimes)
         {

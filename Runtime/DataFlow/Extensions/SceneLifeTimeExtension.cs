@@ -5,7 +5,6 @@ using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
 using UniModules.UniGame.Core.Runtime.Interfaces;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Object = UnityEngine.Object;
 
 namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
 {
@@ -29,6 +28,12 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
 
         }
 
+        public static ILifeTime GetSceneLifeTime(this Scene scene)
+        {
+            return _sceneLifeTimes.TryGetValue(scene.handle, out var lifeTime) 
+                ? lifeTime : LifeTime.TerminatedLifetime;
+        }
+        
         public static ILifeTime GetLifeTime(this Scene scene)
         {
             return _sceneLifeTimes.TryGetValue(scene.handle, out var lifeTime) 
