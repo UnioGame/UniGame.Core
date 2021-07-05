@@ -266,13 +266,17 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 
         private GameObject ResetGameObjectState(GameObject targetGameObject)
         {
-            if (!targetGameObject)
-                return targetGameObject;
+            
+#if UNITY_EDITOR
+            if(Application.isPlaying == false) return targetGameObject;
+#endif
+            if (targetGameObject == null) return targetGameObject;
             
             targetGameObject.SetActive(false);
+            var parent = containerObject ? containerObject : null;
             // Move it under this GO
             if (targetGameObject.transform.parent != null) 
-                targetGameObject.transform.SetParent(containerObject, false);
+                targetGameObject.transform.SetParent(parent, false);
 
             return targetGameObject;
         }
