@@ -183,6 +183,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 
             // Create a new pool for this prefab?
             var container = new GameObject(targetPrefab.name);
+            DontDestroyOnLoad(container);
             var containerTransform = container.transform;
             containerTransform.SetParent(ObjectPoolData.RootContainer.transform);
             
