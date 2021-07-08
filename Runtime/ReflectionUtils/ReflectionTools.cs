@@ -44,6 +44,9 @@
         
         private static MemorizeItem<Type, List<Type>> _attributeTypes =
             MemorizeTool.Memorize<Type, List<Type>>(GetAttributesTypes);
+        
+        private static MemorizeItem<Type, List<Attribute>> _attributesOfTypes =
+            MemorizeTool.Memorize<Type, List<Attribute>>(GetAttributesOfTypes);
 
         private static MemorizeItem<Type, List<string>> _typeUsings =
             MemorizeTool.Memorize<Type, List<string>>(GetAllUsingsNonChached);
@@ -357,6 +360,21 @@
             return _attributeTypes[typeof(TAttribute)];
         }
 
+        public static IReadOnlyList<Attribute> GetAllAttributesOfType(Type attributeType)
+        {
+            return _attributesOfTypes[attributeType];
+        }
+        
+        public static IEnumerable<TAttribute> GetAllAttributesOfType<TAttribute>()
+            where TAttribute : Attribute
+        {
+            foreach (var attribute in GetAllAttributesOfType(typeof(TAttribute)))
+            {
+                if (attribute is TAttribute typeAttribute)
+                    yield return typeAttribute;
+            }
+        }
+        
         public static IReadOnlyList<Type> GetAssignableWithAttribute<TAttribute>(this Type baseType)
             where TAttribute : Attribute
         {
@@ -444,6 +462,22 @@
             where TAttribute : Attribute
         {
             return info.GetCustomAttribute<TAttribute>() != null;
+        }
+
+        
+        public static List<Attribute> GetAttributesOfTypes(Type attributeType)
+        {
+            var attributeValues = new List<Attribute>();
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (var type in assembly.GetTypes())
+                {
+                    var attributes = type.GetCustomAttributes(attributeType, true);
+                    attributeValues.AddRange(attributes.OfType<Attribute>());
+                }
+            }
+            
+            return attributeValues;
         }
 
         public static List<Type> GetAttributesTypes(Type attributeType)
