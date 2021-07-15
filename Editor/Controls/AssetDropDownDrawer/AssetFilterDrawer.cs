@@ -1,4 +1,11 @@
-﻿namespace UniModules.UniGame.Core.EditorTools.Editor.Controls.AssetDropDownControl
+﻿            
+#if ODIN_INSPECTOR
+
+using Sirenix.Utilities.Editor;
+
+#endif
+
+namespace UniModules.UniGame.Core.EditorTools.Editor.Controls.AssetDropDownControl
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +14,7 @@
     using Runtime.Attributes;
     using Runtime.Extension;
     using UniCore.Runtime.Utils;
-    using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
+    using AssetOperations;
     using UnityEditor;
     using UnityEngine;
     using Object = UnityEngine.Object;
@@ -16,17 +23,20 @@
     public class AssetFilterDrawer : PropertyDrawer
     {
         private const string emptyValue = "none";
-        
+
+        private bool hasOdinSupport = false;
         private static List<string> assetsItems = new List<string>();
         private static Func<AssetFilterAttribute, List<Object>> typeAssets = MemorizeTool.Create<AssetFilterAttribute,List<Object>>(FindFiltered);
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+#if ODIN_INSPECTOR
+            hasOdinSupport = true;
+#endif
+            
             var targetAttribute = attribute as AssetFilterAttribute;
 
-            var filterType = targetAttribute.FilterType == null ?
-                fieldInfo.FieldType : targetAttribute.FilterType;
-            
+            var filterType = targetAttribute.FilterType ?? fieldInfo.FieldType;
             var folderFilter = targetAttribute.FolderFilter;
             
             assetsItems.Clear();
@@ -40,41 +50,44 @@
             };
 
             var assets = typeAssets(searchTarget);
-            
             var target = property.objectReferenceValue;
             var currentValue = assets.FirstOrDefault(x => target == x);
             var index = assets.IndexOf(currentValue) + 1;
-
+            var assetValue = property.objectReferenceValue;
+            
             assetsItems.AddRange(assets.Select(x => x.name));
-            
-            var controlPosition = position;
-            
-            EditorGUI.PropertyField(controlPosition, property, label,true);
 
+            DrawTypeDropDown(property, assets, index);
+
+            if (!hasOdinSupport)
+            {
+                EditorGUILayout.PropertyField(property, label,true);
+            }
+            
 #if ODIN_INSPECTOR
-            if (searchTarget.DrawWithOdin) {
-                var assetValue = property.objectReferenceValue;
-                if (assetValue) {
-                    assetValue.DrawOdinPropertyInspector();
-                }
+            if (searchTarget.DrawWithOdin && assetValue)
+            {
+                SirenixEditorFields.UnityObjectField(label,assetValue, assetValue.GetType(),false);
             }
 #endif
 
-            var newIndex = EditorGUI.Popup(position, 
-                string.Empty, 
-                index, 
-                assetsItems.ToArray());
+        }
+
+        private bool DrawTypeDropDown(SerializedProperty property,List<Object> assets,int index)
+        {
             
-            position.height += position.height;
+            //type dropdown
+            var newIndex = EditorGUILayout.Popup(string.Empty, index, assetsItems.ToArray());
 
             if (newIndex == index) {
-                return;
+                return false;
             }
 
             var targetIndex = newIndex - 1;
             property.objectReferenceValue = targetIndex < 0 ? null : assets[targetIndex];
             property.serializedObject.ApplyModifiedProperties();
 
+            return true;
         }
 
         private static List<Object> FindFiltered(AssetFilterAttribute targetAttribute)

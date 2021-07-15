@@ -77,7 +77,7 @@
 
         #endregion
         
-        public static implicit operator Type(SType type) => type.Type;
+        public static implicit operator Type(SType type) => type?.Type;
 
         public static implicit operator SType(Type type) => new SType(){Type = type};
 
