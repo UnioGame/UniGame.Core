@@ -44,6 +44,7 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
         }
 
 #if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.ShowIf("@UnityEngine.Application.isPlaying")]
         [Sirenix.OdinInspector.Button]
 #endif
         public void Dispose() => Reset();
