@@ -14,10 +14,23 @@ namespace UniModules.UniGame.Core.EditorTools.Editor.Tools
         public const string FileRefExpr = @"[\w|\W]*[\/|\\](?<filename>[\w]+)+\.(\w+)";
 
         private static string assetsFolderName = "Assets";
-
+        private static string projectPath;
+        
         public static char MoveDirectorySeparator = '/';
         public static Regex FileRegExpr = new Regex(FileRefExpr, RegexOptions.Compiled);
 
+
+        public static string ProjectPath
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(projectPath)) return projectPath;
+                var index = Application.dataPath.LastIndexOf(assetsFolderName,StringComparison.InvariantCultureIgnoreCase);
+                projectPath = Application.dataPath.Remove(index, assetsFolderName.Length);
+                return projectPath;
+            }
+        }
+        
         public static bool WriteAssetsContent(string targetPath, string content)
         {
             if (string.IsNullOrEmpty(targetPath))
@@ -122,6 +135,16 @@ namespace UniModules.UniGame.Core.EditorTools.Editor.Tools
             if (string.IsNullOrEmpty(path))
                 return path;
             return path.TrimStart(Path.PathSeparator).TrimStart(MoveDirectorySeparator).TrimStart('\\');
+        }
+        
+            
+
+        /// <summary>Checks if this FTP path is a top level path</summary>
+        public static bool IsAbsolutePath(this string path) => path.StartsWith("/") || path.StartsWith("./") || path.StartsWith("../");
+
+        public static string ToAbsoluteProjectPath(this string path)
+        {
+            return IsAbsolutePath(path) ? path : ProjectPath.CombinePath(path);
         }
 
         public static string TrimEndPath(this string path)
