@@ -14,8 +14,13 @@ namespace UniModules.UniGame.Core.Runtime.Extension
         }
     
         public static string RemoveSpecialAndDotsCharacters(this string str)
-        {   
-            return Regex.Replace(str, _validMethodCharacters, "", RegexOptions.Compiled);
+        {
+            return string.IsNullOrEmpty(str) ? string.Empty : Regex.Replace(str, _validMethodCharacters, "", RegexOptions.Compiled);
+        }
+
+        public static string RemoveWhiteSpaces(this string str)
+        {
+            return string.IsNullOrEmpty(str) ? string.Empty :  str.Replace(" ", string.Empty);
         }
     
     }
