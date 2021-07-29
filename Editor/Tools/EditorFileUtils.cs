@@ -144,7 +144,8 @@ namespace UniModules.UniGame.Core.EditorTools.Editor.Tools
 
         public static string ToAbsoluteProjectPath(this string path)
         {
-            return IsAbsolutePath(path) ? path : ProjectPath.CombinePath(path);
+            return string.IsNullOrEmpty(path) ? string.Empty : 
+                IsAbsolutePath(path) ? path : ProjectPath.CombinePath(path);
         }
 
         public static string TrimEndPath(this string path)
