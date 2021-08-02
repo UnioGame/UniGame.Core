@@ -5,7 +5,7 @@ using UnityEngine;
 using System;
 using System.Reflection;
 
-namespace UniModules.UniCore.EditorTools.Editor.Utility
+namespace UniModules.Editor
 {
     [InitializeOnLoad]
     public static class FixGameViewScale {

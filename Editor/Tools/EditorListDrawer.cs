@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.EditorTools.Editor.Utility
+﻿namespace UniModules.Editor
 {
     using System;
     using System.Collections.Generic;

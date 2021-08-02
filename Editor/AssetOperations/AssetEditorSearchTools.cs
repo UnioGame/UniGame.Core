@@ -1,11 +1,9 @@
-namespace UniModules.UniGame.Core.EditorTools.Editor.AssetOperations
+namespace UniModules.Editor
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Runtime.Extension;
-    using Tools;
-    using UniModules.UniGame.Core.Runtime.Extension;
+    using UniGame.Core.Runtime.Extension;
     using UnityEditor;
     using UnityEngine;
     using Object = UnityEngine.Object;

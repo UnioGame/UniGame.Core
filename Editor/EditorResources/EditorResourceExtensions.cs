@@ -1,6 +1,5 @@
-﻿namespace UniModules.UniGame.Core.Editor.EditorResources
+﻿namespace UniModules.Editor
 {
-    using EditorTools.Editor.EditorResources;
     using UnityEngine;
 
     public static class EditorResourceExtensions 

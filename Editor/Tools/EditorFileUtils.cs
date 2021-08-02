@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using UniCore.Runtime.ProfilerTools;
 
-namespace UniModules.UniGame.Core.EditorTools.Editor.Tools
+namespace UniModules.Editor
 {
     using System;
     using System.Linq;

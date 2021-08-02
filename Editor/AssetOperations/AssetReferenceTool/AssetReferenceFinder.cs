@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniGame.Core.EditorTools.Editor.AssetOperations.AssetReferenceTool
+﻿using UniModules.UniGame.Core.Runtime.Extension;
+
+namespace UniModules.Editor
 {
     using System;
     using System.Collections.Generic;
@@ -7,11 +9,8 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading;
-    using EditorResources;
-    using Runtime.Extension;
-    using Tools;
     using UniModules.UniCore.EditorTools.Editor;
-    using UniModules.UniCore.EditorTools.Editor.Utility;
+    using Editor;
     using UniModules.UniCore.Runtime.Rx.Extensions;
     using UnityEditor;
     using UnityEngine;
@@ -50,7 +49,7 @@
                 item.Value.Clear();
             }
 
-            AssetEditorTools.ShowActionProgress(searchResult.Progression,searchResult.LifeTime).
+            UniModules.Editor.AssetEditorTools.ShowActionProgress(searchResult.Progression,searchResult.LifeTime).
                 AddTo(searchResult.LifeTime);
             searchResult = FindAsssetReferences(searchResult, files);
             searchResult.Complete();
@@ -68,10 +67,10 @@
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             
-            files.AsParallel().
-                WithCancellation(cancelationToken).
-                AsUnordered().
-                Do(file => {
+            files.AsParallel()
+                .WithCancellation(cancelationToken)
+                .AsUnordered()
+                .Do(file => {
                                     
                     Interlocked.Increment(ref progressIndex);
 
@@ -154,7 +153,7 @@
             }
 
             if (filter.assetFolders.Length > 0) {
-                AssetEditorTools.GetAssets<Object>(filter.assetFolders).ForEach(x => result.AddKey(x));
+                UniModules.Editor.AssetEditorTools.GetAssets<Object>(filter.assetFolders).ForEach(x => result.AddKey(x));
             }
 
             return result;

@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.EditorTools.Editor.AssetOperations
+﻿namespace UniModules.Editor
 {
     using System;
     using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;

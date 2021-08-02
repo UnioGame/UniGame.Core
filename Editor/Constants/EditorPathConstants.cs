@@ -1,9 +1,7 @@
-﻿using UniModules.UniGame.Core.EditorTools.Editor.Tools;
-
-namespace UniModules.UniGame.Core.EditorTools.Editor
+﻿namespace UniModules.UniGame.Core.EditorTools.Editor
 {
     using System.IO;
-    using AssetOperations;
+    using UniModules.Editor;
     using Core.Editor.Constants;
     using UnityEditor;
 

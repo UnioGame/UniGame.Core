@@ -1,7 +1,7 @@
-﻿namespace UniModules.UniGame.Core.EditorTools.Editor.EditorResources
+﻿namespace UniModules.Editor
 {
     using System;
-    using UniModules.UniResourceSystem.Runtime.Interfaces;
+    using UniResourceSystem.Runtime.Interfaces;
     using UnityEngine;
     using Object = UnityEngine.Object;
 

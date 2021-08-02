@@ -1,17 +1,16 @@
-﻿namespace UniModules.UniCore.EditorTools.Editor.Utility {
+﻿namespace UniModules.Editor {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using UniModules.UniGame.Core.EditorTools.Editor.AssetOperations;
+    using UniModules.Editor;
     using UnityEditor;
     using UnityEngine;
     using Object = UnityEngine.Object;
 
     public static class EditorExtension
     {
-
-
+        
         public static bool OpenEditorScript(this Type type,params string[] folders) => AssetEditorTools.OpenScript(type,folders);
         
         public static bool OpenEditorScript<T>(this Type type,params string[] folders) => AssetEditorTools.OpenScript<T>(folders);

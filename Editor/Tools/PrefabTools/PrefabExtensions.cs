@@ -1,10 +1,6 @@
-﻿namespace UniModules.UniGame.Core.EditorTools.Editor
+﻿namespace UniModules.Editor
 {
     using System.Collections.Generic;
-    using System.IO;
-    using AssetOperations;
-    using global::UniCore.Runtime.ProfilerTools;
-    using Tools;
     using UnityEngine;
     
 #if UNITY_EDITOR

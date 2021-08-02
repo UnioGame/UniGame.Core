@@ -1,15 +1,14 @@
-﻿namespace UniModules.UniGame.Core.EditorTools.Editor.AssetOperations
+﻿using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+
+namespace UniModules.Editor
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
-    using EditorResources;
-    using Runtime.DataFlow.Interfaces;
-    using Tools;
     using UniModules.UniCore.EditorTools.Editor;
-    using UniModules.UniCore.EditorTools.Editor.Utility;
+    using Editor;
     using UniModules.UniCore.Runtime.ReflectionUtils;
     using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniCore.Runtime.Utils;

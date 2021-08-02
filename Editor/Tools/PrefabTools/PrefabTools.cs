@@ -10,7 +10,7 @@ namespace UniGame.Tools
     using UnityEngine;
     using Debug = UnityEngine.Debug;
     using UniModules.UniCore.EditorTools.Editor.PrefabTools;
-    using UniModules.UniCore.EditorTools.Editor.Utility;
+    using UniModules.Editor;
 
     public static class PrefabTools
     {

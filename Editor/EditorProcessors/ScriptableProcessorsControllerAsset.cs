@@ -5,10 +5,9 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
 {
     using System.Collections.Generic;
     using System.Linq;
-    using EditorTools.Editor.AssetOperations;
+    using UniModules.Editor;
     using UnityEditor;
     using Runtime.Extension;
-    using UniCore.EditorTools.Editor.Utility;
     using UnityEngine;
 
     [GeneratedAssetInfo("ScriptableProcessors")]

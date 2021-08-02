@@ -1,11 +1,9 @@
-﻿using UniModules.UniCore.Runtime.ReflectionUtils;
+﻿using UniModules.UniCore.EditorTools.Editor;
+using UniModules.UniCore.Runtime.ReflectionUtils;
 
-namespace UniModules.UniCore.EditorTools.Editor.Utility {
+namespace UniModules.Editor {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using Runtime.ProfilerTools;
     using UnityEditor;
     using UnityEngine;
     using Object = UnityEngine.Object;

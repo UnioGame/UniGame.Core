@@ -4,8 +4,7 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
 {
     using System;
     using EditorTools.Editor;
-    using EditorTools.Editor.AssetOperations;
-    using EditorTools.Editor.Tools;
+    using UniModules.Editor;
     using UniCore.Runtime.ReflectionUtils;
     using UnityEditor;
     using UnityEngine;

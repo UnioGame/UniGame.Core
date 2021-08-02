@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.EditorTools.Editor.EditorResources
+﻿namespace UniModules.Editor
 {
     using System;
     using UnityEditor;

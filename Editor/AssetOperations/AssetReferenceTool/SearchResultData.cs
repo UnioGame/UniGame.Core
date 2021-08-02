@@ -1,14 +1,14 @@
-﻿namespace UniModules.UniGame.Core.EditorTools.Editor.AssetOperations.AssetReferenceTool
+﻿using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+using UniModules.UniGame.Core.Runtime.Interfaces;
+
+namespace UniModules.Editor
 {
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using EditorResources;
-    using Runtime.DataFlow.Interfaces;
-    using Runtime.Interfaces;
     using UniModules.UniCore.EditorTools.Editor;
-    using UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniCore.Runtime.Rx.Extensions;
+    using UniCore.Runtime.DataFlow;
+    using UniCore.Runtime.Rx.Extensions;
     using UniRx;
     using Object = UnityEngine.Object;
 
