@@ -42,6 +42,13 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
             ClassPool.Despawn(data);
         }
         
+        public static void DespawnRecursive<TData>(this List<TData> data)
+            where TData : class
+        {
+            DespawnItems(data);
+            DespawnCollection<TData>(data);
+        }
+        
         public static void DespawnRecursive<TValue,TData>(this TValue data)
             where TValue : class, ICollection<TData> 
         {
@@ -74,6 +81,13 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
         }
         
         public static void Despawn<TData>(this Queue<TData> value)
+        {
+            value.Clear();
+            ClassPool.Despawn(value);
+        }
+        
+        public static void DespawnCollection<TData>(this List<TData> value)
+            where  TData : class
         {
             value.Clear();
             ClassPool.Despawn(value);
