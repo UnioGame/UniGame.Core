@@ -272,12 +272,13 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 #endif
             if (targetGameObject == null) return targetGameObject;
             
-            targetGameObject.SetActive(false);
             var parent = containerObject ? containerObject : null;
             // Move it under this GO
             if (targetGameObject.transform.parent != null) 
                 targetGameObject.transform.SetParent(parent, false);
 
+            targetGameObject.SetActive(false);
+            
             return targetGameObject;
         }
         
