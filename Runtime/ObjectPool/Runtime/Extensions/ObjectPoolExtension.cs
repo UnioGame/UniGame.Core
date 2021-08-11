@@ -143,12 +143,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
 
         public static void DespawnAsset(this Object data, bool destroy = false)
         {
-            if (data == null) {
-                return;
-            }
-
             ObjectPool.Despawn(data,destroy);
-
         }
     }
 }
