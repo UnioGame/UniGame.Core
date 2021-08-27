@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using UniModules.UniGame.Core.Runtime.Attributes;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace UniModules.UniGame.Core.EditorTools.Editor.DrawersTools
+namespace UniModules.UniGame.Editor.DrawersTools
 {
-    using Runtime.Attributes;
     using UniModules.Editor;
     using UniCore.Runtime.Utils;
 

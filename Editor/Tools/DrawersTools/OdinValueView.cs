@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.EditorTools.Editor.DrawersTools
+﻿namespace UniModules.UniGame.Editor.DrawersTools
 {
     using UnityEngine;
     using UnityEngine.UIElements;
