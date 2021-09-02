@@ -23,13 +23,14 @@ namespace UniModules.UniGame.Core.Runtime.Common
         /// <summary>
         /// restart disposable
         /// </summary>
-        public void Initialize()
+        public IDisposableLifetime Initialize()
         {
             lifeTime = lifeTimeDefinition.LifeTime;
             lifeTimeDefinition.Release();
             isCompleted = false;
-            
             lifeTime.AddCleanUpAction(Complete);
+            
+            return this;
         }
         
         public void Dispose()
