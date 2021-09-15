@@ -18,7 +18,9 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
     {
         private static Color _logColorEnable = new Color(0.30f, 0.8f, 0.490f);
         private static Color _logColorDisable = Color.magenta;
-        
+
+        private string _objectName;
+        private Type _assetType;
         protected LifeTimeDefinition _lifeTimeDefinition;
 
         #region LifeTime API
@@ -33,6 +35,10 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
         
         public CancellationToken TokenSource => LifeTime.TokenSource;
 
+        public string Name => _objectName;
+
+        public Type Type => _assetType;
+        
         #endregion
                 
         public ILifeTime LifeTime => _lifeTimeDefinition = _lifeTimeDefinition ?? new LifeTimeDefinition();
@@ -51,6 +57,8 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
 
         private void OnEnable()
         {
+            _objectName = name;
+            _assetType = GetType();
             _lifeTimeDefinition?.Release();
             _lifeTimeDefinition = _lifeTimeDefinition ?? new LifeTimeDefinition();
             
@@ -68,7 +76,7 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
         private void LogLifeTimeScriptableMessage(string message,Color color)
         {
             if(Application.isPlaying)
-                GameLog.Log($"LifetimeScriptableObject Name: {name} Type: {GetType().Name}  Message {message}",color);
+                GameLog.Log($"LifetimeScriptableObject Name: {_objectName} Type: {_assetType.Name}  Message {message}",color);
         }
         
         private void OnDisable()
@@ -76,9 +84,7 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
             _lifeTimeDefinition?.Terminate();
 
             if (!UniApplication.IsPlaying)
-            {
                 OnEditorDisabled();
-            }
             
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.playModeStateChanged -= PlayModeChanged;
