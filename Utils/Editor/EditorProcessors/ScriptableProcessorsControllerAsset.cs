@@ -1,5 +1,7 @@
 ﻿namespace UniModules.UniGame.Core.Editor.EditorProcessors
 {
+    using System;
+    using UniModules.UniCore.Runtime.ReflectionUtils;
     using System.Collections;
     using Unity.EditorCoroutines.Editor;
     using System.Collections.Generic;
@@ -19,6 +21,8 @@
         public static void ProcessorsInitialize() => EditorApplication.delayCall +=
             () => EditorCoroutineUtility.StartCoroutineOwnerless(InitializeRoutine());
 
+        public static Type ProcessorApiType = typeof(IEditorProcess);
+        
         #endregion
 
         #region inspector
@@ -35,7 +39,7 @@
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Button]
 #endif
-        public void Restart() => Initialize();
+        public void Restart() => InitializeByEditor();
         
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Button]
@@ -58,11 +62,12 @@
         private static void InitializeInline()
         {
             var asset = Asset;
+            var types = ProcessorApiType.GetAssignableTypes();
             
-            var allProcessors = AssetEditorTools
-                .GetAssets<ScriptableObject>()
-                .Where(x => x)
-                .Where(x => x is IEditorProcess)
+            var allProcessors = types.Select(x => AssetEditorTools.GetAssets(x))
+                .SelectMany(x => x)
+                .Where(x => x is ScriptableObject && x is IEditorProcess)
+                .Select(x => x as ScriptableObject)
                 .ToList();
             
             asset.processors.Clear();

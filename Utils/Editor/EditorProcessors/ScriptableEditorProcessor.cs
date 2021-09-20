@@ -42,7 +42,7 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
         #endregion
 
         private EditorCoroutine           _coroutine;
-        private ReactiveCollection<TData> _removedNodes  = new ReactiveCollection<TData>();
+        private ReactiveCollection<TData> _removedData  = new ReactiveCollection<TData>();
 
         public bool IsRunning => _coroutine != null;
 
@@ -52,9 +52,9 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
             data.Add(dataItem);
         }
 
-        public void Remove(TData nodeView)
+        public void Remove(TData item)
         {
-            _removedNodes.Add(nodeView);
+            _removedData.Add(item);
         }
 
 #if ODIN_INSPECTOR
@@ -112,13 +112,13 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
 
                 switch (targetProcessor)
                 {
-                    case Type assetType when assetType.IsScriptableObject():
+                    case { } assetType when assetType.IsScriptableObject():
                         var assetProcessor = CreateInstance(targetProcessor);
                         assetProcessor.name = targetProcessor.Name;
                         assetProcessor      = assetProcessor.SaveAsset(assetProcessor.name, AssetPath);
                         assetsProcessors.Add(assetProcessor);
                         break;
-                    case Type _:
+                    case { }:
                         var processor = Activator.CreateInstance(targetProcessor) as TDataProcessor;
                         processors.Add(processor);
                         break;
@@ -159,7 +159,7 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
             {
                 data.RemoveAll(x => x == null);
 
-                foreach (var removedNode in _removedNodes)
+                foreach (var removedNode in _removedData)
                     data.Remove(removedNode);
 
                 if (data.Count > 0)
@@ -198,4 +198,6 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
             }
         }
     }
+    
+    
 }
