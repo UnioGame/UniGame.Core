@@ -5,7 +5,7 @@
     public interface IAsyncState : IAsyncState<AsyncStatus>
     {
     }
-
+    
     public interface IAsyncState<TValue,TResult> : 
         IAsyncCommand<TValue,TResult>, 
         IAsyncEndPoint,

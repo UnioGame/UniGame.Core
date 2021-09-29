@@ -31,7 +31,8 @@
         public void Dispose()
         {
             if (_isDisposed) return;
-            
+
+            _isDisposed = true;
             var sourceList = Interlocked.Exchange(ref _list, null);
             if (sourceList == null)
                 return;

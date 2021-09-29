@@ -7,7 +7,6 @@
         IReactiveProperty<TValue>,
         IReadonlyRecycleReactiveProperty<TValue>,
         IValueContainerStatus,
-        ILifeTimeContext,
         IDisposable
 #if UNITY_EDITOR
         ,IReadonlyObjectValue
