@@ -39,17 +39,14 @@
         {
             //state already active
             if (_isActive)
-            {
-                return await UniTaskOperations
-                    .Await(() => _isActive, () => _value.Value, LifeTime.AsCancellationToken());
-            }
+                return await UniTaskOperations.AwaitAsync(() => _isActive, () => _value.Value, LifeTime.TokenSource);
 
             _isActive = true;
 
             if (!_isInitialized)
                 Initialize();
 
-            _data               = data;
+            _data = data;
 
             //cleanup value on reset
             LifeTime.AddCleanUpAction(() => _value.Release());
@@ -57,11 +54,11 @@
             _value.Value = GetInitialExecutionValue();
 
             //if target value contains lifetime, then bind
-            var contextLifetime = data is ILifeTimeContext lifeTimeContext ?
-                lifeTimeContext.LifeTime.Compose(LifeTime) :
-                LifeTime;
+            var contextLifetime = data is ILifeTimeContext lifeTimeContext ? lifeTimeContext.LifeTime.Compose(LifeTime) : LifeTime;
 
-            _taskHandle = OnExecute(data, contextLifetime).Preserve();
+            _taskHandle = OnExecute(data, contextLifetime)
+                .AttachExternalCancellation(contextLifetime.TokenSource)
+                .Preserve();
 
             var result = await _taskHandle;
 
@@ -74,15 +71,15 @@
                     break;
                 default:
                     if (this is IAsyncRollback<TData, TResult> valueRollback)
-                        result = await valueRollback.Rollback(data);
+                        result = await valueRollback.Rollback(data).AttachExternalCancellation(contextLifetime.TokenSource);
                     if (this is IAsyncRollback<TData> rollback)
-                        await rollback.Rollback(data);
+                        await rollback.Rollback(data).AttachExternalCancellation(contextLifetime.TokenSource);
                     break;
             }
 
             _value.Value = result;
 
-            await Finish(data);
+            await Finish(data).AttachExternalCancellation(contextLifetime.TokenSource);
 
             return result;
         }
@@ -103,11 +100,7 @@
             _lifeTime?.Release();
         }
 
-        protected virtual TResult GetInitialExecutionValue()
-        {
-            return default;
-        }
-
+        protected virtual TResult          GetInitialExecutionValue()                         => default;
         protected virtual UniTask<TResult> OnExecute(TData data, ILifeTime executionLifeTime) => UniTask.FromResult<TResult>(default);
 
         protected virtual UniTask OnComplete(TResult value, TData data, ILifeTime lifeTime) => UniTask.CompletedTask;
@@ -116,9 +109,9 @@
 
         private void Initialize()
         {
-            _isInitialized = true;
-            _lifeTime      = (_lifeTime ?? new LifeTimeDefinition());
-            _value         = (_value ?? new RecycleReactiveProperty<TResult>());
+            _isInitialized =   true;
+            _lifeTime      ??= new LifeTimeDefinition();
+            _value         ??= new RecycleReactiveProperty<TResult>();
         }
     }
 }

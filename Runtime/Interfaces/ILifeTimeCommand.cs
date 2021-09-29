@@ -1,9 +1,10 @@
 namespace UniModules.UniGame.Core.Runtime.Interfaces
 {
+    using Cysharp.Threading.Tasks;
     using DataFlow.Interfaces;
 
     public interface ILifeTimeCommand
     {
-        void Execute(ILifeTime lifeTime);
+        UniTask Execute(ILifeTime lifeTime);
     }
 }
