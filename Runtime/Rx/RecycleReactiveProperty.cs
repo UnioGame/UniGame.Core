@@ -5,9 +5,7 @@
     using DataStructure;
     using global::UniGame.Core.Runtime.Utils;
     using Interfaces.Rx;
-    using UniCore.Runtime.Common;
     using UniCore.Runtime.DataFlow;
-    using UniCore.Runtime.DataFlow.Interfaces;
     using UniCore.Runtime.ObjectPool.Runtime;
     using UniCore.Runtime.ObjectPool.Runtime.Extensions;
     using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
@@ -18,12 +16,15 @@
     [Serializable]
     public class RecycleReactiveProperty<T> : 
         IRecycleReactiveProperty<T>  , 
+        IUniObserverLinkedList<T>,
         IDespawnable
     {
         private IEqualityComparer<T> _equalityComparer;
         private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
         private UniLinkedList<IObserver<T>> _observers;
 
+        #region inspector
+                
         [SerializeField]
         protected T value = default;
         
@@ -31,7 +32,13 @@
         [SerializeField]
         protected bool hasValue = false;
 
-        protected UniLinkedList<IObserver<T>> Observers => _observers = _observers ?? new UniLinkedList<IObserver<T>>();
+        #endregion
+
+        [NonSerialized]
+        private UniObserverNode<T> _root;
+
+        [NonSerialized]
+        private UniObserverNode<T> _last;
 
         #region constructor
 
@@ -45,9 +52,9 @@
         
         #endregion
 
-        public ILifeTime LifeTime => _lifeTimeDefinition ?? (_lifeTimeDefinition = new LifeTimeDefinition());
+        public ILifeTime LifeTime => _lifeTimeDefinition ??= new LifeTimeDefinition();
         
-        IEqualityComparer<T> EqualityComparer => _equalityComparer ?? (_equalityComparer = CreateComparer());
+        IEqualityComparer<T> EqualityComparer => _equalityComparer ??= CreateComparer();
         
         public T Value {
             get => value;
@@ -72,24 +79,48 @@
                 return Disposable.Empty;
             }
             
-            var disposeAction = ClassPool.Spawn<DisposableAction>();
-            
-            var node = Observers.Add(observer);
-            disposeAction.Initialize(() => Remove(node));
-              
             //if value already exists - notify
             if(hasValue) observer.OnNext(Value);
             
-            return disposeAction;
+            var next = ClassPool.Spawn<UniObserverNode<T>>()
+                .Initialize(this,observer);
+
+            if (_root == null)
+            {
+                _root = _last = next;
+            }
+            else
+            {
+                _last.Next    = next;
+                next.Previous = _last;
+                _last         = next;
+            }
+            
+            return next;
+            
         }
 
+        public void UnsubscribeNode(UniObserverNode<T> node)
+        {
+            if (node == _root)
+                _root = node.Next;
+            
+            if (node == _last)
+                _last = node.Previous;
+            
+            if (node.Previous != null)
+                node.Previous.Next = node.Next;
+            
+            if (node.Next != null)
+                node.Next.Previous = node.Previous;
+        }
+        
         public void Dispose() => _lifeTimeDefinition.Terminate();
 
         public void SetValue(T propertyValue)
         {
-            if (hasValue && EqualityComparer.Equals(this.value, propertyValue)) {
+            if (hasValue && EqualityComparer.Equals(value, propertyValue)) 
                 return;
-            }
 
             SetValueForce(propertyValue);
         }
@@ -98,9 +129,9 @@
         {
             hasValue = true;
             value    = propertyValue;
-            Observers.Apply(x => x.OnNext(propertyValue));
+            RaiseOnNext(ref propertyValue);
         }
-
+        
         public void SetValueSilence(T propertyValue)
         {
             hasValue = true;
@@ -121,36 +152,39 @@
 
         public object GetValue() => value;
         
-        public void SetObjectValue(object value)
+        public void SetObjectValue(object nextValue)
         {
-            if (value is T targetValue) {
+            if (nextValue is T targetValue)
                 SetValue(targetValue);
-            }
         }
         
         #endregion
         
-        protected virtual IEqualityComparer<T> CreateComparer() => UnityEqualityComparer.GetDefault<T>();
-
-        protected virtual void OnRelease(){}
-        
-        private void Remove(ListNode<IObserver<T>> observer)
+        private void RaiseOnNext(ref T nextValue)
         {
-            Observers.Remove(observer);
+            var node = _root;
+            while (node != null)
+            {
+                node.OnNext(nextValue);
+                node = node.Next;
+            }
         }
+        
+        protected virtual IEqualityComparer<T> CreateComparer() => UnityEqualityComparer.GetDefault<T>();
 
         private void CleanUp()
         {
             value = default;
             hasValue = false;
             
-            //stop listing all child observers
-            Observers.Apply(x => x.OnCompleted());
-            Observers.Release();
-            
-            value = default(T);
-                     
-            OnRelease();
+            var node          = _root;
+            _root       = _last = null;
+
+            while (node != null)
+            {
+                node.OnCompleted();
+                node = node.Next;
+            }
         }
 
     }

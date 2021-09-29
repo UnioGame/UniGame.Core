@@ -5,7 +5,7 @@ using UniModules.UniGame.Core.Runtime.Rx;
 using UniRx;
 using UnityEngine;
 
-public class RxTests 
+public class RecycleReactivePropertyTests 
 {
     [Test]
     public void ReactivePropertyDisposeTest()
@@ -20,6 +20,36 @@ public class RxTests
         value.Value = 0;
         Assert.True(true);
     }
+    
+    [Test]
+    public void ReactivePropertyObserversTest()
+    {
+        //info
+        var value1     = 0;
+        var value2     = 0;
+        var value3     = 0;
+        var finalValue = 555;
+        var value      = new RecycleReactiveProperty<int>();
+            
+        //action
+        var disposable1 = value.Subscribe(x => value1 = x);
+        var disposable2 = value.Subscribe(x => value2 = x);
+        var disposable3 = value.Subscribe(x => value3 = x);
+        
+        disposable2.Dispose();
+
+        value.Value = finalValue;
+        
+        value.Dispose();
+        disposable1.Dispose();
+        disposable2.Dispose();
+        disposable3.Dispose();
+        
+        Assert.That(() => value1 == finalValue,$"VALUE {nameof(value1)} NOT EQUAL TO {finalValue}");
+        Assert.That(() => value2 == 0,$"VALUE {nameof(value2)} NOT EQUAL TO {0}");
+        Assert.That(() => value3 == finalValue,$"VALUE {nameof(value3)} NOT EQUAL TO {finalValue}");
+    }
+    
     
     [Test]
     public void ReactivePropertyReceiveTest()
@@ -57,7 +87,7 @@ public class RxTests
     public void UniRxReactiveFirstTwiceAfterTest()
     {
         //info
-        var value       = new ReactiveProperty<int>();
+        var value       = new RecycleReactiveProperty<int>();
         var testValue   = 100;
         var resultValue = 0;
         
@@ -79,7 +109,7 @@ public class RxTests
     public void UniRxReactiveFirstTwiceTest()
     {
         //info
-        var value       = new ReactiveProperty<int>();
+        var value       = new RecycleReactiveProperty<int>();
         var testValue   = 100;
         var resultValue = 0;
         
