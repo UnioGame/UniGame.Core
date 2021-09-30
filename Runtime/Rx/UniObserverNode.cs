@@ -11,8 +11,8 @@
         private IObserver<T>              _observer;
         private IUniObserverLinkedList<T> _list;
 
-        public UniObserverNode<T> Previous { get; internal set; }
-        public UniObserverNode<T> Next     { get; internal set; }
+        public UniObserverNode<T> Previous;
+        public UniObserverNode<T> Next;
 
         public UniObserverNode<T> Initialize(IUniObserverLinkedList<T> list, IObserver<T> observer)
         {
@@ -26,24 +26,25 @@
 
         public void OnError(Exception error) =>  _observer.OnError(error);
 
-        public void OnCompleted() => _observer?.OnCompleted();
+        public void OnCompleted() => _observer.OnCompleted();
 
         public void Dispose()
         {
-            if (_isDisposed) return;
-
-            _isDisposed = true;
             var sourceList = Interlocked.Exchange(ref _list, null);
             if (sourceList == null)
                 return;
             
             sourceList.UnsubscribeNode(this);
-            
-            this.Despawn();
+            sourceList = null;
         }
 
         public void Release()
         {
+            _list?.UnsubscribeNode(this);
+            
+            Previous    = null;
+            Next        = null;
+            
             _isDisposed = false;
             _observer   = null;
             _list       = null;
