@@ -26,7 +26,7 @@
 
         public void OnError(Exception error) =>  _observer.OnError(error);
 
-        public void OnCompleted() => _observer.OnCompleted();
+        public void OnCompleted() => _observer?.OnCompleted();
 
         public void Dispose()
         {
