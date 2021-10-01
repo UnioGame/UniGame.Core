@@ -2,12 +2,10 @@
 {
     using System;
     using System.Threading;
-    using UniCore.Runtime.ObjectPool.Runtime.Extensions;
     using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
 
     public sealed class UniObserverNode<T> : IObserver<T>, IDisposable, IPoolable
     {
-        private bool                      _isDisposed = false;
         private IObserver<T>              _observer;
         private IUniObserverLinkedList<T> _list;
 
@@ -16,7 +14,6 @@
 
         public UniObserverNode<T> Initialize(IUniObserverLinkedList<T> list, IObserver<T> observer)
         {
-            _isDisposed = false;
             _list       = list;
             _observer   = observer;
             return this;
@@ -36,18 +33,16 @@
             
             sourceList.UnsubscribeNode(this);
             sourceList = null;
+
+            Previous    = null;
+            Next        = null;
+            
+            _observer   = null;
         }
 
         public void Release()
         {
-            _list?.UnsubscribeNode(this);
-            
-            Previous    = null;
-            Next        = null;
-            
-            _isDisposed = false;
-            _observer   = null;
-            _list       = null;
+            Dispose();
         }
     }
 }
