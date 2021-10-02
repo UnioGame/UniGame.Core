@@ -168,8 +168,9 @@
             var node = _root;
             while (node != null)
             {
+                var nodeBuffer = node.Next;
                 node.OnNext(nextValue);
-                node = node.Next;
+                node = nodeBuffer;
             }
         }
 
