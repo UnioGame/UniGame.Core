@@ -20,8 +20,7 @@
         /// <summary>
         /// registered components
         /// </summary>
-        private Dictionary<Type, IValueContainerStatus> contextValues = 
-            new Dictionary<Type, IValueContainerStatus>(32);
+        private Dictionary<Type, IValueContainerStatus> contextValues = new Dictionary<Type, IValueContainerStatus>(32);
 
         public bool HasValue => contextValues.Any(value => value.Value.HasValue);
 
@@ -49,16 +48,10 @@
             if (!contextValues.TryGetValue(type, out var value)) return false;
             
             var removed = contextValues.Remove(type);
-            //release context value
-            if(value is IDespawnable poolable)
-                poolable.MakeDespawn();
-
-            if (cachedType == type) {
+            if (cachedType == type)
                 ResetCache();
-            }
             
             return removed;
-
         }
 
         public void Publish<TData>(TData value)
@@ -76,11 +69,7 @@
         #endregion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IObservable<TData> Receive<TData>()
-        {
-            var data = GetData<TData>();
-            return data;
-        }
+        public IObservable<TData> Receive<TData>() =>  GetData<TData>();
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TData Get<TData>()
@@ -117,14 +106,13 @@
             cachedValue = null;
         }
 
-        private IRecycleReactiveProperty<TValue> CreateContextValue<TValue>() => ClassPool.Spawn<RecycleReactiveProperty<TValue>>();
+        private IRecycleReactiveProperty<TValue> CreateContextValue<TValue>() => new RecycleReactiveProperty<TValue>();
 
         private IRecycleReactiveProperty<TValue> GetData<TValue>()
         {
-            if (cachedValue is IRecycleReactiveProperty<TValue> data) {
+            if (cachedValue is IRecycleReactiveProperty<TValue> data)
                 return data;
-            }
-            
+
             var type = typeof(TValue);
             
             if (!contextValues.TryGetValue(type, out var value)) {
