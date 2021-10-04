@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using UniModules.UniCore.Runtime.ObjectPool.Runtime;
 using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
+using UniModules.UniCore.Runtime.Rx.Extensions;
 using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
 using UniModules.UniGame.CoreModules.UniGame.Core.Runtime.Async;
 
@@ -51,8 +52,8 @@ namespace UniModules.UniCore.Runtime.Extension
                 .Forget();
 #endif
             
-            var firstAwaiter = ClassPool.Spawn<AwaitFirstAsyncOperation<TValue>>();
-            var result = await firstAwaiter.AwaitFirstAsync(value, predicate)
+            var firstAwaiter = ClassPool.Spawn<AwaitFirstAsyncOperation<TValue>>().AddTo(lifeTime);
+            var result = await firstAwaiter.AwaitFirstAsync(value,lifeTime, predicate)
                 .AttachExternalCancellation(lifeTime.TokenSource);
 
 #if UNITY_EDITOR
@@ -60,7 +61,6 @@ namespace UniModules.UniCore.Runtime.Extension
             tokenSource?.Dispose();
 #endif
             
-            firstAwaiter.Despawn();
             return result;
         }
     }
