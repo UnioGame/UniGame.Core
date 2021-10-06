@@ -15,6 +15,14 @@ namespace UniModules.Editor
     {
         #region Asset Creation/Saving
 
+        [MenuItem("Assets/Delete Asset")]
+        public static void DeleteAsset()
+        {
+            var asset = Selection.activeObject;
+            if(asset == null) return;
+            Object.DestroyImmediate(asset,true);
+        }
+        
         public static TAsset SaveAsset<TAsset>(this TAsset asset, string name, string folder,bool saveDatabase = true)
             where TAsset : Object
         {
