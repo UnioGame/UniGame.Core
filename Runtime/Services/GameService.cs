@@ -1,53 +1,40 @@
-﻿using Cysharp.Threading.Tasks;
-
-namespace UniGame.UniNodes.GameFlow.Runtime
+﻿namespace UniGame.UniNodes.GameFlow.Runtime
 {
-    using System;
+    using Cysharp.Threading.Tasks;
     using UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
-    using UniModules.UniGame.Core.Runtime.DataFlow;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.Core.Runtime.Interfaces;
     using UniModules.UniGameFlow.GameFlow.Runtime.Interfaces;
     using UniRx;
-    using UnityEngine;
 
     /// <summary>
     /// base game service class for binding Context source data to service logic
     /// </summary>
-    [Serializable]
     public abstract class GameService : IGameService, ICompletionSource
     {
-        [SerializeField]
-        protected readonly LifeTimeDefinition   lifeTimeDefinition = new LifeTimeDefinition();
-        
+        private readonly LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
+
         /// <summary>
         /// ready by default
         /// </summary>
-        [SerializeField]
-        protected readonly BoolReactiveProperty isReady            = new BoolReactiveProperty(false);
+        private readonly BoolReactiveProperty _isReady = new BoolReactiveProperty(false);
 
         /// <summary>
         /// complete service awaiter to mark it as ready
         /// </summary>
-        public void Complete() => isReady.Value = true;
-        
+        public void Complete() => _isReady.Value = true;
+
         /// <summary>
         /// terminate service lifeTime to release resources
         /// </summary>
-        public void Dispose() => lifeTimeDefinition.Terminate();
+        public void Dispose() => _lifeTimeDefinition.Terminate();
 
-        public bool IsComplete => isReady.Value;
+        public bool IsComplete => _isReady.Value;
 
-        public ILifeTime LifeTime => lifeTimeDefinition.LifeTime;
+        public ILifeTime LifeTime => _lifeTimeDefinition.LifeTime;
 
-        public IReadOnlyReactiveProperty<bool> IsReady => isReady;
+        public IReadOnlyReactiveProperty<bool> IsReady => _isReady;
 
-        public virtual async UniTask InitializeAsync()
-        {
-            
-        }
-        
+        public virtual async UniTask InitializeAsync() { }
     }
 }
