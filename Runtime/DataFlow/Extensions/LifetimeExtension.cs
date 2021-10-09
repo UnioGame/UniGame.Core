@@ -27,6 +27,17 @@ public static class LifetimeExtension
         return lifeTime;
     }
     
+    public static ILifeTime DestroyWith(this ScriptableObject asset, ILifeTime lifeTime)
+    {
+        lifeTime.AddCleanUpAction(() =>
+        {
+            if (!asset) return;
+            Object.Destroy(asset);
+        });
+        
+        return lifeTime;
+    }
+    
     public static ILifeTime DestroyWith(this ILifeTime lifeTime, Component component)
     {
         if (!component) return lifeTime;
