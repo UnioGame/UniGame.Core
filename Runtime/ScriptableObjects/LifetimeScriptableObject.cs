@@ -21,7 +21,7 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
 
         private string _objectName;
         private Type _assetType;
-        protected LifeTimeDefinition _lifeTimeDefinition;
+        private LifeTimeDefinition _lifeTimeDefinition;
 
         #region LifeTime API
 
@@ -41,7 +41,7 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
         
         #endregion
                 
-        public ILifeTime LifeTime => _lifeTimeDefinition = _lifeTimeDefinition ?? new LifeTimeDefinition();
+        public ILifeTime LifeTime => _lifeTimeDefinition ??= new LifeTimeDefinition();
 
         public void Reset()
         {
@@ -60,11 +60,13 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
             _objectName = name;
             _assetType = GetType();
             _lifeTimeDefinition?.Release();
-            _lifeTimeDefinition = _lifeTimeDefinition ?? new LifeTimeDefinition();
+            _lifeTimeDefinition ??= new LifeTimeDefinition();
             
 #if UNITY_EDITOR
+            UnityEditor.EditorApplication.playModeStateChanged -= PlayModeChanged;
             UnityEditor.EditorApplication.playModeStateChanged += PlayModeChanged;
             LifetimeObjectData.Add(this);
+            
             LogLifeTimeScriptableMessage(nameof(OnEnable),_logColorEnable);
             LifeTime.AddCleanUpAction(() => LogLifeTimeScriptableMessage("LifeTime Terminated",_logColorDisable));
 #endif
@@ -87,7 +89,6 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
                 OnEditorDisabled();
             
 #if UNITY_EDITOR
-            UnityEditor.EditorApplication.playModeStateChanged -= PlayModeChanged;
             LogLifeTimeScriptableMessage(nameof(OnDisable),_logColorDisable);
             LifetimeObjectData.Remove(this);
 #endif
@@ -100,6 +101,7 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
         {
             switch (state) {
                 case UnityEditor.PlayModeStateChange.ExitingPlayMode:
+                case UnityEditor.PlayModeStateChange.ExitingEditMode:
                     Reset();
                     break;
             }
