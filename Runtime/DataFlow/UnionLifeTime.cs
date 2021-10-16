@@ -8,7 +8,7 @@ using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
 namespace UniModules.UniGame.Core.Runtime.DataFlow
 {
     [Serializable]
-    public class UnionLifeTime : IDisposable, IPoolable, ILifeTime
+    public class UnionLifeTime : IDisposable, ILifeTime
     {
         private int _counter;
         private LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
@@ -26,11 +26,6 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow
         public CancellationToken TokenSource => _lifeTime.TokenSource;
 
         #endregion
-
-        public void Release()
-        {
-            
-        }
 
         public void Terminate() => _lifeTime.Terminate();
         
@@ -56,9 +51,6 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow
             }
             
             _lifeTime.Release();
-            
-            //despawn when counter <= 0
-            ClassPool.Despawn(this);
         }
 
     }
