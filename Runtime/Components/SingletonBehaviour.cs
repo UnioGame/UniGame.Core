@@ -1,16 +1,15 @@
-﻿using UniCore.Runtime.ProfilerTools;
-
-namespace UniModules.UniGame.Core.Runtime.Components
+﻿namespace UniModules.UniGame.Core.Runtime.Components
 {
     using Interfaces;
-    using UniCore.Runtime.ProfilerTools;
 #if UNITY_EDITOR
     using UnityEditor;
 #endif
     using UnityEngine;
-
+    
     public class SingletonBehaviour<T> : MonoBehaviour, INamedItem where T : SingletonBehaviour<T>
     {
+#region statics data
+        
         private static bool _shuttingDown;
         private static readonly object _lock = new object();
         private static T _instance;
@@ -19,11 +18,9 @@ namespace UniModules.UniGame.Core.Runtime.Components
         
         public static T Instance {
             get {
-                if (_shuttingDown) {
-                    GameLog.LogWarning($"[Singleton]: Instance of {typeof(T)} already destroyed.");
+                if (_shuttingDown) 
                     return null;
-                }
-
+                
                 lock (_lock) {
                     if (_instance == null) {
                         _instance = FindObjectOfType<T>() ?? CreateInstance();
@@ -33,15 +30,38 @@ namespace UniModules.UniGame.Core.Runtime.Components
                 return _instance;
             }
         }
+
+#if UNITY_EDITOR
+        
+        [InitializeOnLoadMethod]
+        public static void InitializeStatic()
+        {
+            EditorApplication.playModeStateChanged -= OnPlaymodeStateChanged;
+            EditorApplication.playModeStateChanged += OnPlaymodeStateChanged;
+        }
+
+        private static void OnPlaymodeStateChanged(PlayModeStateChange stateChange)
+        {
+            switch (stateChange)
+            {
+                case PlayModeStateChange.EnteredEditMode:
+                case PlayModeStateChange.ExitingPlayMode:
+                    _instance = null;
+                    break;
+            }
+        }
+        
+#endif
+        
+#endregion
         
         public virtual string ItemName => typeof(T).Name;
 
         public static void DestroySingleton()
         {
-            if (Exists) {
-                DestroyImmediate(Instance.gameObject);
-                _instance = null;
-            }
+            if (!Exists) return;
+            DestroyImmediate(Instance.gameObject);
+            _instance = null;
         }
 
         protected virtual void OnInstanceCreated()
@@ -68,20 +88,6 @@ namespace UniModules.UniGame.Core.Runtime.Components
             _shuttingDown = true;
         }
 
-        protected virtual void OnEnable()
-        {
-#if UNITY_EDITOR
-            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-#endif
-        }
-
-        protected virtual void OnDisable()
-        {
-#if UNITY_EDITOR
-            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
-#endif
-        }
-
         private static T CreateInstance()
         {
             var singletonObject = new GameObject();
@@ -101,15 +107,6 @@ namespace UniModules.UniGame.Core.Runtime.Components
 
             return instance;
         }
-        
-#if UNITY_EDITOR
-        private void OnPlayModeStateChanged(PlayModeStateChange state)
-        {
-            if (state == PlayModeStateChange.ExitingPlayMode) {
-                DestroySingleton();
-            }
-        }
-#endif
-        
+
     }
 }
