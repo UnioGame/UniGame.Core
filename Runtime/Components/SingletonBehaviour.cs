@@ -1,10 +1,11 @@
 ﻿namespace UniModules.UniGame.Core.Runtime.Components
 {
     using Interfaces;
+    using UnityEngine;
+
 #if UNITY_EDITOR
     using UnityEditor;
 #endif
-    using UnityEngine;
     
     public class SingletonBehaviour<T> : MonoBehaviour, INamedItem where T : SingletonBehaviour<T>
     {
@@ -36,6 +37,7 @@
         [InitializeOnLoadMethod]
         public static void InitializeStatic()
         {
+            _shuttingDown = false;
             EditorApplication.playModeStateChanged -= OnPlaymodeStateChanged;
             EditorApplication.playModeStateChanged += OnPlaymodeStateChanged;
         }
@@ -47,6 +49,7 @@
                 case PlayModeStateChange.EnteredEditMode:
                 case PlayModeStateChange.ExitingPlayMode:
                     _instance = null;
+                    _shuttingDown = false;
                     break;
             }
         }
@@ -79,11 +82,6 @@
         }
 
         protected virtual void OnApplicationQuit()
-        {
-            _shuttingDown = true;
-        }
-
-        protected virtual void OnDestroy()
         {
             _shuttingDown = true;
         }
