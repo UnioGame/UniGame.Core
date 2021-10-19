@@ -10,8 +10,6 @@
     public class SingletonBehaviour<T> : MonoBehaviour, INamedItem where T : SingletonBehaviour<T>
     {
 #region statics data
-        
-        private static bool _shuttingDown;
         private static readonly object _lock = new object();
         private static T _instance;
 
@@ -19,15 +17,11 @@
         
         public static T Instance {
             get {
-                if (_shuttingDown) 
-                    return null;
-                
                 lock (_lock) {
-                    if (_instance == null) {
+                    if (!_instance || _instance == null) {
                         _instance = FindObjectOfType<T>() ?? CreateInstance();
                     }
                 }
-
                 return _instance;
             }
         }
@@ -37,7 +31,6 @@
         [InitializeOnLoadMethod]
         public static void InitializeStatic()
         {
-            _shuttingDown = false;
             EditorApplication.playModeStateChanged -= OnPlaymodeStateChanged;
             EditorApplication.playModeStateChanged += OnPlaymodeStateChanged;
         }
@@ -49,7 +42,6 @@
                 case PlayModeStateChange.EnteredEditMode:
                 case PlayModeStateChange.ExitingPlayMode:
                     _instance = null;
-                    _shuttingDown = false;
                     break;
             }
         }
@@ -79,11 +71,6 @@
             }
             
             _instance = this as T;
-        }
-
-        protected virtual void OnApplicationQuit()
-        {
-            _shuttingDown = true;
         }
 
         private static T CreateInstance()
