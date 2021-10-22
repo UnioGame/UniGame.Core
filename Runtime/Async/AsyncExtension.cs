@@ -4,6 +4,7 @@ using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
 using UniModules.UniCore.Runtime.Rx.Extensions;
 using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
 using UniModules.UniGame.CoreModules.UniGame.Core.Runtime.Async;
+using UniRx;
 
 namespace UniModules.UniCore.Runtime.Extension
 {
@@ -40,8 +41,7 @@ namespace UniModules.UniCore.Runtime.Extension
             }
         }
 
-        public static async UniTask<TValue> AwaitFirstAsync<TValue>(this IObservable<TValue> value, ILifeTime lifeTime,
-            Func<TValue, bool> predicate = null)
+        public static async UniTask<TValue> AwaitFirstAsync<TValue>(this IObservable<TValue> value, ILifeTime lifeTime)
         {
             CancellationTokenSource tokenSource = null;
             
@@ -51,17 +51,15 @@ namespace UniModules.UniCore.Runtime.Extension
                 .AttachExternalCancellation(tokenSource.Token)
                 .Forget();
 #endif
-            
-            var firstAwaiter = ClassPool.Spawn<AwaitFirstAsyncOperation<TValue>>().AddTo(lifeTime);
-            var result = await firstAwaiter.AwaitFirstAsync(value,lifeTime, predicate)
-                .AttachExternalCancellation(lifeTime.TokenSource);
+            var result = await value.ToUniTask(true,lifeTime.TokenSource)
+                .SuppressCancellationThrow();
 
 #if UNITY_EDITOR
             tokenSource?.Cancel();
             tokenSource?.Dispose();
 #endif
             
-            return result;
+            return result.Result;
         }
     }
 }
