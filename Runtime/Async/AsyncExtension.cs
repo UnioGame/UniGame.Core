@@ -41,6 +41,11 @@ namespace UniModules.UniCore.Runtime.Extension
             }
         }
 
+        public static async UniTask<(bool IsCanceled, TValue Result)> AwaitFirstAsyncNoException<TValue>(this IObservable<TValue> value, ILifeTime lifeTime)
+        {
+            return await AwaitFirstAsync(value, lifeTime).SuppressCancellationThrow();
+        }
+
         public static async UniTask<TValue> AwaitFirstAsync<TValue>(this IObservable<TValue> value, ILifeTime lifeTime)
         {
             CancellationTokenSource tokenSource = null;
@@ -51,15 +56,20 @@ namespace UniModules.UniCore.Runtime.Extension
                 .AttachExternalCancellation(tokenSource.Token)
                 .Forget();
 #endif
-            var result = await value.ToUniTask(true,lifeTime.TokenSource)
-                .SuppressCancellationThrow();
-
+            try
+            {
+                var result = await value.ToUniTask(true, lifeTime.TokenSource);
+                return result;
+            }
+            finally
+            {
 #if UNITY_EDITOR
-            tokenSource?.Cancel();
-            tokenSource?.Dispose();
+                tokenSource?.Cancel();
+                tokenSource?.Dispose();
 #endif
-            
-            return result.Result;
+            }
+
+            return default;
         }
     }
 }
