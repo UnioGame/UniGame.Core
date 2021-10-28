@@ -9,7 +9,7 @@ namespace UniModules.UniGame.Core.Editor.Tools
 
     public static class UniEditorProfiler
     {
-        public const string TimeMessageFormat = "UniEditorProfiler: Id {0} Method {1} Time = {2} ms /n Trace : \n {3}";
+        public const string TimeMessageFormat = "UniEditorProfiler: Id {0} Method {1} Time = {2} ms \n Trace : \n {3}";
         public const string Empty = "Empty";
         
         public static void LogTime(Action action)
