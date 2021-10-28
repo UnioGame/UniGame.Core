@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 using UniModules.UniCore.Runtime.DataFlow;
 using UniModules.UniCore.Runtime.Rx.Extensions;
 using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+using UniModules.UniGame.Core.Runtime.ScriptableObjects;
 using UniRx;
 
 namespace UniModules.UniGame.Context.Editor.LifeTimeEditorWindow
@@ -24,30 +25,23 @@ namespace UniModules.UniGame.Context.Editor.LifeTimeEditorWindow
 
         private LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
         
-        public void Initialize(IReadOnlyReactiveCollection<ILifeTime> lifeTimes)
+        public void Initialize(IReadOnlyList<ILifeTime> lifeTimes)
         {
-            scriptableLifeTimes.Clear();
-            foreach (var lifeTime in lifeTimes)
-            {
-                AddLifeTime(lifeTime);
-            }
-
-            lifeTimes.ObserveAdd()
-                .Do(x => AddLifeTime(x.Value))
-                .Subscribe()
-                .AddTo(_lifeTime);
+            UpdateList(lifeTimes);
         }
 
         public void Dispose() => _lifeTime.Terminate();
         
-        private void AddLifeTime(ILifeTime lifeTimeValue)
+        private void UpdateList(IReadOnlyList<ILifeTime> lifeTimeValue)
         {
-            if (scriptableLifeTimes.Any(x => x.lifeTime == lifeTimeValue))
+            scriptableLifeTimes.Clear();
+            foreach (var lifeTime in lifeTimeValue)
             {
-                return;
+                if (lifeTime is LifetimeScriptableObject lifetimeScriptableObject)
+                {
+                    scriptableLifeTimes.Add(new LifeTimeEditorItem().Initialize(lifetimeScriptableObject));
+                }
             }
-            
-            scriptableLifeTimes.Add(new LifeTimeEditorItem().Initialize(lifeTimeValue));
         }
 
     }

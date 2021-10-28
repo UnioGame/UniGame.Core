@@ -31,13 +31,21 @@ namespace UniModules.UniGame.Context.Editor.LifeTimeEditorWindow
         public LifeTimeEditorData editorData = new LifeTimeEditorData();
         
         #endregion
+
+#if ODIN_INSPECTOR
+        [Sirenix.OdinInspector.Button]
+#endif
+        public void Refresh()
+        {
+            editorData.Initialize(LifetimeObjectData.LifeTimes);
+        }
         
         #region protected methods
 
         protected override void OnEnable()
         {
             ResetData();
-            Bind();
+            Refresh();
             base.OnEnable();
         }
 
@@ -50,11 +58,6 @@ namespace UniModules.UniGame.Context.Editor.LifeTimeEditorWindow
         private void ResetData()
         {
             editorData = new LifeTimeEditorData();
-        }
-
-        private void Bind()
-        {
-            editorData.Initialize(LifetimeObjectData.LifeTimes);
         }
         
         #endregion

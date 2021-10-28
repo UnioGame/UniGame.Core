@@ -63,8 +63,6 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
             _lifeTimeDefinition ??= new LifeTimeDefinition();
             
 #if UNITY_EDITOR
-            UnityEditor.EditorApplication.playModeStateChanged -= PlayModeChanged;
-            UnityEditor.EditorApplication.playModeStateChanged += PlayModeChanged;
             LifetimeObjectData.Add(this);
             
             LogLifeTimeScriptableMessage(nameof(OnEnable),_logColorEnable);
@@ -94,21 +92,7 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
 #endif
             OnDisabled();
         }
-        
-#if UNITY_EDITOR
-        
-        private void PlayModeChanged(UnityEditor.PlayModeStateChange state)
-        {
-            switch (state) {
-                case UnityEditor.PlayModeStateChange.ExitingPlayMode:
-                case UnityEditor.PlayModeStateChange.ExitingEditMode:
-                    Reset();
-                    break;
-            }
-        }
-        
-#endif
-        
+                
         protected virtual void OnActivate() {}
 
         protected virtual void OnReset() {}
