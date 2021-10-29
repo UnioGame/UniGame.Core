@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniCore.Runtime.DataFlow
+﻿using UniCore.Runtime.ProfilerTools;
+
+namespace UniModules.UniCore.Runtime.DataFlow
 {
     using System;
     using System.Collections.Generic;
@@ -122,11 +124,26 @@
             
             for (var i = cleanupActions.Count-1; i >= 0; i--)
             {
-                cleanupActions[i]?.Invoke();
+                try
+                {
+                    cleanupActions[i]?.Invoke();
+                }
+                catch (Exception e)
+                {
+                    GameLog.LogError(e);
+                }
             }
             
-            for (var i = disposables.Count-1; i >= 0; i--) {
-                disposables[i].Cancel();
+            for (var i = disposables.Count-1; i >= 0; i--) 
+            {
+                try
+                {
+                    disposables[i].Cancel();
+                }
+                catch (Exception e)
+                {
+                    GameLog.LogError(e);
+                }
             }
 
             cleanupActions.Clear();
@@ -140,10 +157,7 @@
 
         #region type convertion
 
-        public static implicit operator CancellationToken(LifeTime lifeTime)
-        {
-            return lifeTime.TokenSource;
-        } 
+        public static implicit operator CancellationToken(LifeTime lifeTime) => lifeTime.TokenSource;
 
         #endregion
     }
