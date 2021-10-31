@@ -5,9 +5,19 @@ using System.Linq;
 
 namespace UniModules.UniGame.Core.Runtime.Extension
 {
+    
     /// <summary>Various LinQ extensions.</summary>
     public static class LinqExtensions
     {
+
+        public static List<List<T>> ChunkBy<T>(this List<T> source, int chunkSize) 
+        {
+            return source.Select((x, i) => new { Index = i, Value = x })
+                .GroupBy(x => x.Index / chunkSize)
+                .Select(x => x.Select(v => v.Value).ToList())
+                .ToList();
+        }
+
         /// <summary>Calls an action on each item before yielding them.</summary>
         /// <param name="source">The collection.</param>
         /// <param name="action">The action to call for each item.</param>
