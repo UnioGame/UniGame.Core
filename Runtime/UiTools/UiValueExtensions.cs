@@ -8,6 +8,16 @@
 
     public static class UiValueExtensions
     {
+        public static bool SetValue(this TextMeshPro text, string value, StringComparison comparison = StringComparison.Ordinal)
+        {
+            if (!text) return false;
+            
+            if (string.Equals(text.text, value,comparison))
+                return false;
+
+            text.text = value;
+            return true;
+        }
 
         public static bool SetValue(this TextMeshProUGUI text, string value, StringComparison comparison = StringComparison.Ordinal)
         {
@@ -18,6 +28,14 @@
 
             text.text = value;
             return true;
+        }
+        
+        public static bool SetValue(this TextMeshPro text, int value)
+        {
+            if (!text) return false;
+            
+            var stringValue = value.ToStringFromCache();
+            return SetValue(text, stringValue);
         }
         
         public static bool SetValue(this TextMeshProUGUI text, int value)
