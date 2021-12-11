@@ -18,7 +18,19 @@
             text.text = value;
             return true;
         }
+        
+            
+        public static bool SetValue(this TMP_Text text, string value, StringComparison comparison = StringComparison.Ordinal)
+        {
+            if (!text) return false;
+            
+            if (string.Equals(text.text, value,comparison))
+                return false;
 
+            text.text = value;
+            return true;
+        }
+            
         public static bool SetValue(this TextMeshProUGUI text, string value, StringComparison comparison = StringComparison.Ordinal)
         {
             if (!text) return false;
