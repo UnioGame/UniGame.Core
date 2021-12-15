@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniCore.Runtime.ProfilerTools
+﻿using UniModules.UniCore.Runtime.Utils;
+
+namespace UniModules.UniCore.Runtime.ProfilerTools
 {
     using System;
     using System.Diagnostics;
@@ -7,6 +9,8 @@
 
     public class ProfilerUtils
     {
+
+        public static MemorizeItem<string, Stopwatch> stopWatchSource = MemorizeTool.Memorize<string, Stopwatch>(x => new Stopwatch());
 
         public static long GetMemorySize(object target)
         {
@@ -26,5 +30,51 @@
 
         }
 
+        public static ProfilerId BeginWatch(string message)
+        {
+            var profilerId = new ProfilerId()
+            {
+                id = System.Guid.NewGuid().ToString(),
+                message = message,
+            };
+
+            var stopWatch = stopWatchSource[profilerId.id];
+            stopWatch.Reset();
+            stopWatch.Start();
+
+            return profilerId;
+        }
+        
+        public static WatchProfileResult GetWatchData(ProfilerId profilerId,bool reset = false)
+        {
+            var stopWatch = stopWatchSource[profilerId.id];
+            var result = new WatchProfileResult()
+            {
+                watchMs = stopWatch.ElapsedMilliseconds,
+            };
+
+            if(reset) stopWatch.Reset();
+            
+            return result;
+        }
+        
+        public static WatchProfileResult StopWatch(ProfilerId profilerId)
+        {
+            return GetWatchData(profilerId, true);
+        }
+
+    }
+
+    [Serializable]
+    public struct ProfilerId
+    {
+        public string id;
+        public string message;
+    }
+    
+    [Serializable]
+    public struct WatchProfileResult
+    {
+        public long watchMs;
     }
 }
