@@ -27,15 +27,15 @@
         [InitializeOnLoadMethod]
         public static void InitializeByEditor()
         {
-#if UNITY_EDITOR
-            if (EditorApplication.isPlaying)
-                return;
-#endif
             EditorApplication.delayCall += InnerInitialize;
         }
 
         private static void InnerInitialize()
         {
+#if UNITY_EDITOR
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                return;
+#endif
             var asset = Asset;
         }
         
