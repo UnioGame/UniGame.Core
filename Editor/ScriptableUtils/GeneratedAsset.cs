@@ -25,7 +25,14 @@
         public static TAsset Asset => GeneratedTypeItem<TAsset>.Asset;
 
         [InitializeOnLoadMethod]
-        public static void InitializeByEditor() => EditorApplication.delayCall += InnerInitialize;
+        public static void InitializeByEditor()
+        {
+#if UNITY_EDITOR
+            if (EditorApplication.isPlaying)
+                return;
+#endif
+            EditorApplication.delayCall += InnerInitialize;
+        }
 
         private static void InnerInitialize()
         {
