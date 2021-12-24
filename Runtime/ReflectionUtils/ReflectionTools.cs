@@ -33,6 +33,17 @@
             {typeof(String), "string"},
         };
 
+        private static MemorizeItem<string, Type> _typeSearchMap = MemorizeTool.Memorize<string, Type>(typeName =>
+        {
+            var objectType = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(x => x.GetTypes())
+                .Where(x => x.IsClass && x.Name == typeName)
+                .Select(x => x)
+                .FirstOrDefault();
+           
+            return objectType;
+        });
+
         private static MemorizeItem<string, Type> _stringToTypeConverter =
             MemorizeTool.Memorize<string, Type>(x => Type.GetType(x, false, true));
 
@@ -60,6 +71,8 @@
         public static DoubleKeyDictionary<Type, string, FieldInfo> fieldInfos =
             new DoubleKeyDictionary<Type, string, FieldInfo>();
 
+        public static Type GetTypeByName(string typeName) => _typeSearchMap[typeName];
+        
         public static void Clear()
         {
             fieldInfos.Clear();
