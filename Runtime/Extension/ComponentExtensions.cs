@@ -11,22 +11,7 @@ namespace UniModules.UniGame.Core.Runtime.Extension
         {
             return behaviour.transform as RectTransform;
         }
-        
-        public static GameObject DestroyWith(this GameObject gameObject, ILifeTime lifeTime)
-        {
-            if (!gameObject) return gameObject;
-            lifeTime.AddCleanUpAction(() => gameObject.DespawnAsset(true));
-            return gameObject;
-        }
-    
-        public static T DestroyWith<T>(this T component, ILifeTime lifeTime)
-            where T : Component
-        {
-            if (!component) return component;
-            lifeTime.AddCleanUpAction(() =>  component.DespawnAsset(true));
-            return component;
-        }
-    
+
         public static GameObject DespawnWith(this GameObject gameObject, ILifeTime lifeTime)
         {
             if (!gameObject) return gameObject;

@@ -23,19 +23,63 @@ public static class LifetimeExtension
     public static ILifeTime DestroyWith(this ILifeTime lifeTime, GameObject gameObject)
     {
         if (!gameObject) return lifeTime;
-        lifeTime.AddCleanUpAction(() => Despawn(gameObject,true));
+        DestroyWith(gameObject,lifeTime);
         return lifeTime;
     }
     
-    public static ILifeTime DestroyWith(this ScriptableObject asset, ILifeTime lifeTime)
+    public static T DestroyWith<T>(this T asset, ILifeTime lifeTime)
+        where T : Object
     {
-        lifeTime.AddCleanUpAction(() =>
-        {
-            if (!asset) return;
-            Object.Destroy(asset);
-        });
+        if (!asset) return asset;
         
-        return lifeTime;
+        switch (asset)
+        {
+            case Component component:
+            {
+                DestroyComponentWith(component, lifeTime);
+                break;
+            }
+            case GameObject gameObject:
+            {
+                DestroyObjectWith(gameObject, lifeTime);
+                break;
+            }
+            default:
+            {
+                DestroyAssetWith(asset, lifeTime);
+                break;
+            }
+        }
+
+        return asset;
+    }
+
+    
+    public static Component DestroyComponentWith(Component asset, ILifeTime lifeTime)
+    {
+        if (!asset) return asset;
+        DestroyObjectWith(asset.gameObject,lifeTime);
+        return asset;
+    }
+    
+    public static Object DestroyAssetWith(Object asset, ILifeTime lifeTime)
+    {
+        if (!asset) return asset;
+        lifeTime.AddCleanUpAction(() => CheckDestroy(asset));
+        return asset;
+    }
+
+    public static GameObject DestroyObjectWith(GameObject gameObject, ILifeTime lifeTime)
+    {
+        if (!gameObject) return gameObject;
+        lifeTime.AddCleanUpAction(() => CheckDestroy(gameObject));
+        return gameObject;
+    }
+
+    public static void CheckDestroy(Object asset)
+    {
+        if (asset == null) return;
+        Object.Destroy(asset);
     }
     
     public static ILifeTime DestroyWith(this ILifeTime lifeTime, Component component)
