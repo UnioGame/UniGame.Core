@@ -62,6 +62,12 @@ namespace UniModules.Rx.Extensions
             return !source ? view : Bind(view, source, () => command.Execute(Unit.Default), TimeSpan.FromMilliseconds(throttleInMilliseconds));
         }
         
+        public static TView Bind<TView>(this TView view, IObservable<Unit> source, IReactiveCommand<Unit> command)
+                    where TView : ILifeTimeContext
+        {
+            return Bind(view, source, x => command.Execute(Unit.Default));
+        }
+        
         public static TView Bind<TView>(this TView sender, Button source, Action command,int throttleInMilliseconds = 0)
             where TView : ILifeTimeContext
         {
