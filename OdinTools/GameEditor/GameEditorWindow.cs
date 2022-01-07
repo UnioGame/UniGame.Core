@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace UniModules.OdinTools.GameEditor
+namespace UniModules.Editor.OdinTools.GameEditor
 {
     public class GameEditorWindow : GeneralGameEditorWindow<GameEditorConfiguration>
     {
@@ -17,5 +17,6 @@ namespace UniModules.OdinTools.GameEditor
         }
 
         #endregion
+
     }
 }

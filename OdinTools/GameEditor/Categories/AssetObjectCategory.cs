@@ -2,10 +2,10 @@ using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace UniModules.OdinTools.GameEditor.Base
+namespace UniModules.Editor.OdinTools.GameEditor.Categories
 {
     [Serializable]
-    public class AssetObjectCategory : GameEditorCategory<GameEditorConfiguration>
+    public class AssetObjectCategory : GameEditorCategory
     {
         public Object asset;
 

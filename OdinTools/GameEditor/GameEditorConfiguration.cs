@@ -1,6 +1,9 @@
-namespace UniModules.OdinTools.GameEditor
+using UniModules.UniGame.Core.Editor.EditorProcessors;
+
+namespace UniModules.Editor.OdinTools.GameEditor
 {
-    public class GameEditorConfiguration : BaseEditorConfiguration<GameEditorConfiguration>
+    [GeneratedAssetInfo("Taktika/GameEditor/Editor/")]
+    public class GameEditorConfiguration : BaseEditorConfiguration<GameEditorConfiguration>, IGameEditorCategory
     {
 
     }

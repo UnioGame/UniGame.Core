@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace UniModules.OdinTools.GameEditor
+﻿namespace UniModules.Editor.OdinTools.GameEditor
 {
     public interface IGameEditorConfiguration : IGameEditorCategory
     {

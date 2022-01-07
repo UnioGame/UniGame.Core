@@ -1,26 +1,43 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace UniModules.OdinTools.GameEditor
+namespace UniModules.Editor.OdinTools.GameEditor
 {
     [Serializable]
-    public class GameEditorCategory<TConfiguration> : IGameEditorCategory
-        where TConfiguration : BaseEditorConfiguration<TConfiguration>
+    public class GameEditorCategory : IGameEditorCategory
     {
         private const string PathFormat = "{0}/{1}";
         
         #region inspector
 
-        public string name = "DEFAULT";
+        [HorizontalGroup(nameof(category))]
+        [LabelWidth(8)]
+        [VerticalGroup(nameof(category)+"/"+nameof(icon))]
+        [PreviewField(ObjectFieldAlignment.Left)]
+        [HideLabel]
+        public Sprite icon;
 
+        [VerticalGroup(nameof(category)+"/"+nameof(name))]
+        [LabelWidth(60)]
+        public string name = nameof(GameEditorCategory);
+        
+        [VerticalGroup(nameof(category)+"/"+nameof(name))]
         [ValueDropdown(nameof(GetCategories))]
+        [LabelWidth(60)]
         public string category = "BASE";
 
-        public Sprite icon;
+        public bool enabled = true;
+        
+        public Color color;
         
         #endregion
+        
+        public bool Enabled => enabled;
+
+        public Color Color => color;
         
         public Sprite        Icon     => icon;
         public virtual string Category => category;
@@ -31,18 +48,35 @@ namespace UniModules.OdinTools.GameEditor
 
         public IEnumerable<string> GetCategories()
         {
-            return BaseEditorConfiguration<TConfiguration>.Asset.editorCategories;
+            var asset = GameEditorConfiguration.Asset;
+            return asset.editorGroups.Select(x => x.Name);
         }
 
-        public bool IsMatch(string searchString)
+        public virtual bool IsMatch(string searchString)
         {
-            if (string.IsNullOrEmpty(searchString)) return true;
+            return GameEditorCategoryFilter.IsMatch(this, searchString);
+        }
+    }
 
-            var result = Name.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                         Category.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                         (icon != null && icon.name.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0);
+    public static class GameEditorCategoryFilter
+    {
+        public static bool IsMatch(IGameEditorCategory category,string searchString)
+        {
+            if (category == null) return false;
+            
+            if (string.IsNullOrEmpty(searchString))
+                return true;
+            
+            var isMatch = category.Name.IndexOf(searchString, StringComparison.InvariantCultureIgnoreCase) >= 0 ||
+                          category.GetType().Name.IndexOf(searchString, StringComparison.InvariantCultureIgnoreCase) >= 0 ||
+                          category.Category.IndexOf(searchString, StringComparison.InvariantCultureIgnoreCase) >= 0;
+            if (isMatch) return true;
 
-            return result;
+            if (category.Icon!=null && 
+                category.Icon.name.IndexOf(searchString, StringComparison.InvariantCultureIgnoreCase) >= 0) 
+                return true;
+
+            return false;
         }
     }
 }

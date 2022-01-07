@@ -1,13 +1,15 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace UniModules.OdinTools.GameEditor
+namespace UniModules.Editor.OdinTools.GameEditor
 {
     public interface IGameEditorCategory : ISearchFilterable
     {
-        Sprite Icon     { get; }
+        public bool   Enabled  { get; }
+        public Sprite Icon     { get; }
         string        Category { get; }
         string        Name     { get; }
+        Color         Color    { get; }
         object        CreateDrawer();
     }
 }
