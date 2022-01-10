@@ -82,8 +82,7 @@
             //if value already exists - notify
             if (hasValue) observer.OnNext(value);
 
-            var next = ClassPool.Spawn<UniObserverNode<T>>()
-                .Initialize(this, observer);
+            var next = new UniObserverNode<T>(this, observer);
 
             if (_root == null)
             {

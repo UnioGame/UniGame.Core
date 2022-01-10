@@ -12,11 +12,10 @@
         public UniObserverNode<T> Previous;
         public UniObserverNode<T> Next;
 
-        public UniObserverNode<T> Initialize(IUniObserverLinkedList<T> list, IObserver<T> observer)
+        public UniObserverNode(IUniObserverLinkedList<T> list, IObserver<T> observer)
         {
             _list       = list;
             _observer   = observer;
-            return this;
         }
 
         public void OnNext(T value) => _observer.OnNext(value);
@@ -33,11 +32,6 @@
             
             sourceList.UnsubscribeNode(this);
             sourceList = null;
-
-            Previous    = null;
-            Next        = null;
-            
-            _observer   = null;
         }
 
         public void Release()
