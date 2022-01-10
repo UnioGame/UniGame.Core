@@ -16,37 +16,16 @@ namespace UniModules.Editor
 
         private static string[] EmptyDirFilter = new string[0];
 
-        public static List<Object> GetAssets(Type assetType, string[] folders = null)
+        public static List<Object> GetAssets(Type assetType, string[] folders = null, int count = 0)
         {
             var filterText = $"t:{assetType.Name}";
-            var assets     = GetAssets<Object>(filterText, folders);
-            return assets;
-        }
-
-        public static List<Object> FindAssets(List<Object> assets, Type assetType, string[] folders)
-        {
-            var filterText = $"t:{assetType.Name}";
-
-            var ids = AssetDatabase.FindAssets(filterText, folders);
-
-            for (var i = 0; i < ids.Length; i++) {
-                var id        = ids[i];
-                var assetPath = AssetDatabase.GUIDToAssetPath(id);
-                if (string.IsNullOrEmpty(assetPath)) {
-                    Debug.LogErrorFormat("Asset importer {0} with NULL path detected", id);
-                    continue;
-                }
-
-                var asset = AssetDatabase.LoadAssetAtPath(assetPath, assetType);
-                if (asset) assets.Add(asset);
-            }
-
+            var assets     = GetAssets<Object>(filterText, folders,count);
             return assets;
         }
 
         public static Object GetAsset(string filter, string[] folders = null)
         {
-            return GetAssets(filter, folders).FirstOrDefault();
+            return GetAssets(filter, folders,1).FirstOrDefault();
         }
 
         public static List<Object> GetAssets(Type type, string filter, string[] folders = null)
@@ -61,18 +40,20 @@ namespace UniModules.Editor
             return GetAssets(filterValue, folders).Where(x => x && type.IsInstanceOfType(x)).ToList();
         }
 
-        public static List<Object> GetAssets(string filter, string[] folders = null)
+        public static List<Object> GetAssets(string filter, string[] folders = null, int count = 0)
         {
             if (string.IsNullOrEmpty(filter))
-                return null;
+                return new List<Object>();
 
             var path = AssetDatabase.GUIDToAssetPath(filter);
-            return !string.IsNullOrEmpty(path) ? new List<Object>() {AssetDatabase.LoadAssetAtPath<Object>(path)} : GetAssets<Object>(filter, folders);
+            return !string.IsNullOrEmpty(path) 
+                ? new List<Object>() {AssetDatabase.LoadAssetAtPath<Object>(path)} 
+                : GetAssets<Object>(filter, folders,count);
         }
 
-        public static List<T> GetAssets<T>(string filter, string[] folders = null) where T : Object
+        public static List<T> GetAssets<T>(string filter, string[] folders = null, int count = 0) where T : Object
         {
-            var assets = GetAssets(new List<T>(), filter, folders);
+            var assets = GetAssets(new List<T>(), filter, folders,count);
             return assets;
         }
 
@@ -88,9 +69,10 @@ namespace UniModules.Editor
             return assets;
         }
 
-        public static List<T> GetAssets<T>(List<T> resultContainer, string filter, string[] folders = null) where T : Object
+        public static List<T> GetAssets<T>(List<T> resultContainer, string filter, string[] folders = null,int count = 0) where T : Object
         {
             var type = typeof(T);
+            
             var ids  = folders == null ? 
                 AssetDatabase.FindAssets(filter) : 
                 AssetDatabase.FindAssets(filter, folders.
@@ -108,6 +90,10 @@ namespace UniModules.Editor
                 var asset = AssetDatabase.LoadAssetAtPath(assetPath, type) as T;
 
                 if (asset) resultContainer.Add(asset);
+                
+                if(count<=0) continue;
+                
+                if(resultContainer.Count >= count) break;
             }
 
             return resultContainer;

@@ -490,7 +490,7 @@ namespace UniModules.Editor
         {
             var childs = ReflectionTools.FindAllImplementations(typeof(T));
             var items  = GetAssets(typeof(T), folders);
-            for (int i = 0; i < childs.Count; i++)
+            for (var i = 0; i < childs.Count; i++)
             {
                 var child  = childs[i];
                 var assets = GetAssets(child, folders);
