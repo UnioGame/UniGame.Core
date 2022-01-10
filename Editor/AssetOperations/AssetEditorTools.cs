@@ -420,7 +420,7 @@ namespace UniModules.Editor
         public static T GetAsset<T>(string folder) where T : Object
         {
             folder = folder.TrimEndPath();
-            var asset = GetAssets<T>(new string[] {folder}).FirstOrDefault();
+            var asset = GetAssets<T>(new string[] {folder},1).FirstOrDefault();
             return asset;
         }
 
@@ -461,10 +461,10 @@ namespace UniModules.Editor
             return result;
         }
 
-        public static List<T> GetAssets<T>(string[] folders = null) where T : Object
+        public static List<T> GetAssets<T>(string[] folders = null,int count = 0) where T : Object
         {
             var targetType = typeof(T);
-            return GetAssets<T>(targetType, folders);
+            return GetAssets<T>(targetType, folders,count);
         }
 
         public static EditorResource ToEditorResource(this Object asset, bool forceUpdate = false)
@@ -475,14 +475,14 @@ namespace UniModules.Editor
             return editorResource;
         }
 
-        public static List<T> GetAssets<T>(Type targetType, string folder) where T : Object
+        public static List<T> GetAssets<T>(Type targetType, string folder,int count = 0) where T : Object
         {
-            return GetAssets<T>(targetType, string.IsNullOrEmpty(folder) ? null : new[] {folder});
+            return GetAssets<T>(targetType, string.IsNullOrEmpty(folder) ? null : new[] {folder},count);
         }
 
-        public static List<T> GetAssets<T>(Type targetType, string[] folders = null) where T : Object
+        public static List<T> GetAssets<T>(Type targetType, string[] folders = null,int count = 0) where T : Object
         {
-            var items = GetAssets(targetType, folders);
+            var items = GetAssets(targetType, folders,count);
             return items.OfType<T>().ToList();
         }
 
