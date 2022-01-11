@@ -45,6 +45,12 @@ namespace UniModules.Editor.OdinTools.GameEditor
         public virtual string Name     => name;
         
         public virtual object CreateDrawer() => null;
+        
+        public virtual IGameEditorCategory UpdateCategory()
+        {
+            if (!string.IsNullOrEmpty(name) && name != Name) name = Name;
+            return this;
+        }
 
         public IEnumerable<string> GetCategories()
         {

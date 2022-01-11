@@ -11,5 +11,6 @@ namespace UniModules.Editor.OdinTools.GameEditor
         string        Name     { get; }
         Color         Color    { get; }
         object        CreateDrawer();
+        IGameEditorCategory UpdateCategory();
     }
 }

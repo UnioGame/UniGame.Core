@@ -9,7 +9,7 @@ namespace UniModules.Editor.OdinTools.GameEditor
     {
 
         private TConfiguration _configuration;
-
+        
         private List<IGameEditorCategory> _categories = new List<IGameEditorCategory>();
 
         protected override void Initialize()
@@ -40,7 +40,8 @@ namespace UniModules.Editor.OdinTools.GameEditor
 
             foreach (var editorCategory in _categories.Where(x => x.Enabled))
             {
-                var viewer = editorCategory.CreateDrawer();
+                var category = editorCategory.UpdateCategory();
+                var viewer = category.CreateDrawer();
                 if(viewer == null) continue;
                 tree.Add(GetFullPath(editorCategory),viewer,editorCategory.Icon);
             }

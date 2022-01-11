@@ -2,7 +2,7 @@ using UniModules.UniGame.Core.Editor.EditorProcessors;
 
 namespace UniModules.Editor.OdinTools.GameEditor
 {
-    [GeneratedAssetInfo("Taktika/GameEditor/Editor/")]
+    [GeneratedAssetInfo("UniGame/Editors/Assets/" + nameof(GameEditorConfiguration))]
     public class GameEditorConfiguration : BaseEditorConfiguration<GameEditorConfiguration>, IGameEditorCategory
     {
 

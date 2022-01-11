@@ -14,8 +14,9 @@ namespace UniModules.Editor.OdinTools.GameEditor
         public Sprite icon;
         public string menuName = string.Empty;
 
-        [Searchable(FilterOptions = SearchFilterOptions.ISearchFilterableInterface)] 
+        [Searchable(FilterOptions = SearchFilterOptions.ISearchFilterableInterface)]
         [SerializeReference] 
+        [OnValueChanged(nameof(OnCategoriesChanged))]
         public List<IGameEditorCategory> categories = new List<IGameEditorCategory>();
 
         public List<EditorSettingsCategory> editorGroups = new List<EditorSettingsCategory>();
@@ -27,10 +28,20 @@ namespace UniModules.Editor.OdinTools.GameEditor
         public Color  Color    => Color.yellow;
 
         public object CreateDrawer() => this;
+        public IGameEditorCategory UpdateCategory() => this;
 
         public bool IsMatch(string searchString)
         {
             return GameEditorCategoryFilter.IsMatch(this, searchString);
+        }
+
+        private void OnCategoriesChanged()
+        {
+            foreach (var category in categories)
+            {
+                if(category == null) continue;
+                category.UpdateCategory();
+            }
         }
     }
 }
