@@ -165,8 +165,8 @@ namespace UniModules.Editor
             bool refreshDatabase = false) where TAsset : ScriptableObject
         {
             assetName = string.IsNullOrEmpty(assetName) ? typeof(TAsset).Name : assetName;
-            var asset = AssetEditorTools.GetAsset<TAsset>(path);
-            if (asset) return asset;
+
+            if (TryGetAsset<TAsset>(path,out var  asset)) return asset;
 
             asset = ScriptableObject.CreateInstance(assetType) as TAsset;
             onCreateAction?.Invoke(asset);
@@ -175,6 +175,27 @@ namespace UniModules.Editor
             return asset;
         }
 
+        public static bool TryGetAsset<TAsset>(string path, out TAsset asset)
+            where TAsset : Object
+        {
+            asset = GetAsset<TAsset>(path);
+            if (asset != null) return asset != null;
+            
+            var fullPath = path.ToAbsoluteProjectPath();
+            var fileExists = File.Exists(fullPath);
+            if (!fileExists) return asset != null;
+            
+            Debug.LogError("File exists but AssetDatabase doesn't load it");
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+            AssetDatabase.Refresh();
+            
+            asset = AssetDatabase.LoadAssetAtPath<TAsset>(path);
+                    
+            if (asset == null)
+                Debug.LogError("AssetDatabase load filed after refresh");
+
+            return asset != null;
+        }
 
         public static void ApplyAssetEditing(Action action)
         {
@@ -417,10 +438,13 @@ namespace UniModules.Editor
             return items;
         }
 
-        public static T GetAsset<T>(string folder) where T : Object
+        public static T GetAsset<T>(string path) where T : Object
         {
-            folder = folder.TrimEndPath();
-            var asset = GetAssets<T>(new string[] {folder},1).FirstOrDefault();
+            var asset = AssetDatabase.LoadAssetAtPath<T>(path);
+            if (asset) return asset;
+            
+            var folder = path.TrimEndPath();
+            asset = GetAssets<T>(new string[] {folder},1).FirstOrDefault();
             return asset;
         }
 

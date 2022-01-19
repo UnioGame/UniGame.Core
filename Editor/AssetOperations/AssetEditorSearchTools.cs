@@ -18,11 +18,22 @@ namespace UniModules.Editor
 
         public static List<Object> GetAssets(Type assetType, string[] folders = null, int count = 0)
         {
-            var filterText = $"t:{assetType.Name}";
+            var filterText = GetTypeFilter(assetType);
             var assets     = GetAssets<Object>(filterText, folders,count);
             return assets;
         }
 
+        public static string GetTypeFilter<T>()
+        {
+            return GetTypeFilter(typeof(T));
+        }
+
+        public static string GetTypeFilter(Type filter)
+        {
+            var filterText = $"t:{filter.Name}";
+            return filterText;
+        }
+        
         public static Object GetAsset(string filter, string[] folders = null)
         {
             return GetAssets(filter, folders,1).FirstOrDefault();
@@ -88,11 +99,9 @@ namespace UniModules.Editor
                 }
 
                 var asset = AssetDatabase.LoadAssetAtPath(assetPath, type) as T;
-
                 if (asset) resultContainer.Add(asset);
                 
                 if(count<=0) continue;
-                
                 if(resultContainer.Count >= count) break;
             }
 

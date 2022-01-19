@@ -56,6 +56,7 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
             var newAsset  = AssetEditorTools.LoadOrCreate<TAsset>(ProcessorType, path);
             return newAsset;
         }
+        
     }
 
 #endif
