@@ -25,7 +25,12 @@ namespace UniGame.Utils.Runtime
 
         public void OnUpdate(long time)
         {
-            if (Mathf.Approximately(_renderer.color.a, _alpha)) return;
+            if(_renderer == null)
+                return;
+            
+            if (Mathf.Approximately(_renderer.color.a, _alpha)) 
+                return;
+            
             _alpha = _renderer.color.a;
             UpdateChildrenTransparency();
         }
