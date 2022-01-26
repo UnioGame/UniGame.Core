@@ -5,12 +5,22 @@ using UnityEngine;
 
 namespace UniModules.Editor.OdinTools.GameEditor
 {
-    public class BaseEditorConfiguration<TConfiguration> : GeneratedAsset<TConfiguration>, 
-        IGameEditorConfiguration
+    public class BaseEditorConfiguration<TConfiguration> : BaseEditorConfiguration
         where TConfiguration : BaseEditorConfiguration<TConfiguration>
     {
+        #region static data
+        
+        public static TConfiguration Asset => GeneratedTypeItem<TConfiguration>.Asset;
+        
+        #endregion
+        
+    }
+    
+    public class BaseEditorConfiguration : ScriptableObject, 
+        IGameEditorConfiguration
+    {
         public const string SettingsCategoryName = "Editor Settings";
-
+        
         public Sprite icon;
         public string menuName = string.Empty;
 
@@ -26,10 +36,15 @@ namespace UniModules.Editor.OdinTools.GameEditor
         public string Category => SettingsCategoryName;
         public string Name     => menuName;
         public Color  Color    => Color.yellow;
+        
 
+        public List<EditorSettingsCategory> EditorSettingsCategories => editorGroups;
+        
         public object CreateDrawer() => this;
         public IGameEditorCategory UpdateCategory() => this;
 
+        public void SetupConfiguration(BaseEditorConfiguration configuration) {}
+        
         public bool IsMatch(string searchString)
         {
             return GameEditorCategoryFilter.IsMatch(this, searchString);

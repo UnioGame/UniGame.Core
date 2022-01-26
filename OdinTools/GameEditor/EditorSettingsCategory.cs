@@ -15,6 +15,8 @@ namespace UniModules.Editor.OdinTools.GameEditor
         public virtual string Name           => name;
         public         Color  Color          => Color.yellow;
         public virtual object CreateDrawer() => icon;
+        
+        public void SetupConfiguration(BaseEditorConfiguration configuration) { }
 
         public IGameEditorCategory UpdateCategory() => this;
 

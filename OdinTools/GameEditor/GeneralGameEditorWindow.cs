@@ -40,6 +40,7 @@ namespace UniModules.Editor.OdinTools.GameEditor
 
             foreach (var editorCategory in _categories.Where(x => x.Enabled))
             {
+                editorCategory.SetupConfiguration(_configuration);
                 var category = editorCategory.UpdateCategory();
                 var viewer = category.CreateDrawer();
                 if(viewer == null) continue;

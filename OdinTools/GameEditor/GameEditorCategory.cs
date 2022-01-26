@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Sirenix.OdinInspector;
-using UnityEngine;
-
 namespace UniModules.Editor.OdinTools.GameEditor
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Sirenix.OdinInspector;
+    using UnityEngine;
+
     [Serializable]
     public class GameEditorCategory : IGameEditorCategory
     {
@@ -13,6 +13,9 @@ namespace UniModules.Editor.OdinTools.GameEditor
         
         #region inspector
 
+        [HideInInspector]
+        public BaseEditorConfiguration configuration;
+        
         [HorizontalGroup(nameof(category))]
         [LabelWidth(8)]
         [VerticalGroup(nameof(category)+"/"+nameof(icon))]
@@ -45,6 +48,11 @@ namespace UniModules.Editor.OdinTools.GameEditor
         public virtual string Name     => name;
         
         public virtual object CreateDrawer() => null;
+
+        public virtual void SetupConfiguration(BaseEditorConfiguration asset)
+        {
+            configuration = asset;
+        }
         
         public virtual IGameEditorCategory UpdateCategory()
         {
@@ -54,8 +62,9 @@ namespace UniModules.Editor.OdinTools.GameEditor
 
         public IEnumerable<string> GetCategories()
         {
-            var asset = GameEditorConfiguration.Asset;
-            return asset.editorGroups.Select(x => x.Name);
+            if(configuration == null)
+               return Enumerable.Empty<string>();
+            return configuration.editorGroups.Select(x => x.Name);
         }
 
         public virtual bool IsMatch(string searchString)
