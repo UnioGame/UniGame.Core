@@ -1,3 +1,7 @@
+using System.IO;
+using System.Text.RegularExpressions;
+using UniModules.UniCore.Runtime.Utils;
+
 namespace UniModules.Editor
 {
     using System;
@@ -12,8 +16,27 @@ namespace UniModules.Editor
     {
         #region asset loading
 
+        public readonly static List<string> assetExtensions = new List<string>()
+        {
+            ".prefab",".unity",".asset"
+        };
+        public const string guidRegExpr = @"(guid:(\s)* (?<guid_group>[\w|\d]*))";
+        public const string guidGroupName = @"guid_group";
         public const string FilterTemplate = "t: {0} {1}";
+        
+        static AssetEditorTools()
+        {
+            GuidRegexpr = new Regex(guidRegExpr,
+                RegexOptions.Compiled | RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        }
 
+        public static MemorizeItem<string, List<string>> guidsReferencies = MemorizeTool.Memorize<string, List<string>>(
+            path =>
+            {
+                return GetDependenciesNonCached(path);
+            });
+        
+        public readonly static Regex GuidRegexpr;
         private static string[] EmptyDirFilter = new string[0];
 
         public static List<Object> GetAssets(Type assetType, string[] folders = null, int count = 0)
@@ -33,7 +56,47 @@ namespace UniModules.Editor
             var filterText = $"t:{filter.Name}";
             return filterText;
         }
-        
+
+        public static IEnumerable<string> GetDependenciesFromAsset(string path)
+        {
+            return guidsReferencies[path];
+        }
+
+        public static List<string> GetDependenciesNonCached(string path)
+        {
+            var result = new List<string>();
+            var globalPath = path.ToAbsoluteProjectPath();
+            if(!File.Exists(globalPath))
+                return result;
+            var fileExt = Path.GetExtension(path);
+            if(!assetExtensions.Any(x => x.Equals(fileExt,StringComparison.InvariantCultureIgnoreCase)))
+                return result;
+
+            var content = File.ReadAllText(globalPath);
+            var matchResult = GuidRegexpr.Matches(content);
+            foreach (Match match in matchResult)
+            {
+                if(!match.Success)
+                    continue;
+
+                var group = match.Groups[guidGroupName];
+                if(group == null) continue;
+            
+                var matches = group.Captures;
+                foreach (Capture  capture in matches)
+                {
+                    var guid = capture.Value;
+                    if(string.IsNullOrEmpty(guid))
+                        continue;
+                    var assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                    if(string.IsNullOrEmpty(assetPath)) continue;
+                    result.Add(assetPath);
+                }
+            }
+
+            return result;
+        }
+
         public static Object GetAsset(string filter, string[] folders = null)
         {
             return GetAssets(filter, folders,1).FirstOrDefault();
