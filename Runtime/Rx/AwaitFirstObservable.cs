@@ -4,7 +4,7 @@ using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
 using UniRx;
 using UniRx.Operators;
 
-namespace UniModules.UniGame.CoreModules.UniGame.AddressableTools.Runtime.Rx
+namespace UniGame.Addressables.Reactive
 {
 
     public class AwaitFirstObservable<T> : OperatorObservableBase<T>
