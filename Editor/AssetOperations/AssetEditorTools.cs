@@ -588,6 +588,8 @@ namespace UniModules.Editor
             return isCanceled;
         }
 
+        public static void ClearProgress() => EditorUtility.ClearProgressBar();
+        
         public static void ShowProgress(IEnumerable<ProgressData> awaiter)
         {
             try
@@ -601,7 +603,7 @@ namespace UniModules.Editor
             }
             finally
             {
-                EditorUtility.ClearProgressBar();
+                ClearProgress();
             }
         }
 
