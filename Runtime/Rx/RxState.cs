@@ -57,17 +57,17 @@
                 .Do(x => _value.SetValue(x))
                 .DoOnCompleted(
                     () => OnComplete(data,_value.Value,_lifeTime)
-                        .Subscribe()
+                        .RxSubscribe()
                         .AddTo(_lifeTime))
-                .Subscribe()
+                .RxSubscribe()
                 .AddTo(_lifeTime);
 
             _executionObservable
                 .DoOnError(
                     x => OnError(x,data)
-                        .Subscribe()
+                        .RxSubscribe()
                         .AddTo(_lifeTime))
-                .Subscribe()
+                .RxSubscribe()
                 .AddTo(_lifeTime);
 
             return _executionObservable;

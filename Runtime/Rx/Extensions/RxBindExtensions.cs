@@ -355,7 +355,7 @@ namespace UniModules.Rx.Extensions
         public static T Bind<T, TValue>(this T sender, IObservable<TValue> source, Action<TValue> action, ILifeTime lifeTime)
         {
             if (action == null) return sender;
-            source.Subscribe(action).AddTo(lifeTime);
+            source.RxSubscribe(action).AddTo(lifeTime);
             return sender;
         }
         
@@ -364,7 +364,7 @@ namespace UniModules.Rx.Extensions
             ILifeTime lifeTime)
         {
             if (action == null) return sender;
-            source.Subscribe(x => action(sender,x)).AddTo(lifeTime);
+            source.RxSubscribe(x => action(sender,x)).AddTo(lifeTime);
             return sender;
         }
         
@@ -374,7 +374,7 @@ namespace UniModules.Rx.Extensions
         {
             if (action == null) return sender;
             source.Where(x => action.CanExecute.Value)
-                .Subscribe(x => action.Execute(x))
+                .RxSubscribe(x => action.Execute(x))
                 .AddTo(lifeTime);
             
             return sender;
@@ -387,7 +387,7 @@ namespace UniModules.Rx.Extensions
             if (action == null) return sender;
             
             source.Where(x => action.CanExecute.Value)
-                .Subscribe(x => action.Execute(Unit.Default))
+                .RxSubscribe(x => action.Execute(Unit.Default))
                 .AddTo(lifeTime);
             
             return sender;

@@ -276,7 +276,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             
             Observable.FromEvent(x => SceneManager.sceneLoaded += OnSceneLoaded,
                 x => SceneManager.sceneLoaded -= OnSceneLoaded)
-                .Subscribe()
+                .RxSubscribe()
                 .AddTo(LifeTime);
 
             _lifeTime.AddCleanUpAction(OnDestroyAction);

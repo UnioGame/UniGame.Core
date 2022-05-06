@@ -14,7 +14,7 @@
             //clean up cache if Assembly Reload
             UnityEditor.AssemblyReloadEvents.beforeAssemblyReload += cache.Dispose;
             UnityEditor.EditorApplication.playModeStateChanged    += x => cache.Dispose();
-            cleanupStream.Subscribe(x => cache.Dispose());
+            cleanupStream.RxSubscribe(x => cache.Dispose());
 #endif
             return cache;
         }

@@ -14,7 +14,7 @@ public class RecycleReactivePropertyTests
         var value = new RecycleReactiveProperty<int>();
             
         //action
-        var disposable = value.Subscribe(x => Assert.That(x == int.MaxValue));
+        var disposable = value.RxSubscribe(x => Assert.That(x == int.MaxValue));
         disposable.Dispose();
             
         value.Value = 0;
@@ -32,9 +32,9 @@ public class RecycleReactivePropertyTests
         var value      = new RecycleReactiveProperty<int>();
             
         //action
-        var disposable1 = value.Subscribe(x => value1 = x);
-        var disposable2 = value.Subscribe(x => value2 = x);
-        var disposable3 = value.Subscribe(x => value3 = x);
+        var disposable1 = value.RxSubscribe(x => value1 = x);
+        var disposable2 = value.RxSubscribe(x => value2 = x);
+        var disposable3 = value.RxSubscribe(x => value3 = x);
         
         disposable2.Dispose();
 
@@ -62,7 +62,7 @@ public class RecycleReactivePropertyTests
         value.Value = testValue;
         
         //check
-        var disposable = value.Subscribe(x => Assert.That(x == testValue));
+        var disposable = value.RxSubscribe(x => Assert.That(x == testValue));
         disposable.Dispose();
             
     }
@@ -76,7 +76,7 @@ public class RecycleReactivePropertyTests
         
         //action
         var disposable = value.First().
-            Subscribe(x => Assert.That(x == testValue));
+            RxSubscribe(x => Assert.That(x == testValue));
         value.Value = testValue;
         
         //check
@@ -94,11 +94,11 @@ public class RecycleReactivePropertyTests
         //action
         var disposable2 = value.
             First().
-            Subscribe();
+            RxSubscribe();
         
         var disposable = value.
             Do(x => Debug.Log($"Receive {x}")).
-            Subscribe(x => resultValue = x);
+            RxSubscribe(x => resultValue = x);
 
         value.Value = testValue;
 
@@ -118,11 +118,11 @@ public class RecycleReactivePropertyTests
         
         var disposable2 = value.
             First().
-            Subscribe();
+            RxSubscribe();
         
         var disposable = value.
             First().
-            Subscribe(x => resultValue = x);
+            RxSubscribe(x => resultValue = x);
         
         Assert.That(resultValue == testValue);
         
@@ -143,11 +143,11 @@ public class RecycleReactivePropertyTests
 
         var disposable2 = value.
             First().
-            Subscribe();
+            RxSubscribe();
         
         var disposable = value.
             Do(x=> Debug.Log($"Receive VALUE {x}")).
-            Subscribe(x => resultValue = x);
+            RxSubscribe(x => resultValue = x);
         
         value.Value = testValue;
 
@@ -168,11 +168,11 @@ public class RecycleReactivePropertyTests
         
         var disposable2 = value.
             First().
-            Subscribe();
+            RxSubscribe();
         
         var disposable = value.
             First().
-            Subscribe(x => resultValue = x);
+            RxSubscribe(x => resultValue = x);
         
         Assert.That(resultValue == testValue);
         
@@ -188,8 +188,8 @@ public class RecycleReactivePropertyTests
         var value     = new RecycleReactiveProperty<int>();
         var testValue = 333;
         //action
-        var disposable1 = value.Subscribe(x => Assert.That(x == testValue));
-        var disposable2 = value.Subscribe(x => Assert.That(x == testValue));
+        var disposable1 = value.RxSubscribe(x => Assert.That(x == testValue));
+        var disposable2 = value.RxSubscribe(x => Assert.That(x == testValue));
 
         value.Value = testValue;
         
@@ -206,8 +206,8 @@ public class RecycleReactivePropertyTests
         var value     = new RecycleReactiveProperty<int>();
         var testValue = 333;
         //action
-        var disposable1 = value.Subscribe(x => Assert.That(x == testValue));
-        var disposable2 = value.Subscribe(x => Assert.That(x == testValue));
+        var disposable1 = value.RxSubscribe(x => Assert.That(x == testValue));
+        var disposable2 = value.RxSubscribe(x => Assert.That(x == testValue));
 
         value.Value = testValue;
         
@@ -226,8 +226,8 @@ public class RecycleReactivePropertyTests
         var value     = new RecycleReactiveProperty<int>();
         var testValue = 333;
         //action
-        var disposable1 = value.Subscribe(x => Assert.That(x == testValue));
-        var disposable2 = value.Subscribe(x => Assert.That(x == testValue));
+        var disposable1 = value.RxSubscribe(x => Assert.That(x == testValue));
+        var disposable2 = value.RxSubscribe(x => Assert.That(x == testValue));
 
         value.Value = testValue;
         
@@ -246,14 +246,14 @@ public class RecycleReactivePropertyTests
         var value     = new RecycleReactiveProperty<int>();
         var testValue = 333;
         //action
-        var disposable1 = value.Subscribe(x => Assert.That(x == testValue));
+        var disposable1 = value.RxSubscribe(x => Assert.That(x == testValue));
         value.Value = testValue;
         disposable1.Dispose();
         
-        var disposable2 = value.Subscribe(x => Assert.That(x == testValue));
+        var disposable2 = value.RxSubscribe(x => Assert.That(x == testValue));
         disposable2.Dispose();
         value.Value = int.MaxValue;
-        disposable2 = value.Subscribe(x => Assert.That(x == int.MaxValue));
+        disposable2 = value.RxSubscribe(x => Assert.That(x == int.MaxValue));
         disposable2.Dispose();
         
         Assert.True(true);
