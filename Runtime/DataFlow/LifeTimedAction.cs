@@ -34,6 +34,6 @@ namespace UniGame.Core.Runtime.Common
             _action = null;
         }
 
-        public void Dispose() => this.Despawn();
+        public void Dispose() => this.DespawnWithRelease();
     }
 }

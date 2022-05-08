@@ -27,7 +27,7 @@
             
             Complete();
             
-            this.Despawn();
+            this.DespawnWithRelease();
         }
 
         public void Complete()

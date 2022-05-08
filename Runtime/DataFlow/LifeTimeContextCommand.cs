@@ -25,7 +25,7 @@
             _action?.Invoke(_lifeTime);
         }
 
-        public void Dispose() => this.Despawn();
+        public void Dispose() => this.DespawnWithRelease();
 
         public void Release()
         {

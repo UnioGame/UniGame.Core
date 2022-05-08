@@ -32,11 +32,7 @@ namespace UniModules.UniGame.CoreModules.UniGame.Core.Runtime.Async
             return _value;
         }
 
-        public void Dispose()
-        {
-            Release();
-            this.Despawn();
-        }
+        public void Dispose() => this.DespawnWithRelease();
         
         public void Release()
         {

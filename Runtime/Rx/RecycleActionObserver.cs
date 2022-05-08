@@ -18,35 +18,21 @@
             _onError = onError;
         }
     
-        public void OnCompleted()
-        {
-            _onComplete?.Invoke();
-        }
+        public void OnCompleted() => _onComplete?.Invoke();
 
-        public void OnError(Exception error)
-        {
-            _onError?.Invoke(error);
-        }
+        public void OnError(Exception error) => _onError?.Invoke(error);
 
-        public void OnNext(T value)
-        {
-            _onNext?.Invoke(value);
-        }
+        public void OnNext(T value) => _onNext?.Invoke(value);
 
         public void Release()
         {
-            
             OnCompleted();
 
             _onNext = null;
             _onError = null;
             _onComplete = null;
-
         }
 
-        public void MakeDespawn()
-        {
-            this.Despawn();
-        }
+        public void MakeDespawn() => this.DespawnWithRelease();
     }
 }

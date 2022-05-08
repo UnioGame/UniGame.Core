@@ -16,7 +16,7 @@
             return this;
         }
 
-        public void Dispose() => this.Despawn();
+        public void Dispose() => this.DespawnClass();
 
         public void Release()
         {

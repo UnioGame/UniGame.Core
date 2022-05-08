@@ -29,18 +29,13 @@
         public void Dispose()
         {
             if (!IsComplete)
-            {
                 _onDisposed?.Invoke(_arg);
-            }
             
             //return to pool
-            this.Despawn();
+            this.DespawnWithRelease();
         }
 
-        public void Release()
-        {
-            Complete();
-        }
+        public void Release() => Complete();
 
     }
 }

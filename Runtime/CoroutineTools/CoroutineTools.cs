@@ -18,38 +18,41 @@
             do {
 
                 wait = enumerator.MoveNext();
-                if (wait == false && stack.Count > 0) {
-                    enumerator = stack.Pop();
-                    wait = true;
-                    continue;
+                
+                switch (wait)
+                {
+                    case false when stack.Count > 0:
+                        enumerator = stack.Pop();
+                        wait = true;
+                        continue;
+                    case false:
+                        continue;
                 }
-
-                if (wait == false)
-                    continue;
 
                 var current = enumerator.Current;
                 var currentEnumerator = current as IEnumerator;
 
-                if (currentEnumerator != enumerator && currentEnumerator != null) {
-                    stack.Push(enumerator);
-                    enumerator = currentEnumerator;
-                }
+                if (currentEnumerator == enumerator || currentEnumerator == null) continue;
+                
+                stack.Push(enumerator);
+                enumerator = currentEnumerator;
 
             } while (wait == true);
             
-            stack.DespawnObject(stack.Clear);
-
+            stack.Despawn();
         }
 
         public static IEnumerator<T> WaitCoroutine<T>(this IEnumerator enumerator, Func<T> awaiterFunc) {
 
             var awaiter = ClassPool.Spawn<CoroutineIterator>();
             awaiter.Initialize(enumerator);
+            
             while (awaiter.IsDone == false) {
                 awaiter.MoveNext();
                 yield return awaiterFunc();
             }
-            awaiter.Despawn();
+            
+            awaiter.DespawnWithRelease();
         }
 
         public static IEnumerator WaitCoroutines(this List<IEnumerator> enumerators) {
@@ -64,7 +67,7 @@
 
             while (iterators.TrueForAll(x => x.IsDone) == false) {
 
-                for (int i = 0; i < iterators.Count; i++) {
+                for (var i = 0; i < iterators.Count; i++) {
                     var it = iterators[i];
                     if(it.IsDone)continue;
                     it.MoveNext();

@@ -1,123 +1,89 @@
-﻿namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
+﻿using System.Runtime.CompilerServices;
+using UniCore.Runtime.ProfilerTools;
+using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+using Unity.IL2CPP.CompilerServices;
+
+namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 {
+	using UnityEngine.Pool;
 	using System;
-	using Interfaces;
-	using ProfilerTools;
-	using UnityEngine;
-	using Object = UnityEngine.Object;
 
-	public static class ClassPool {
-
-		private static IPoolContainer _container;
-		private static IPoolContainer Container => _container = _container ?? CreateContainer();
+	[Il2CppSetOption(Option.NullChecks, false)]
+	[Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+	[Il2CppSetOption(Option.DivideByZeroChecks, false)]
+	public static class ClassPool 
+	{
 		
-#region constructor		        
-		static ClassPool()
-		{
-#if UNITY_EDITOR
-			UnityEditor.EditorApplication.playModeStateChanged += OnPlaymodeChanged;
-#endif
-		}
-		
-#if UNITY_EDITOR
-		private static void OnPlaymodeChanged(UnityEditor.PlayModeStateChange change)
-		{
-			_container = null;
-		}
-#endif
-		
-#endregion
-
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static TResult Spawn<TResult>(this object _, Action<TResult> onSpawn = null)
 			where TResult : class, new()
 		{
-			return Spawn<TResult>(onSpawn);
+			return Spawn(onSpawn);
 		}
 
 		public static TResult Spawn<TResult>(Action<TResult> onSpawn = null)
             where TResult : class, new()
-        {
-	        var item = SpawnExists(onSpawn);
-
-	        if (item == null)
-	        {
-		        return new TResult();
-	        }
-            
+		{
+			var item = Spawn<TResult>();
+			onSpawn?.Invoke(item);
 	        return item;
         }
-
-        public static TResult SpawnOrCreate<TResult>(Func<TResult> factory,Action<TResult> onSpawn = null)
-            where TResult : class
-        {
-            var item = SpawnExists(onSpawn);
-            	        
-            if (item == null && factory!=null)
-                item = factory();
-	        
-            return item;
-        }
-
-		public static T SpawnExists<T>()
-			where T : class 
+		
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static TResult Spawn<TResult>()
+			where TResult : class, new()
 		{
-			var instance = SpawnExists<T>(null);
-            return instance;
-        }
-
-		public static T SpawnExists<T>(Action<T> onSpawn)
-			where T : class 
-		{
-			if (!Container.Contains<T>())
-		        return null;
-			// Get the matched index, or the last index
-		    var item = Container.Pop<T>();
-
-		    // Run action?
-			onSpawn?.Invoke(item);
-			
+			var item = GenericPool<TResult>.Get();
 			return item;
 		}
-
+		
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Despawn<T>(T instance, Action onDespawn)
+			where T : class, new()
+		{
+			// Run action on it?
+			onDespawn?.Invoke();
+			Despawn(instance);
+		}
+		
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Despawn<T>(T instance, Action<T> onDespawn)
-			where T : class 
+			where T : class, new()
 		{
 			// Run action on it?
 			onDespawn?.Invoke(instance);
-			
+			Despawn(instance);
+		}
+		
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void DespawnWithRelease<T>(T instance)
+			where T:class, new()
+		{
+			if(instance is IPoolable poolable)
+				poolable.Release();
+
 			Despawn(instance);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Despawn<T>(T instance)
-			where T:class
+			where T:class, new()
 		{
+#if UNITY_EDITOR
 			if (instance == null)
+			{
+				GameLog.LogError("Try to return NULL value to the object pool");
 				return;
-
-			if(instance is IPoolable poolable) 
-				poolable.Release();
-
-			// Add to _cache
-			Container.Push(instance);
+			} 
+#endif
+			GenericPool<T>.Release(instance);
 		}
 
-		public static void Despawn<T>(ref T instance, T defaultValue = null) where T : class
+		public static void Despawn<T>(ref T instance, T defaultValue = null) where T : class, new()
 		{
-			if (instance == null)
-				return;
 			Despawn(instance);
 			instance = defaultValue;
 		}
 
-		private static readonly DummyPoolContainer dummyPoolContainer = new DummyPoolContainer();
-
-		private static IPoolContainer CreateContainer()
-		{
-			if (!Application.isPlaying)
-				return dummyPoolContainer;
-
-			var container = new ClassPoolContainer();
-			return container;
-		}
 	}
 }

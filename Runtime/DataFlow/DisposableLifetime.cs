@@ -32,12 +32,8 @@ namespace UniModules.UniGame.Core.Runtime.Common
             
             return this;
         }
-        
-        public void Dispose()
-        {
-            lifeTimeDefinition?.Terminate();
-            this.Despawn();
-        }
+
+        public void Dispose() => Release();
 
         public void Release()
         {

@@ -65,8 +65,7 @@
             }
             
             Count = 0;
-            Queue.Clear();
-            Queue.DespawnObject(Queue.Clear);
+            Queue.Despawn();
             
             Queue = null;
             factory = null;

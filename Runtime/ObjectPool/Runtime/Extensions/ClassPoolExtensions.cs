@@ -1,27 +1,39 @@
-﻿using UnityEngine;
+﻿using System.Runtime.CompilerServices;
+using Unity.IL2CPP.CompilerServices;
 
 namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
 {
     using System;
     using System.Collections.Generic;
     using Interfaces;
+    using UnityEngine;
 
+    [Il2CppSetOption(Option.NullChecks, false)]
+    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public static class ClassPoolExtensions
     {
-        public static void Despawn<T>(this T source, ref T instance, T defaultValue = null) where T : class
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DespawnClass<T>(this T data) where T : class, new()
         {
-            if(source == null || !source.Equals(instance))
-                return;
-            
-            source.Despawn();
-            
-            instance = defaultValue;
+            ClassPool.Despawn(data);
         }
-
-        public static void Despawn<T>(this T data)
-            where T : class
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DespawnWithRelease<T>(this T data) where T : class, new()
         {
-            if (data == null) return;
+            ClassPool.DespawnWithRelease(data);
+        }
+        
+        public static void Despawn(this UnityEngine.Object data)
+        {
+#if UNITY_EDITOR
+            if (data == null)
+            {
+                Debug.LogError("Try to return NULL value to the object pool");
+                return;
+            } 
+#endif
             switch (data)
             {
                 case GameObject gameObject:
@@ -31,26 +43,16 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
                     component.gameObject.DespawnAsset();
                     return;
             }
-            ClassPool.Despawn(data);
         }
         
-        public static void DespawnObject<T>(this T data, Action cleanupAction)
-            where T: class
+        public static void DespawnClass<T>(this T data, Action cleanupAction)
+            where T: class, new()
         {
-            if (data == null) return;
-            cleanupAction?.Invoke();
-            ClassPool.Despawn(data);
-        }
-        
-        public static void DespawnRecursive<TData>(this List<TData> data)
-            where TData : class
-        {
-            DespawnItems(data);
-            DespawnCollection<TData>(data);
+            ClassPool.Despawn(data,cleanupAction);
         }
         
         public static void DespawnRecursive<TValue,TData>(this TValue data)
-            where TValue : class, ICollection<TData> 
+            where TValue : class, ICollection<TData>, new() where TData : class, new()
         {
             DespawnItems(data);
             DespawnCollection<TValue,TData>(data);
@@ -94,25 +96,24 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
         }
         
         public static void DespawnCollection<TValue,TData>(this TValue value)
-            where  TValue : class, ICollection<TData> 
+            where  TValue : class, ICollection<TData>, new()
         {
             value.Clear();
             ClassPool.Despawn(value);
         }
 
         public static void DespawnDictionary<TData,TKey,TValue>(this TData data)
-            where TData : class, IDictionary<TKey,TValue>
+            where TData : class, IDictionary<TKey,TValue>, new()
         {
             data.Clear();
             ClassPool.Despawn(data);
         }
 
-        public static void DespawnItems<TData>(this ICollection<TData> data)
+        public static void DespawnItems<TData>(this ICollection<TData> data) where TData : class, new()
         {
-            foreach (var item in data) {
-                if (item is IPoolable poolable)
-                    poolable.Despawn();
-            }
+            foreach (var item in data)
+                ClassPool.DespawnWithRelease(item);
+            
             data.Clear();
         }
 

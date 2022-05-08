@@ -68,7 +68,7 @@
         public void MakeDespawn()
         {
             Release();
-            this.Despawn();
+            this.DespawnClass();
         }
 
         public IDisposable Subscribe(IObserver<T> observer)

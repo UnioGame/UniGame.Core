@@ -30,6 +30,6 @@
         /// <summary>
         /// despawn movel
         /// </summary>
-        public void Dispose() => this.Despawn();
+        public void Dispose() => lifeTimeDefinition.Terminate();
     }
 }
