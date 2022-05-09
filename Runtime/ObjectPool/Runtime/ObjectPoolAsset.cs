@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using UniModules.UniCore.Runtime.Common;
-using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+﻿using UnityEngine.Pool;
 
 namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 {
+    using System.Linq;
+    using Common;
+    using Interfaces;
     using DataFlow;
     using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
@@ -50,7 +50,6 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         public ILifeTime LifeTime => _lifeTime;
         
         #endregion
-
         
         public ILifeTime AttachToLifeTime(ILifeTime lifeTime)
         {
@@ -59,6 +58,7 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
             //bind new lifetime
             _disposableAction = ClassPool.Spawn<DisposableAction>();
             _disposableAction.Initialize(Destroy);
+            
             lifeTime.AddDispose(_disposableAction);
             
             return lifeTime;
@@ -98,14 +98,13 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
         {
             var component = target as Component;
             var isComponent = component != null;
-            
             // Clone this prefabs's GameObject
             var asset = isComponent ? component.gameObject : target;
-            
             var clone = Spawn(asset, position, rotation, parent, stayWorld, 0);
 
-            var result = isComponent && clone is GameObject gameAsset ? 
-                gameAsset.GetComponent<T>() : clone;
+            var result = isComponent && clone is GameObject gameAsset 
+                ? gameAsset.GetComponent<T>() 
+                : clone;
             
             // Return the same component from the clone
             return result as T;

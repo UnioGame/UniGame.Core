@@ -9,7 +9,6 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 
         public static ObjectPoolAsset activePool;
 
-
         public static ObjectPoolAsset PoolAsset => GetPool();
 
         public static ILifeTime AttachToLifeTime(Object poolAsset, ILifeTime lifeTime, bool createIfEmpty = false,int preload = 0)
