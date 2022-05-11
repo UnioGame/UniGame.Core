@@ -32,7 +32,7 @@ namespace UnioModules.UniGame.CoreModules.Tests
             //action
             var classOne = ClassPool.Spawn<PooledTestClass>();
             classOne.Message = messageData;
-            classOne.DespawnClass();
+            classOne.Despawn();
             
             var classTwo = ClassPool.Spawn<PooledTestClass>();
             

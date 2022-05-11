@@ -14,9 +14,21 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
     public static class ClassPoolExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DespawnClass<T>(this T data) where T : class, new()
+        public static void Despawn<T>(this T data) where T : class, new()
+        {
+            if (data is UnityEngine.Object asset)
+            {
+                Despawn(asset);
+                return;
+            }
+            ClassPool.Despawn(data);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Despawn<T>(this T data,ref T value, T defaultValue = null) where T : class, new()
         {
             ClassPool.Despawn(data);
+            value = defaultValue;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

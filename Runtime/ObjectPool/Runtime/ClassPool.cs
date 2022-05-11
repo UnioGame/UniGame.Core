@@ -5,7 +5,7 @@ using Unity.IL2CPP.CompilerServices;
 
 namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 {
-	using UnityEngine.Pool;
+	//using UnityEngine.Pool;
 	using System;
 
 	[Il2CppSetOption(Option.NullChecks, false)]
@@ -33,8 +33,9 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 		public static TResult Spawn<TResult>()
 			where TResult : class, new()
 		{
-			var item = GenericPool<TResult>.Get();
-			return item;
+			//var item = GenericPool<TResult>.Get();
+			//return item;
+			return null;
 		}
 		
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -59,9 +60,6 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 		public static void DespawnWithRelease<T>(T instance)
 			where T:class, new()
 		{
-			if(instance is IPoolable poolable)
-				poolable.Release();
-
 			Despawn(instance);
 		}
 
@@ -76,7 +74,9 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 				return;
 			} 
 #endif
-			GenericPool<T>.Release(instance);
+			if(instance is IPoolable poolable)
+				poolable.Release();
+			//GenericPool<T>.Release(instance);
 		}
 
 		public static void Despawn<T>(ref T instance, T defaultValue = null) where T : class, new()
