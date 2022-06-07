@@ -566,7 +566,7 @@ namespace UniModules.Editor
                 }
             }).Finally(() => disposable.Cancel())
                 .Finally(EditorUtility.ClearProgressBar)
-                .RxSubscribe().AddTo(lifeTime);
+                .Subscribe().AddTo(lifeTime);
 
             return disposable;
         }

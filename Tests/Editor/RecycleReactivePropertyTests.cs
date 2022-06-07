@@ -13,8 +13,8 @@ namespace UniModules.UniGame.CoreModules.UniGame.Core.Tests.Editor
             var observable = new RecycleReactiveProperty<bool>();
             
             IDisposable observerToDispose = null;
-            observable.RxSubscribe(_ => observerToDispose?.Dispose());
-            observerToDispose = observable.RxSubscribe();
+            observable.Subscribe(_ => observerToDispose?.Dispose());
+            observerToDispose = observable.Subscribe();
 
             observable.Value = true;
         }
@@ -25,8 +25,8 @@ namespace UniModules.UniGame.CoreModules.UniGame.Core.Tests.Editor
             var observable = new ReactiveProperty<bool>();
             
             IDisposable observerToDispose = null;
-            observable.RxSubscribe(_ => observerToDispose?.Dispose());
-            observerToDispose = observable.RxSubscribe();
+            observable.Subscribe(_ => observerToDispose?.Dispose());
+            observerToDispose = observable.Subscribe();
 
             observable.Value = true;
         }
@@ -36,8 +36,8 @@ namespace UniModules.UniGame.CoreModules.UniGame.Core.Tests.Editor
         {
             var observable = new RecycleReactiveProperty<bool>();
             
-            var observerToDispose = observable.RxSubscribe();
-            observable.RxSubscribe(_ => observerToDispose?.Dispose());
+            var observerToDispose = observable.Subscribe();
+            observable.Subscribe(_ => observerToDispose?.Dispose());
 
             observable.Value = true;
         }
@@ -47,8 +47,8 @@ namespace UniModules.UniGame.CoreModules.UniGame.Core.Tests.Editor
         {
             var observable = new ReactiveProperty<bool>();
             
-            var observerToDispose = observable.RxSubscribe();
-            observable.RxSubscribe(_ => observerToDispose?.Dispose());
+            var observerToDispose = observable.Subscribe();
+            observable.Subscribe(_ => observerToDispose?.Dispose());
 
             observable.Value = true;
         }

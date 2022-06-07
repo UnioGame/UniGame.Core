@@ -19,7 +19,7 @@ namespace UniGame.Utils.Runtime
 
             Observable
                 .EveryFixedUpdate()
-                .RxSubscribe(OnUpdate)
+                .Subscribe(OnUpdate)
                 .AddTo(this);
         }
 

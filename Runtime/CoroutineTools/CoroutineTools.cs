@@ -88,7 +88,7 @@
                 var index = i;
                 var enumerator = enumerators[index];
                 awaiters.Add(false);
-                Observable.FromCoroutine(x => enumerator).DoOnCompleted(() => awaiters[index] = true).RxSubscribe();
+                Observable.FromCoroutine(x => enumerator).DoOnCompleted(() => awaiters[index] = true).Subscribe();
             }
 
             while (awaiters.TrueForAll(x => x) == false)

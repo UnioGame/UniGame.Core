@@ -273,7 +273,7 @@
             
             Observable.FromEvent(x => SceneManager.sceneLoaded += OnSceneLoaded,
                 x => SceneManager.sceneLoaded -= OnSceneLoaded)
-                .RxSubscribe()
+                .Subscribe()
                 .AddTo(LifeTime);
 
             _lifeTime.AddCleanUpAction(OnDestroyAction);

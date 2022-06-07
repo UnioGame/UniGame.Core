@@ -123,12 +123,12 @@
         {
             if (batchDisposable == null)
             {
-                batchDisposable = Observable.FromMicroCoroutine(OnUpdate).RxSubscribe();
+                batchDisposable = Observable.FromMicroCoroutine(OnUpdate).Subscribe();
             }
             if (spawnBatchDisposable == null) {
                 spawnBatchDisposable = Observable.
                     EveryLateUpdate().
-                    RxSubscribe(x => spawnAmountAssets.Clear());
+                    Subscribe(x => spawnAmountAssets.Clear());
             }
         }
 
