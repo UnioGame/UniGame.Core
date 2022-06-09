@@ -11,7 +11,6 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
     using UniCore.Runtime.Attributes;
     using UniCore.Runtime.ReflectionUtils;
     using UniGameFlow.GameFlowEditor.Editor.UiElementsEditor.Styles;
-    using UniRx;
     using Unity.EditorCoroutines.Editor;
     using UnityEngine;
     using Object = UnityEngine.Object;
@@ -42,7 +41,7 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
         #endregion
 
         private EditorCoroutine           _coroutine;
-        private ReactiveCollection<TData> _removedData  = new ReactiveCollection<TData>();
+        private List<TData> _removedData  = new List<TData>();
 
         public bool IsRunning => _coroutine != null;
 

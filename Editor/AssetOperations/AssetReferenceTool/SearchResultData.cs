@@ -8,28 +8,18 @@ namespace UniModules.Editor
     using System.Collections.Generic;
     using UniModules.UniCore.EditorTools.Editor;
     using UniCore.Runtime.DataFlow;
-    using UniRx;
     using Object = UnityEngine.Object;
 
     public class SearchResultData : IDisposable, ILifeTimeContext
     {
         private LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
-        private Subject<ProgressData> _progressData = new Subject<ProgressData>();
-        
-        #region constructor
+        private Action<ProgressData> _progressAction;
 
-        public SearchResultData()
-        {
-            _progressData.AddTo(_lifeTime);
-        }
-        
-        #endregion
-        
+        public Action<ProgressData> ProgressAction => _progressAction;
+
         public ConcurrentDictionary<Object, List<ResourceHandle>> referenceMap = new ConcurrentDictionary<Object, List<ResourceHandle>>();
         
         public AssetResourcesMap assets  = new AssetResourcesMap(2);
-
-        public IObservable<ProgressData> Progression => _progressData;
 
         public ILifeTime LifeTime => _lifeTime;
         
@@ -49,14 +39,10 @@ namespace UniModules.Editor
 
         public SearchResultData ReportProgress(ProgressData progress)
         {
-            _progressData.OnNext(progress);
+            _progressAction?.Invoke(progress);
             return this;
         }
 
-        public void Complete()
-        {
-            _lifeTime.Release();
-            _progressData = new Subject<ProgressData>().AddTo(_lifeTime);
-        }
+        public void Complete() => _lifeTime.Release();
     }
 }

@@ -48,8 +48,6 @@ namespace UniModules.Editor
                 item.Value.Clear();
             }
 
-            UniModules.Editor.AssetEditorTools.ShowActionProgress(searchResult.Progression,searchResult.LifeTime).
-                AddTo(searchResult.LifeTime);
             searchResult = FindAsssetReferences(searchResult, files);
             searchResult.Complete();
             return searchResult;

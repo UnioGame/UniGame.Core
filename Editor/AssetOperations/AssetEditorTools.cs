@@ -1,4 +1,5 @@
-﻿using UniModules.UniCore.Runtime.Extension;
+﻿using UniGame.Core.Runtime.Common;
+using UniModules.UniCore.Runtime.Extension;
 
 namespace UniModules.Editor
 {
@@ -12,7 +13,6 @@ namespace UniModules.Editor
     using UniModules.UniCore.Runtime.Utils;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.Core.Runtime.Extension;
-    using UniRx;
     using UnityEditor;
     using UnityEngine;
     using Object = UnityEngine.Object;
@@ -547,26 +547,7 @@ namespace UniModules.Editor
 
             return result;
         }
-
-        public static IDisposable ShowActionProgress(IObservable<ProgressData> progressObservable, ILifeTime lifeTime)
-        {
-            var disposable  = Disposable.Empty;
-            var isCanceled  = EditorUtility.DisplayCancelableProgressBar(string.Empty, string.Empty, 0);
-            if (isCanceled)
-                return Disposable.Empty;
-
-            disposable = progressObservable.Do(progress =>
-            {
-                isCanceled = EditorUtility.DisplayCancelableProgressBar(progress.Title, progress.Content, progress.Progress);
-                if (isCanceled)
-                    disposable.Cancel();
-            }).Finally(() => disposable.Cancel())
-                .Finally(EditorUtility.ClearProgressBar)
-                .Subscribe().AddTo(lifeTime);
-
-            return disposable;
-        }
-
+        
         public static bool ShowProgress(ProgressData progress)
         {
             if (progress.IsDone)

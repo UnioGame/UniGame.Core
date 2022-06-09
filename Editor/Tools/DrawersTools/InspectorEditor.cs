@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Reflection;
+using UniGame.Core.Runtime.Common;
 using UniModules.UniCore.Runtime.Utils;
-using UniRx;
 
 namespace UniModules.UniCore.EditorTools.Editor.PropertiesDrawers
 {
+    
     public class InspectorEditor : IDisposable
     {
         private const string DisableMethod = "OnDisable";
@@ -15,7 +16,7 @@ namespace UniModules.UniCore.EditorTools.Editor.PropertiesDrawers
                 BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
             
             if (methodInfo == null)
-                return Disposable.Empty.Dispose;
+                return EmptyDisposable.Empty.Dispose;
             
             var delegateValue = methodInfo.CreateDelegate(typeof(Action));
             return (Action)delegateValue;
