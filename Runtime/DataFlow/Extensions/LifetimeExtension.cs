@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Threading;
-using Cysharp.Threading.Tasks;
-using UniCore.Runtime.ProfilerTools;
 using UniGame.Core.Runtime.Common;
 using UniGame.Core.Runtime.DataFlow;
-using UniModules.UniCore.Runtime.Common;
 using UniModules.UniCore.Runtime.DataFlow;
-using UniModules.UniCore.Runtime.DataFlow.Interfaces;
 using UniModules.UniCore.Runtime.ObjectPool.Runtime;
 using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
+using UniModules.UniGame.Core.Runtime.Common;
 using UniModules.UniGame.Core.Runtime.DataFlow;
 using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
 using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
@@ -26,6 +23,23 @@ public static class LifetimeExtension
         DestroyWith(gameObject,lifeTime);
         return lifeTime;
     }
+    
+    public static T AddTo<T>(this T disposable, ILifeTime lifeTime)
+        where T : IDisposable
+    {
+        if (disposable != null)
+            lifeTime.AddDispose(disposable);
+        return disposable;
+    }
+        
+    public static IDisposableLifetime AddTo(this ILifeTime lifeTime, Action cleanupAction)
+    {
+        var disposableAction = ClassPool.Spawn<DisposableLifetime>();
+        disposableAction.AddCleanUpAction(cleanupAction);
+        lifeTime.AddDispose(disposableAction);
+        return disposableAction;
+    }
+
     
     public static T DestroyWith<T>(this T asset, ILifeTime lifeTime)
         where T : Object
@@ -131,38 +145,7 @@ public static class LifetimeExtension
         return lifetimeAction;
     }
 
-    
-    public static async UniTask AwaitTimeoutLog(this ILifeTime lifeTime,TimeSpan timeOut,Func<string> message,LogType logType = LogType.Error)
-    {
-        var delay = timeOut.TotalMilliseconds;
-        if (delay > 0)
-            return;
 
-        var token = lifeTime.TokenSource;
-        await UniTask.Delay(timeOut,cancellationToken:token)
-            .AttachExternalCancellation(token);
-
-        var logMessage = message();
-        
-        switch (logType)
-        {
-            case LogType.Error:
-            case LogType.Assert:
-            case LogType.Exception:
-                GameLog.LogError(logMessage);
-                break;
-            case LogType.Warning:
-                GameLog.LogWarning(logMessage);
-                break;
-            case LogType.Log:
-                GameLog.Log(logMessage);
-                break;
-        }
-
-        
-        GameLog.Log(message?.Invoke());
-    }
-    
     public static IDisposableCommand CreateLifeTimeCommand<TLifeTime>(this Action<ILifeTime> action)
     {
         var lifetimeAction = ClassPool.Spawn<LifeTimeContextCommand>();

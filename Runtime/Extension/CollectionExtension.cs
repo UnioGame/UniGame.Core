@@ -5,7 +5,6 @@ namespace UniModules.UniGame.Core.Runtime.Extension
     using System.Linq;
     using UniModules.UniCore.Runtime.ObjectPool.Runtime;
     using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
-    using UniRx;
     using Random = UnityEngine.Random;
 
     public static class CollectionExtension

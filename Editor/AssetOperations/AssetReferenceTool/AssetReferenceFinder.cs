@@ -11,7 +11,6 @@ namespace UniModules.Editor
     using System.Threading;
     using UniModules.UniCore.EditorTools.Editor;
     using Editor;
-    using UniModules.UniCore.Runtime.Rx.Extensions;
     using UnityEditor;
     using UnityEngine;
     using Object = UnityEngine.Object;

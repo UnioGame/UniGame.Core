@@ -2,16 +2,10 @@
 {
     using System;
     using System.Collections;
-    using CoroutineTools;
     using UnityEngine;
 
     public class MemoryUtils
     {
-
-        public static void CleanUpFullMemory() {
-            var awaiter = CleanUpFullMemoryAsync();
-            awaiter.WaitCoroutine();
-        }
 
         public static IEnumerator CleanUpFullMemoryAsync() {
 
@@ -21,7 +15,6 @@
             GC.WaitForPendingFinalizers();
             yield return UnloadUnusedAssetsAsync();
             GC.Collect();
-
         }
 
         public static void CleanUp() {
@@ -34,6 +27,7 @@
         }
 
         public static IEnumerator UnloadUnusedAssetsAsync() {
+            
             Debug.Log("MemoryUtils.UnloadUnesedAssets");
 #if UNITY_ANDROID
 //// Not waiting for Resources.UnloadUnusedAssets(), because it is terribly slow as of Unity 5.6.2p2 (takes ~2 minutes sometimes).
@@ -43,9 +37,5 @@
 #endif
         }
 
-        public static void UnloadUnusedAssets() {
-            var awaiter = UnloadUnusedAssetsAsync();
-            awaiter.WaitCoroutine();
-        }
     }
 }

@@ -1,9 +1,10 @@
 {
-    "name": "unigame.unicore.runtime",
+    "name": "unigame.unicore.runtimetools",
     "rootNamespace": "",
     "references": [
         "GUID:343deaaf83e0cee4ca978e7df0b80d21",
-        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:33661e06c33d31b4c9223810bf503247"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

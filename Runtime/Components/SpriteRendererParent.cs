@@ -1,6 +1,5 @@
 namespace UniGame.Utils.Runtime
 {
-    using UniRx;
     using UnityEngine;
 
     [ExecuteInEditMode, RequireComponent(typeof(SpriteRenderer))]
@@ -17,13 +16,9 @@ namespace UniGame.Utils.Runtime
 
             OnTransformChildrenChanged();
 
-            Observable
-                .EveryFixedUpdate()
-                .Subscribe(OnUpdate)
-                .AddTo(this);
         }
 
-        public void OnUpdate(long time)
+        public void FixedUpdate()
         {
             if(_renderer == null)
                 return;

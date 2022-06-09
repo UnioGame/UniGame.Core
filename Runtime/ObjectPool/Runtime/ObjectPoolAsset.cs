@@ -4,11 +4,9 @@
     using Common;
     using Interfaces;
     using DataFlow;
-    using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.Core.Runtime.Extension;
     using UniModules.UniGame.Core.Runtime.Interfaces;
-    using UniRx;
     using UnityEngine.SceneManagement;
     using System.Collections.Generic;
     using UnityEngine;
@@ -270,11 +268,9 @@
         private void Awake()
         {
             _lifeTime = new LifeTimeDefinition();
-            
-            Observable.FromEvent(x => SceneManager.sceneLoaded += OnSceneLoaded,
-                x => SceneManager.sceneLoaded -= OnSceneLoaded)
-                .Subscribe()
-                .AddTo(LifeTime);
+
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            SceneManager.sceneLoaded += OnSceneLoaded;
 
             _lifeTime.AddCleanUpAction(OnDestroyAction);
         }
@@ -287,6 +283,8 @@
 
         private void OnDestroyAction()
         {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            
             _disposableAction?.Complete();
             
             var myPools = allSourceLinks

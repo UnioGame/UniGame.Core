@@ -1,7 +1,6 @@
 ﻿namespace UniCore.Runtime.ProfilerTools
 {
     using System;
-    using Cysharp.Text;
     using Interfaces;
     using UniModules.UniCore.Runtime.Utils;
     using UnityEngine;
@@ -111,7 +110,7 @@
         public void LogWarningFormat(string template, params object[] values)
         {
             if (!Enabled) return;
-            var message = ZString.Format(template, values);
+            var message = string.Format(template, values);
             Debug.LogWarning(GetLogMessageWithPrefix(message));
         }
 
@@ -137,7 +136,7 @@
 
         public void LogErrorFormat(string message, params object[] objects)
         {
-            var value = ZString.Format(message, objects);
+            var value = string.Format(message, objects);
             Debug.LogError(value);
         }
 
@@ -156,7 +155,7 @@
 
         public string GetColorTemplate(string message, Color color)
         {
-            var colorMessage = ZString.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>",
+            var colorMessage = string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>",
                                              (byte) (color.r * 255f), (byte) (color.g * 255f), (byte) (color.b * 255f),
                                              message);
             return colorMessage;
@@ -178,12 +177,12 @@
 
         private string GetNamePrefix()
         {
-            return ZString.Format(NameTemplate, Name, _counter.ToStringFromCache());
+            return string.Format(NameTemplate, Name, _counter.ToStringFromCache());
         }
 
         private string GetLogMessageWithPrefix(string message)
         {
-            return ZString.Format(LogTemplate,
+            return string.Format(LogTemplate,
                 DateTime.Now.ToLongTimeString(), 
                 LogPrefix, message);
         }

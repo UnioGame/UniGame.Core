@@ -8,7 +8,6 @@ namespace UniModules.Editor
     using System.Collections.Generic;
     using UniModules.UniCore.EditorTools.Editor;
     using UniCore.Runtime.DataFlow;
-    using UniCore.Runtime.Rx.Extensions;
     using UniRx;
     using Object = UnityEngine.Object;
 

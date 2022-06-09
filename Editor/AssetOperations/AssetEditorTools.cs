@@ -1,4 +1,4 @@
-﻿using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+﻿using UniModules.UniCore.Runtime.Extension;
 
 namespace UniModules.Editor
 {
@@ -8,16 +8,15 @@ namespace UniModules.Editor
     using System.Linq;
     using System.Text.RegularExpressions;
     using UniModules.UniCore.EditorTools.Editor;
-    using Editor;
     using UniModules.UniCore.Runtime.ReflectionUtils;
-    using UniModules.UniCore.Runtime.Rx.Extensions;
     using UniModules.UniCore.Runtime.Utils;
+    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
     using UniModules.UniGame.Core.Runtime.Extension;
     using UniRx;
     using UnityEditor;
     using UnityEngine;
     using Object = UnityEngine.Object;
-
+    
     public static partial class AssetEditorTools
     {
         private const string PrefabExtension = "prefab";
@@ -38,7 +37,7 @@ namespace UniModules.Editor
 
         public const  string       AssetRoot                = "assets";
         public const  string       ModificationTemplate     = @"\n( *)(m_Modifications:[\w,\W]*)(?=\n( *)m_RemovedComponents)";
-        public static List<string> _modificationsIgnoreList = new List<string>() {".fbx"};
+        public static List<string> _modificationsIgnoreList = new List<string> {".fbx"};
 
 
         public static bool IsPureEditorMode =>
@@ -124,19 +123,19 @@ namespace UniModules.Editor
         public static TAsset LoadOrCreate<TAsset>(string path)
             where TAsset : ScriptableObject
         {
-            return LoadOrCreate<TAsset>(path, typeof(TAsset).Name, null,false);
+            return LoadOrCreate<TAsset>(path, typeof(TAsset).Name, null);
         }
         
         public static TAsset LoadOrCreate<TAsset>(Type assetType,string path)
             where TAsset : ScriptableObject
         {
-            return LoadOrCreate<TAsset>(assetType,path, typeof(TAsset).Name, null,false);
+            return LoadOrCreate<TAsset>(assetType,path, typeof(TAsset).Name, null);
         }
         
         public static TAsset LoadOrCreate<TAsset>(string path, Action<TAsset> action)
             where TAsset : ScriptableObject
         {
-            return LoadOrCreate<TAsset>(path, typeof(TAsset).Name, action,false);
+            return LoadOrCreate(path, typeof(TAsset).Name, action);
         }
         
         public static TAsset LoadOrCreate<TAsset>(
@@ -145,7 +144,7 @@ namespace UniModules.Editor
             Action<TAsset> action)
             where TAsset : ScriptableObject
         {
-            return asset ? asset : LoadOrCreate<TAsset>(path, typeof(TAsset).Name, action,false);
+            return asset ? asset : LoadOrCreate(path, typeof(TAsset).Name, action);
         }
 
         public static TAsset LoadOrCreate<TAsset>(
@@ -154,7 +153,7 @@ namespace UniModules.Editor
             Action<TAsset> onCreateAction,
             bool refreshDatabase = false) where TAsset : ScriptableObject
         {
-            return LoadOrCreate<TAsset>(typeof(TAsset), path, assetName, onCreateAction, refreshDatabase);
+            return LoadOrCreate(typeof(TAsset), path, assetName, onCreateAction, refreshDatabase);
         }
         
         public static TAsset LoadOrCreate<TAsset>(
@@ -257,7 +256,7 @@ namespace UniModules.Editor
                 var attribute = type.GetCustomAttribute<TAttr>();
                 if (attribute != null)
                 {
-                    result.Add(new AttributeItemData<T, TAttr>()
+                    result.Add(new AttributeItemData<T, TAttr>
                     {
                         Attribute = attribute,
                         Value     = asset
@@ -271,9 +270,9 @@ namespace UniModules.Editor
 
         public static void FindItems<T>(Action<Object, T> action)
         {
-            var assets = AssetEditorTools.GetAllAssets();
+            var assets = GetAllAssets();
 
-            AssetEditorTools.ApplyTypeItemAction<T>(assets, action);
+            ApplyTypeItemAction(assets, action);
         }
 
         public static void ApplyTypeItemAction<TData>(List<Object> resources, Action<Object, TData> action, HashSet<object> excludedItems = null)
@@ -340,7 +339,7 @@ namespace UniModules.Editor
             {
                 var asset = assets[j];
                 if (!asset) continue;
-                FindTypeItemsInAsset<TData>(asset, action, excludedItems);
+                FindTypeItemsInAsset(asset, action, excludedItems);
             }
         }
 
@@ -349,7 +348,7 @@ namespace UniModules.Editor
         {
             try
             {
-                ReflectionTools.FindResource<TData>(asset, assetAction, excludedItems, editAction);
+                ReflectionTools.FindResource(asset, assetAction, excludedItems, editAction);
             }
             catch (Exception e)
             {
@@ -361,7 +360,7 @@ namespace UniModules.Editor
         {
             try
             {
-                ReflectionTools.FindResource<TData>(asset, null, excludedItems, editAction);
+                ReflectionTools.FindResource(asset, null, excludedItems, editAction);
             }
             catch (Exception e)
             {
@@ -381,7 +380,7 @@ namespace UniModules.Editor
                     var item = items[i];
                     try
                     {
-                        ReflectionTools.FindResource<TData>(item, assetAction, excludedItems);
+                        ReflectionTools.FindResource(item, assetAction, excludedItems);
                     }
                     catch (Exception e)
                     {
@@ -406,7 +405,7 @@ namespace UniModules.Editor
                     items.Add(y);
                 }
 
-                result[x] = new List<TData>() {y};
+                result[x] = new List<TData> {y};
             });
             return result;
         }
@@ -414,7 +413,7 @@ namespace UniModules.Editor
         public static List<T> GetRootAssetsFiltered<T>() where T : Object
         {
             var items       = new List<T>();
-            var gameObjects = AssetEditorTools.GetAssets<GameObject>();
+            var gameObjects = GetAssets<GameObject>();
             for (int i = 0; i < gameObjects.Count; i++)
             {
                 var components = gameObjects[i].GetComponents<T>();
@@ -422,7 +421,7 @@ namespace UniModules.Editor
                 items.AddRange(components);
             }
 
-            var assets = AssetEditorTools.GetAssets<T>();
+            var assets = GetAssets<T>();
             items.AddRange(assets);
             return items;
         }
@@ -430,10 +429,10 @@ namespace UniModules.Editor
         public static List<Object> GetAllAssets()
         {
             var items       = new List<Object>();
-            var gameObjects = AssetEditorTools.GetAssets<GameObject>();
+            var gameObjects = GetAssets<GameObject>();
             items.AddRange(gameObjects.ToArray());
 
-            var scriptableObjects = AssetEditorTools.GetAssets<ScriptableObject>().ToArray();
+            var scriptableObjects = GetAssets<ScriptableObject>().ToArray();
             items.AddRange(scriptableObjects);
             return items;
         }
@@ -444,7 +443,7 @@ namespace UniModules.Editor
             if (asset) return asset;
             
             var folder = path.TrimEndPath();
-            asset = GetAssets<T>(new string[] {folder},1).FirstOrDefault();
+            asset = GetAssets<T>(new[] {folder},1).FirstOrDefault();
             return asset;
         }
 
@@ -474,8 +473,7 @@ namespace UniModules.Editor
         public static List<EditorResource> GetEditorResources<TSource>(string[] folders = null)
             where TSource : Object
         {
-            var result = AssetEditorTools.
-                GetAssets<TSource>(folders).
+            var result = GetAssets<TSource>(folders).
                 Select(x =>
             {
                 var asset = new EditorResource();
@@ -561,9 +559,7 @@ namespace UniModules.Editor
             {
                 isCanceled = EditorUtility.DisplayCancelableProgressBar(progress.Title, progress.Content, progress.Progress);
                 if (isCanceled)
-                {
                     disposable.Cancel();
-                }
             }).Finally(() => disposable.Cancel())
                 .Finally(EditorUtility.ClearProgressBar)
                 .Subscribe().AddTo(lifeTime);
