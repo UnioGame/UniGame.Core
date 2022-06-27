@@ -1,4 +1,5 @@
-﻿using UniGame.Core.Runtime.Common;
+﻿using NUnit.Framework;
+using UniGame.Core.Runtime.Common;
 using UniModules.UniCore.Runtime.Extension;
 
 namespace UniModules.Editor
@@ -443,13 +444,13 @@ namespace UniModules.Editor
             if (asset) return asset;
             
             var folder = path.TrimEndPath();
-            asset = GetAssets<T>(new[] {folder},1).FirstOrDefault();
+            asset = GetAsset(typeof(T),string.Empty,new[] {folder}) as T;
             return asset;
         }
 
         public static T GetAsset<T>(string[] folders = null) where T : Object
         {
-            var asset = GetAssets<T>(folders).FirstOrDefault();
+            var asset = GetAsset(typeof(T),string.Empty, folders) as T;
             return asset;
         }
 

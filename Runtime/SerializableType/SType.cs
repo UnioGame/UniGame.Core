@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniGame.Core.Runtime.SerializableType
+﻿using UnityEngine.Profiling;
+
+namespace UniModules.UniGame.Core.Runtime.SerializableType
 {
     using System;
     using Taktika.GameRuntime.Types;

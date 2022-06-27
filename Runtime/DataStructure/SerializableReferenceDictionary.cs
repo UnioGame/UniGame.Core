@@ -1,4 +1,6 @@
-﻿namespace UniModules.UniGame.Core.Runtime.DataStructure
+﻿using UnityEngine.Profiling;
+
+namespace UniModules.UniGame.Core.Runtime.DataStructure
 {
     using System;
     using System.Collections.Generic;
@@ -50,6 +52,7 @@
 
             for (var i = 0; i < keys.Count; i++)
                 this.Add(keys[i], values[i]);
+            
         }
         
         protected virtual IEnumerable<TKey> GetKeys() => Enumerable.Empty<TKey>();

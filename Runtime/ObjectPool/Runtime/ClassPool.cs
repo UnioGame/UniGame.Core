@@ -1,19 +1,19 @@
-﻿using System.Runtime.CompilerServices;
-using UniCore.Runtime.ProfilerTools;
-using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
-using Unity.IL2CPP.CompilerServices;
-using UnityEngine.Pool;
+﻿using UniCore.Runtime.ProfilerTools;
 
 namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 {
+	using System.Runtime.CompilerServices;
+	using UniCore.Runtime.ProfilerTools;
+	using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+	using Unity.IL2CPP.CompilerServices;
+	using UnityEngine.Pool;
 	using System;
 
 	[Il2CppSetOption(Option.NullChecks, false)]
 	[Il2CppSetOption(Option.ArrayBoundsChecks, false)]
 	[Il2CppSetOption(Option.DivideByZeroChecks, false)]
-	public static class ClassPool 
+	public static class ClassPool
 	{
-		
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static TResult Spawn<TResult>(this object _, Action<TResult> onSpawn = null)
 			where TResult : class, new()
@@ -85,4 +85,5 @@ namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
 		}
 
 	}
+	
 }

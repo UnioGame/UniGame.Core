@@ -57,6 +57,11 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
 
         private void OnEnable()
         {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+                return;
+#endif
+            
             _objectName = name;
             _assetType = GetType();
             _lifeTimeDefinition?.Release();

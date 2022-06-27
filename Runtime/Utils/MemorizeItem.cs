@@ -1,6 +1,4 @@
-﻿using UniModules.UniCore.Runtime.ReflectionUtils;
-
-namespace UniModules.UniCore.Runtime.Utils
+﻿namespace UniModules.UniCore.Runtime.Utils
 {
     using System;
     using System.Collections.Generic;
@@ -26,10 +24,11 @@ namespace UniModules.UniCore.Runtime.Utils
 
         public TData GetValue(TKey key)
         {
-            if (_cache.TryGetValue(key, out var value) == false || value == null) {
-                value       = factory(key);
-                _cache[key] = value;
-            }
+            if (_cache.TryGetValue(key, out var value) && value != null) 
+                return value;
+            
+            value       = factory(key);
+            _cache[key] = value;
             return value;
         }
         

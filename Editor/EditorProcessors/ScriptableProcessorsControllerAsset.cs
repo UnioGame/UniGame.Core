@@ -66,7 +66,7 @@
             
             var allProcessors = types.Select(x => AssetEditorTools.GetAssets(x))
                 .SelectMany(x => x)
-                .Where(x => x is ScriptableObject && x is IEditorProcess)
+                .Where(x => x is ScriptableObject and IEditorProcess)
                 .Select(x => x as ScriptableObject)
                 .ToList();
             
