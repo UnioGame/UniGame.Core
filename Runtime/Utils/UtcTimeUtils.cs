@@ -2,7 +2,7 @@
 
     namespace UniModules.UniGame.Core.Runtime.Utils
     {
-        public static class TimeUtils
+        public static class UtcTimeUtils
         {
             private static readonly DateTime StartTime = new DateTime(1970,1,1,0,0,0,DateTimeKind.Utc);
 
