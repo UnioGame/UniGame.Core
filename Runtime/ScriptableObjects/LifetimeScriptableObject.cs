@@ -81,7 +81,7 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
         private void LogLifeTimeScriptableMessage(string message,Color color)
         {
             if(Application.isPlaying)
-                GameLog.Log($"LifetimeScriptableObject Name: {_objectName} Type: {_assetType.Name}  Message {message}",color);
+                GameLog.Log($"LifetimeScriptableObject Name: {_objectName} Type: {_assetType?.Name}  Message {message}",color);
         }
         
         private void OnDisable()
