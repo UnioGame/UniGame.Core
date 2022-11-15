@@ -1,5 +1,6 @@
 ﻿using UniCore.Runtime.ProfilerTools;
 using UniModules.UniCore.Runtime.Extension;
+using UnityEngine;
 
 namespace UniModules.UniCore.Runtime.DataFlow
 {
@@ -12,8 +13,11 @@ namespace UniModules.UniCore.Runtime.DataFlow
 
     public class LifeTime : ILifeTime, IPoolable
     {
-        public readonly static ILifeTime TerminatedLifetime;
+        private static readonly LifeTimeDefinition _editorLifeTime = new LifeTimeDefinition();
         
+        public readonly static ILifeTime TerminatedLifetime;
+        public static ILifeTime EditorLifeTime => _editorLifeTime;
+
         private List<IDisposable> disposables = new List<IDisposable>();
         private List<object> referencies = new List<object>();
         private List<Action> cleanupActions = new List<Action>();
@@ -157,6 +161,16 @@ namespace UniModules.UniCore.Runtime.DataFlow
         #region type convertion
 
         public static implicit operator CancellationToken(LifeTime lifeTime) => lifeTime.TokenSource;
+
+        #endregion
+
+        #region editor
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        public static void OnDomainReload()
+        {
+            _editorLifeTime?.Release();
+        }
 
         #endregion
     }

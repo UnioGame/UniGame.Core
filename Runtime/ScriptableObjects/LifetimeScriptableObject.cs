@@ -61,17 +61,13 @@ namespace UniModules.UniGame.Core.Runtime.ScriptableObjects
             if (!Application.isPlaying)
                 return;
 #endif
-            
             _objectName = name;
             _assetType = GetType();
             _lifeTimeDefinition?.Release();
             _lifeTimeDefinition ??= new LifeTimeDefinition();
-            
+
 #if UNITY_EDITOR
-            LifetimeObjectData.Add(this);
-            
-            LogLifeTimeScriptableMessage(nameof(OnEnable),_logColorEnable);
-            LifeTime.AddCleanUpAction(() => LogLifeTimeScriptableMessage("LifeTime Terminated",_logColorDisable));
+            _lifeTimeDefinition.AddTo(UniCore.Runtime.DataFlow.LifeTime.EditorLifeTime);
 #endif
             
             OnActivate();

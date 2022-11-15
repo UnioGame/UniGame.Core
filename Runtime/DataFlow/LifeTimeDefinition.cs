@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using UnityEngine;
 
 namespace UniModules.UniCore.Runtime.DataFlow
 {
@@ -30,7 +31,7 @@ namespace UniModules.UniCore.Runtime.DataFlow
         public ILifeTime LifeTime => lifeTime;
 
         public int Id => id;
-        
+
         public void Terminate() => lifeTime.Release();
 
         public void Release() => lifeTime.Restart();
@@ -45,6 +46,7 @@ namespace UniModules.UniCore.Runtime.DataFlow
         public ILifeTime AddRef(object o) => lifeTime.AddRef(o);
         
         #endregion
+
 
     }
 }
