@@ -7,19 +7,28 @@
         public static CanvasGroupState Disabled = new CanvasGroupState();
         
         public static CanvasGroupState SetState(
-            this CanvasGroup group, float alpha,
+            this CanvasGroup group, 
+            float alpha,
             bool             interactable  = true,
             bool             blockRaycasts = true,
             bool             ignoreParent  = false)
         {
-            if(!group)
-                return Disabled;
+            if(group == null) return Disabled;
             
-            var state = CanvasGroupExtension.GetState(group);
+            var state = GetState(group);
 
             var resultState = CreateState(alpha, interactable, blockRaycasts, ignoreParent);
             group.SetState(resultState);
 
+            return state;
+        }
+
+        public static CanvasGroupState SetBlocksRaycast(this CanvasGroup group, bool blockRaycast)
+        {
+            if(group == null) return Disabled;
+            var state = GetState(group);
+            state.BlockRaycasts = blockRaycast;
+            SetState(group,state);
             return state;
         }
 
@@ -41,8 +50,7 @@
 
         public static CanvasGroupState GetState(this CanvasGroup group)
         {
-            if(!group)
-                return Disabled;
+            if(!group) return Disabled;
             
             return new CanvasGroupState() {
                 Alpha         = group.alpha,

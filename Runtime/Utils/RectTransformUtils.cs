@@ -1,3 +1,5 @@
+using System;
+
 namespace UniGame.Utils
 {
     using System.Collections.Generic;
@@ -5,14 +7,14 @@ namespace UniGame.Utils
 
     public static class RectTransformUtils
     {
-        public static readonly Vector2 Center      = new Vector2(.5f, .5f);
-        public static readonly Vector2 Left        = new Vector2(0f, .5f);
-        public static readonly Vector2 Right       = new Vector2(1f, .5f);
-        public static readonly Vector2 Top         = new Vector2(.5f, 1f);
-        public static readonly Vector2 Bottom      = new Vector2(.5f, 0f);
-        public static readonly Vector2 TopLeft     = new Vector2(0f, 1f);
-        public static readonly Vector2 TopRight    = new Vector2(1f, 1f);
-        public static readonly Vector2 BottomLeft  = new Vector2(0f, 0f);
+        public static readonly Vector2 Center = new Vector2(.5f, .5f);
+        public static readonly Vector2 Left = new Vector2(0f, .5f);
+        public static readonly Vector2 Right = new Vector2(1f, .5f);
+        public static readonly Vector2 Top = new Vector2(.5f, 1f);
+        public static readonly Vector2 Bottom = new Vector2(.5f, 0f);
+        public static readonly Vector2 TopLeft = new Vector2(0f, 1f);
+        public static readonly Vector2 TopRight = new Vector2(1f, 1f);
+        public static readonly Vector2 BottomLeft = new Vector2(0f, 0f);
         public static readonly Vector2 BottomRight = new Vector2(1f, 0f);
 
         public static IEnumerable<(string, Vector2)> GetAnchorPresets()
@@ -35,7 +37,72 @@ namespace UniGame.Utils
         {
             rectTransform.anchorMin = Center;
             rectTransform.anchorMax = Center;
-            rectTransform.pivot     = Center;
+            rectTransform.pivot = Center;
         }
+
+        public static void CreateRectTransformData(
+            this Transform transform,
+            out RectTransformData data)
+        {
+            data = new RectTransformData();
+            if (transform is not RectTransform rectTransform)
+                return;
+
+            data.isRectTransform = true;
+            data.rectTransform = rectTransform;
+            data.anchoredPosition = rectTransform.anchoredPosition;
+            data.anchoredPosition3D = rectTransform.anchoredPosition3D;
+            data.anchorMax = rectTransform.anchorMax;
+            data.anchorMin = rectTransform.anchorMin;
+            data.offsetMax = rectTransform.offsetMax;
+            data.offsetMin = rectTransform.offsetMin;
+            data.pivot = rectTransform.pivot;
+            data.rect = rectTransform.rect;
+            data.sizeDelta = rectTransform.sizeDelta;
+        }
+
+        public static void ApplyRectTransformData(this Transform transform, ref RectTransformData data)
+        {
+            if (transform is not RectTransform rectTransform)
+                return;
+            
+            rectTransform.anchoredPosition = data.anchoredPosition;
+            rectTransform.anchoredPosition3D = data.anchoredPosition3D;
+            rectTransform.anchorMax = data.anchorMax;
+            rectTransform.anchorMin = data.anchorMin;
+            rectTransform.offsetMax = data.offsetMax;
+            rectTransform.offsetMin = data.offsetMin;
+            rectTransform.pivot = data.pivot;
+            rectTransform.sizeDelta = data.sizeDelta;
+        }
+    }
+
+    [Serializable]
+    public struct RectTransformData
+    {
+        public RectTransform rectTransform;
+        public bool isRectTransform;
+
+        public Vector2
+            anchoredPosition; //The position of the pivot of this RectTransform relative to the anchor reference point.
+
+        public Vector3
+            anchoredPosition3D; //The 3D position of the pivot of this RectTransform relative to the anchor reference point.
+
+        public Vector2
+            anchorMax; //The normalized position in the parent RectTransform that the upper right corner is anchored to.
+
+        public Vector2
+            anchorMin; //The normalized position in the parent RectTransform that the lower left corner is anchored to.
+
+        public Vector2
+            offsetMax; //The offset of the upper right corner of the rectangle relative to the upper right anchor.
+
+        public Vector2
+            offsetMin; //The offset of the lower left corner of the rectangle relative to the lower left anchor.
+
+        public Vector2 pivot; //The normalized position in this RectTransform that it rotates around.
+        public Rect rect; //The calculated rectangle in the local space of the Transform.
+        public Vector2 sizeDelta; //The size of this RectTransform relative to the distances between the anchors.
     }
 }
