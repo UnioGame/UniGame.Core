@@ -1,4 +1,4 @@
-using UniModules.UniGame.Core.Runtime.SerializableType;
+using UniGame.Core.Runtime.SerializableType;
 using UnityEditor;
 
 namespace UniModules.UniGame.CoreModules.UniGame.Core.Editor.Controls.SerializableTypeDrawer

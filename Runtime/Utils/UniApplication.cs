@@ -3,8 +3,7 @@ namespace UniModules.UniGame.Core.Runtime.Utils
 #if UNITY_EDITOR
     using UnityEditor;
 #endif
-    using System;
-    
+
     public static class UniApplication
     {
         private static bool _isPlaying = true;

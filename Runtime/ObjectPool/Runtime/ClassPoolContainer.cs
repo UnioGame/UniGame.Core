@@ -1,7 +1,6 @@
-﻿namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
+﻿namespace UniGame.Runtime.ObjectPool
 {
-    using Interfaces;
-    using UnityEngine;
+    using UniGame.Core.Runtime.ObjectPool;
 
     public class ClassPoolContainer : IPoolContainer
     {

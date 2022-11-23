@@ -1,6 +1,4 @@
-﻿using UnityEditor.Experimental.SceneManagement;
-
-namespace UniGame.Tools
+﻿namespace UniGame.Tools
 {
     using System;
     using System.Diagnostics;

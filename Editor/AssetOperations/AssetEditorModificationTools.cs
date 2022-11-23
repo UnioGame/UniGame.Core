@@ -1,4 +1,4 @@
-using UniModules.UniGame.Core.Runtime.Extension;
+using UniGame.Core.Runtime.Extension;
 
 namespace UniModules.Editor
 {

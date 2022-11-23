@@ -2,8 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using Interfaces;
-    using UniModules.UniCore.Runtime.DataFlow.Interfaces;
+    using global::UniGame.Core.Runtime;
 
     public interface IComposedLifeTime : ILifeTime, IDisposable
     {

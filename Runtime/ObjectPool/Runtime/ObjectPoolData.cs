@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
+namespace UniGame.Runtime.ObjectPool
 {
     public static class ObjectPoolData
     {

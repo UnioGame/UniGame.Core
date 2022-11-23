@@ -1,6 +1,6 @@
 ﻿namespace UniModules.UniCore.Runtime.Common
 {
-    using UniGame.Core.Runtime.Interfaces;
+    using global::UniGame.Core.Runtime;
 
     public class CompletionSource : ICompletionSource
     {

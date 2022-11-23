@@ -1,9 +1,9 @@
-﻿namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
+﻿namespace UniGame.Runtime.ObjectPool
 {
     using System;
     using System.Collections.Generic;
     using Extensions;
-    using Interfaces;
+    using UniGame.Core.Runtime.ObjectPool;
 
     public class PoolItemsContainer<T> : IPoolItemsContainer<T> where T : class
     {

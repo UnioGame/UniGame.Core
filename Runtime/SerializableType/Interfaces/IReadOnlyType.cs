@@ -1,4 +1,4 @@
-namespace Taktika.GameRuntime.Types
+namespace UniGame.GameRuntime.Types
 {
     using System;
 

@@ -1,7 +1,7 @@
-namespace UniModules.UniGame.Core.Runtime.Interfaces
+namespace UniGame.Core.Runtime
 {
+    using UniGame.Core.Runtime.ObjectPool;
     using System.Collections.Generic;
-    using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
 
     public interface IContainer<TData> : IPoolable
     {

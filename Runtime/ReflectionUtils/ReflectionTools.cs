@@ -5,8 +5,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
+    using global::UniGame.Runtime.ObjectPool;
+    using global::UniGame.Runtime.ObjectPool.Extensions;
     using System.Reflection;
     using DataStructure;
     using UnityEngine;

@@ -2,11 +2,9 @@
 {
     using System;
     using UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniCore.Runtime.DataFlow.Interfaces;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.Core.Runtime.Interfaces;
+    using UniGame.Runtime.ObjectPool.Extensions;
+    using ObjectPool;
+    using Runtime;
 
     public class LifeTimeContextCommand : IDisposableCommand,IPoolable
     {

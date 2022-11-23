@@ -7,8 +7,8 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
     using System.Collections.Generic;
     using System.Linq;
     using UniModules.Editor;
-    using Runtime.Extension;
-    using UniCore.Runtime.Attributes;
+    using global::UniGame.Core.Runtime.Extension;
+    using global::UniCore.Runtime.Attributes;
     using UniCore.Runtime.ReflectionUtils;
     using UniGameFlow.GameFlowEditor.Editor.UiElementsEditor.Styles;
     using Unity.EditorCoroutines.Editor;

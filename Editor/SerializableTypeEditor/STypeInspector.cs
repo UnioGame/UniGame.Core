@@ -1,6 +1,6 @@
 ﻿using UniModules.UniGame.CoreModules.UniGame.Core.Editor.SerializableTypeEditor;
 
-namespace UniModules.UniGame.Core.Runtime.SerializableType.Editor.SerializableTypeEditor
+namespace UniGame.Core.Runtime.SerializableType.Editor.SerializableTypeEditor
 {
     using System;
     using Attributes;

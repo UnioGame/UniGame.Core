@@ -1,13 +1,12 @@
-﻿namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
+﻿using UniModules.UniCore.Runtime.Common;
+using UniModules.UniCore.Runtime.DataFlow;
+
+namespace UniGame.Runtime.ObjectPool
 {
     using System.Linq;
-    using Common;
-    using Interfaces;
-    using DataFlow;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.Core.Runtime.Extension;
-    using UniModules.UniGame.Core.Runtime.Interfaces;
-    using UnityEngine.SceneManagement;
+    using UniGame.Core.Runtime.ObjectPool;
+    using Core.Runtime;
+    using global::UniGame.Core.Runtime.Extension;
     using System.Collections.Generic;
     using UnityEngine;
 
@@ -26,17 +25,28 @@
         #endregion
 
         #region static data
+
+        private const int DefaultBufferSuze = 128;
         
         // The reference between a spawned GameObject and its pool
-        public static readonly Dictionary<Object, AssetsPoolObject> allCloneLinks = new Dictionary<Object, AssetsPoolObject>(128);
+        public static readonly Dictionary<Object, AssetsPoolObject> allCloneLinks 
+            = new Dictionary<Object, AssetsPoolObject>(DefaultBufferSuze);
         
         //The reference between a spawned source GameObject and its pool
-        public static Dictionary<Object, AssetsPoolObject> allSourceLinks = new Dictionary<Object, AssetsPoolObject>(128);
+        public static Dictionary<Object, AssetsPoolObject> allSourceLinks 
+            = new Dictionary<Object, AssetsPoolObject>(DefaultBufferSuze);
 
         private static void RemovePool(AssetsPoolObject poolObject)
         {
             allCloneLinks.RemoveWithValue(poolObject);
             allSourceLinks.Remove(poolObject.asset);
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void OnReset()
+        {
+            allCloneLinks.Clear();
+            allSourceLinks.Clear();
         }
 
         #endregion
@@ -74,17 +84,22 @@
         // These methods allows you to spawn prefabs via Component with varying levels of transform data
         public T Spawn<T>(Object asset) where T : Object
         {
+#if UNITY_EDITOR
+            if (Application.isPlaying == false) return null;
+#endif
             return Spawn<T>(asset, Vector3.zero, Quaternion.identity, null,false) as T;
         }
 
         public T Spawn<T>(GameObject prefab)
         {
+#if UNITY_EDITOR
+            if (Application.isPlaying == false) return default;
+#endif
             var item = Spawn(prefab, Vector3.zero, Quaternion.identity, null, false);
             var result = item.GetComponent<T>();
             if (result == null)
-            {
                 Despawn(item);
-            }
+            
             return result;
         }
         
@@ -92,6 +107,9 @@
         public T Spawn<T>(Object target, Vector3 position, Quaternion rotation, Transform parent = null,bool stayWorld = false)
             where T : Object
         {
+#if UNITY_EDITOR
+            if (Application.isPlaying == false) return null;
+#endif
             var component = target as Component;
             var isComponent = component != null;
             // Clone this prefabs's GameObject
@@ -109,21 +127,33 @@
         // These methods allows you to spawn prefabs via GameObject with varying levels of transform data
         public GameObject Spawn(GameObject prefab)
         {
+#if UNITY_EDITOR
+            if (Application.isPlaying == false) return null;
+#endif
             return Spawn(prefab, Vector3.zero, Quaternion.identity, null,false, 0) as GameObject;
         }
 
         public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation,bool stayWorld = false)
         {
+#if UNITY_EDITOR
+            if (Application.isPlaying == false) return null;
+#endif
             return Spawn(prefab, position, rotation, null, stayWorld, 0) as GameObject;
         }
 
         public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent,bool stayWorld)
         {
+#if UNITY_EDITOR
+            if (Application.isPlaying == false) return null;
+#endif
             return Spawn(prefab, position, rotation, parent, stayWorld, 0) as GameObject;
         }
 
         public GameObject Spawn(GameObject prefab,bool activate, Vector3 position, Quaternion rotation, Transform parent,bool stayWorld, int preload)
         {
+#if UNITY_EDITOR
+            if (Application.isPlaying == false) return null;
+#endif
             var pawn = Spawn(prefab, position, rotation, parent, stayWorld, preload) as GameObject;
             pawn?.SetActive(activate);
             return pawn;
@@ -131,6 +161,9 @@
         
         public GameObject Spawn(GameObject prefab,bool activate, Vector3 position, Quaternion rotation, Transform parent,bool stayWorld)
         {
+#if UNITY_EDITOR
+            if (Application.isPlaying == false) return null;
+#endif
             var pawn = Spawn(prefab, position, rotation, parent, stayWorld, 0) as GameObject;
             pawn?.SetActive(activate);
             return pawn;
@@ -138,6 +171,11 @@
         
         public Object Spawn(Object prefab, Vector3 position, Quaternion rotation, Transform parent,bool stayWorld, int preload)
         {
+            
+#if UNITY_EDITOR
+            if (Application.isPlaying == false) return null;
+#endif
+            
 #if UNITY_EDITOR
             if (!prefab)
             {
@@ -156,6 +194,9 @@
         
         public AssetsPoolObject CreatePool(Object targetAsset, int preloads = 0)
         {
+#if UNITY_EDITOR
+            if (Application.isPlaying == false) return null;
+#endif
             if (!targetAsset) return null;
 
             var targetPrefab = targetAsset.GetRootAsset();
@@ -195,7 +236,9 @@
 
         public AssetsPoolObject GetPool(Object poolAsset)
         {
-
+#if UNITY_EDITOR
+            if (Application.isPlaying == false) return null;
+#endif
 #if UNITY_EDITOR
             if (!poolAsset)
             {
@@ -226,6 +269,9 @@
         // This allows you to despawn a clone via GameObject, with optional delay
         public void Despawn(Object asset,bool destroy = false)
         {
+#if UNITY_EDITOR
+            if (Application.isPlaying == false) return;
+#endif
             if (!asset) return;
 
             var clone = asset.GetRootAsset();
@@ -259,32 +305,20 @@
         private void Destroy()
         {
             if(_poolsRoot)
-            {
                 Destroy(_poolsRoot);
-            }
             Destroy(gameObject);
         }
         
         private void Awake()
         {
             _lifeTime = new LifeTimeDefinition();
-
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-            SceneManager.sceneLoaded += OnSceneLoaded;
-
             _lifeTime.AddCleanUpAction(OnDestroyAction);
         }
 
         private void OnDestroy() => _lifeTime?.Terminate();
 
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode) => OnCleanUp();
-        
-        private void OnCleanUp() => allCloneLinks.RemoveAll(ClearCollectionPredicate);
-
         private void OnDestroyAction()
         {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-            
             _disposableAction?.Complete();
             
             var myPools = allSourceLinks

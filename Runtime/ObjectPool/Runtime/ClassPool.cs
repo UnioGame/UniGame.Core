@@ -1,10 +1,8 @@
-﻿using UniCore.Runtime.ProfilerTools;
-
-namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
+﻿namespace UniGame.Runtime.ObjectPool
 {
 	using System.Runtime.CompilerServices;
 	using UniCore.Runtime.ProfilerTools;
-	using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+	using UniGame.Core.Runtime.ObjectPool;
 	using Unity.IL2CPP.CompilerServices;
 	using UnityEngine.Pool;
 	using System;

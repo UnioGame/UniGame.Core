@@ -1,8 +1,9 @@
-namespace UniModules.UniGame.Core.Runtime.Interfaces
+using UniGame.Core.Runtime.ObjectPool;
+using UniGame.Core.Runtime;
+
+namespace UniGame.Core.Runtime
 {
     using System;
-    using DataFlow.Interfaces;
-    using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
 
     public interface ITypeViewModel : IPoolable
     {

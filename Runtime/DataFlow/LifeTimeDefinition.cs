@@ -1,14 +1,11 @@
 ﻿using System.Threading;
-using UnityEngine;
 
 namespace UniModules.UniCore.Runtime.DataFlow
 {
     using System;
-    using Interfaces;
-    using ObjectPool.Runtime.Interfaces;
+    using global::UniGame.Core.Runtime.ObjectPool;
     using UniGame.Core.Runtime.DataFlow;
-    using UniGame.Core.Runtime.Interfaces;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+    using global::UniGame.Core.Runtime;
 
     public class LifeTimeDefinition : 
         IUnique, 

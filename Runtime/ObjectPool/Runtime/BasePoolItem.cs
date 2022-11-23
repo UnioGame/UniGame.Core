@@ -1,7 +1,7 @@
-namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
+namespace UniGame.Runtime.ObjectPool
 {
     using System;
-    using Interfaces;
+    using UniGame.Core.Runtime.ObjectPool;
     using UnityEngine;
 
     [Serializable]

@@ -1,4 +1,4 @@
-namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces
+namespace UniGame.Core.Runtime.ObjectPool
 {
     public interface IPoolContainer
     {

@@ -10,9 +10,8 @@ namespace UniModules.UniGame.Core.EditorTools.Editor.Controls.AssetDropDownContr
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using UniModules.UniGame.Editor.DrawersTools;
     using Runtime.Attributes;
-    using Runtime.Extension;
+    using global::UniGame.Core.Runtime.Extension;
     using UniCore.Runtime.Utils;
     using UniModules.Editor;
     using UnityEditor;

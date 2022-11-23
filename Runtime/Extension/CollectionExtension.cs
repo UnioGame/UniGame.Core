@@ -1,10 +1,10 @@
-namespace UniModules.UniGame.Core.Runtime.Extension
+namespace UniGame.Core.Runtime.Extension
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
+    using UniGame.Runtime.ObjectPool;
+    using UniGame.Runtime.ObjectPool.Extensions;
     using Random = UnityEngine.Random;
 
     public static class CollectionExtension

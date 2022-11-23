@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.Runtime.Extension
+﻿namespace UniGame.Core.Runtime.Extension
 {
     using System;
     using System.Collections.Generic;

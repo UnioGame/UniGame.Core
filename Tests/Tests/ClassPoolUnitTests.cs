@@ -1,8 +1,8 @@
 using System;
 using NUnit.Framework;
-using UniModules.UniCore.Runtime.ObjectPool.Runtime;
-using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
-using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+using UniGame.Runtime.ObjectPool;
+using UniGame.Runtime.ObjectPool.Extensions;
+using UniGame.Core.Runtime.ObjectPool;
 using UnityEngine;
 
 namespace UnioModules.UniGame.CoreModules.Tests

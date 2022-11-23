@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace UniModules.UniGame.Core.Runtime.Extension
+namespace UniGame.Core.Runtime.Extension
 {
     public static class RegExprExtensions
     {

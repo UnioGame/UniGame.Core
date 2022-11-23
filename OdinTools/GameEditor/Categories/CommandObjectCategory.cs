@@ -1,5 +1,5 @@
 using System;
-using UniModules.UniGame.Core.Runtime.Interfaces;
+using UniGame.Core.Runtime;
 using UnityEngine;
 
 namespace UniModules.Editor.OdinTools.GameEditor.Categories

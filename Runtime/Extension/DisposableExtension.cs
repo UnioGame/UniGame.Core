@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Common;
-    using ObjectPool.Runtime;
+    using global::UniGame.Runtime.ObjectPool;
 
     public static class DisposableExtension
     {

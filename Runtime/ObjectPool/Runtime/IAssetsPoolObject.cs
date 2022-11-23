@@ -1,9 +1,9 @@
 ﻿using System;
-using UniModules.UniGame.Core.Runtime.Interfaces;
+using UniGame.Core.Runtime;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
+namespace UniGame.Runtime.ObjectPool
 {
     public interface IAssetsPoolObject : ILifeTimeContext, IDisposable
     {

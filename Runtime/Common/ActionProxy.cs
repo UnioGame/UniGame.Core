@@ -1,7 +1,7 @@
 ﻿namespace UniModules.UniCore.Runtime.Common
 {
     using System;
-    using ObjectPool.Runtime.Interfaces;
+    using global::UniGame.Core.Runtime.ObjectPool;
 
     public class ActionProxy<T> : IPoolable
     {

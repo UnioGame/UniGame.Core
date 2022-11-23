@@ -4,7 +4,7 @@
     using System.Collections;
     using System.Collections.Generic;
     using Rx;
-    using UniCore.Runtime.ObjectPool.Runtime;
+    using global::UniGame.Runtime.ObjectPool;
 
     /// <summary>
     /// Lightweight property broker.

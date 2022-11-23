@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace UniModules.UniGame.Core.Runtime.Extension
+namespace UniGame.Core.Runtime.Extension
 {
     
     /// <summary>Various LinQ extensions.</summary>

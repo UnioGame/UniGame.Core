@@ -1,7 +1,7 @@
-﻿namespace UniModules.UniGame.Core.Runtime.Interfaces
+﻿namespace UniGame.Core.Runtime
 {
-    using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
-
+    using UniGame.Core.Runtime.ObjectPool;
+    
     public interface IAsyncOperation : IPoolable, ICommandRoutine
     {
         bool IsDone { get; }

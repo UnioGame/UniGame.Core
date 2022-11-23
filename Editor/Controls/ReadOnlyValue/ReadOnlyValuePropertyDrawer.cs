@@ -1,4 +1,4 @@
-﻿using UniModules.UniCore.Runtime.Attributes;
+﻿using UniCore.Runtime.Attributes;
 using UnityEditor;
 using UnityEngine;
 

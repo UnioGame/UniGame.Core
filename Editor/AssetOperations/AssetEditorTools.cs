@@ -1,8 +1,4 @@
-﻿using NUnit.Framework;
-using UniGame.Core.Runtime.Common;
-using UniModules.UniCore.Runtime.Extension;
-
-namespace UniModules.Editor
+﻿namespace UniModules.Editor
 {
     using System;
     using System.Collections.Generic;
@@ -12,8 +8,7 @@ namespace UniModules.Editor
     using UniModules.UniCore.EditorTools.Editor;
     using UniModules.UniCore.Runtime.ReflectionUtils;
     using UniModules.UniCore.Runtime.Utils;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.Core.Runtime.Extension;
+    using global::UniGame.Core.Runtime.Extension;
     using UnityEditor;
     using UnityEngine;
     using Object = UnityEngine.Object;

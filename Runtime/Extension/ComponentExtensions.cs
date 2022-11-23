@@ -1,7 +1,7 @@
-﻿using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
-using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+﻿using UniGame.Runtime.ObjectPool.Extensions;
+using UniGame.Core.Runtime;
 
-namespace UniModules.UniGame.Core.Runtime.Extension
+namespace UniGame.Core.Runtime.Extension
 {
     using UnityEngine;
 

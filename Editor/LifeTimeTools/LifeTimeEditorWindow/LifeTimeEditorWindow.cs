@@ -1,9 +1,8 @@
-using UniModules.UniGame.Core.Runtime.ScriptableObjects;
 using UnityEngine;
 
 #if ODIN_INSPECTOR
 
-namespace UniModules.UniGame.Context.Editor.LifeTimeEditorWindow
+namespace UniGame.Context.Editor
 {
     
     using Sirenix.OdinInspector;
@@ -37,7 +36,7 @@ namespace UniModules.UniGame.Context.Editor.LifeTimeEditorWindow
 #endif
         public void Refresh()
         {
-            editorData.Initialize(LifetimeObjectData.LifeTimes);
+            //editorData.Initialize(LifetimeObjectData.LifeTimes);
         }
         
         #region protected methods

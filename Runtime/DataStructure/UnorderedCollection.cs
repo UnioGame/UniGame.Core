@@ -2,7 +2,7 @@
 {
 	using System.Collections.Generic;
 	using System.Threading;
-	using UniGame.Core.Runtime.Interfaces;
+	using global::UniGame.Core.Runtime;
 
 	public class UnorderedCollection<T> : IUnorderedCollection<T> where T:class
 	{

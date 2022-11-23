@@ -4,7 +4,7 @@ using UnityEngine;
 namespace UniModules.UniGame.Core.Runtime.DataFlow
 {
     using System;
-    using Interfaces;
+    using global::UniGame.Core.Runtime;
     using UniModules.UniCore.Runtime.DataFlow;
 
     public class LifeTimeComponent :

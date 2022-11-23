@@ -3,13 +3,12 @@ using System.Threading;
 using UniGame.Core.Runtime.Common;
 using UniGame.Core.Runtime.DataFlow;
 using UniModules.UniCore.Runtime.DataFlow;
-using UniModules.UniCore.Runtime.ObjectPool.Runtime;
-using UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions;
+using UniGame.Runtime.ObjectPool;
+using UniGame.Runtime.ObjectPool.Extensions;
 using UniModules.UniGame.Core.Runtime.Common;
 using UniModules.UniGame.Core.Runtime.DataFlow;
 using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
-using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-using UniModules.UniGame.Core.Runtime.Interfaces;
+using UniGame.Core.Runtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
@@ -40,11 +39,10 @@ public static class LifetimeExtension
         return disposableAction;
     }
 
-    
     public static T DestroyWith<T>(this T asset, ILifeTime lifeTime)
         where T : Object
     {
-        if (!asset) return asset;
+        if (asset == null) return asset;
         
         switch (asset)
         {

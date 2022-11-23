@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
+﻿namespace UniGame.Runtime.ObjectPool
 {
     using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
     using UnityEngine;

@@ -1,8 +1,7 @@
 ﻿namespace UniModules.UniGame.Core.Runtime.Rx
 {
-    using System;
-    using UniCore.Runtime.ObjectPool.Runtime.Extensions;
-    using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+    using global::UniGame.Runtime.ObjectPool.Extensions;
+    using global::UniGame.Core.Runtime.ObjectPool;
 
     public class ListNode<T> : IPoolable
     {

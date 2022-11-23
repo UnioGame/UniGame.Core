@@ -1,6 +1,6 @@
 ﻿namespace UniModules.UniGame.Core.Runtime.Components
 {
-    using Interfaces;
+    using global::UniGame.Core.Runtime;
     using UnityEngine;
 
 #if UNITY_EDITOR

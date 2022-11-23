@@ -1,9 +1,8 @@
 ﻿namespace UniModules.UniCore.Runtime.DataFlow
 {
     using Interfaces;
-    using ObjectPool.Runtime.Extensions;
-    using ObjectPool.Runtime.Interfaces;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+    using global::UniGame.Core.Runtime.ObjectPool;
+    using global::UniGame.Core.Runtime;
 
     public class LifeTimeModel : ILifeTimeModel, IPoolable
     {

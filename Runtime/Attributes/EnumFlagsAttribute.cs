@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.Attributes
+﻿namespace UniCore.Runtime.Attributes
 {
     using UnityEngine;
 

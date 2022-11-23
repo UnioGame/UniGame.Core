@@ -8,7 +8,7 @@
     using System.Linq;
     using UniModules.Editor;
     using UnityEditor;
-    using Runtime.Extension;
+    using global::UniGame.Core.Runtime.Extension;
     using UnityEngine;
 
     [GeneratedAssetInfo("ScriptableProcessors")]

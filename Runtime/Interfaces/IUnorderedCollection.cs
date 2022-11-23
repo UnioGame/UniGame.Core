@@ -1,7 +1,8 @@
-namespace UniModules.UniGame.Core.Runtime.Interfaces
+using UniGame.Core.Runtime.ObjectPool;
+
+namespace UniGame.Core.Runtime
 {
     using System.Collections.Generic;
-    using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
 
     public interface IUnorderedCollection<T> : IPoolable where T : class
     {

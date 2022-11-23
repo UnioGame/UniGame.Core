@@ -1,5 +1,4 @@
-﻿using UniModules.UniCore.Runtime.ProfilerTools;
-using UnityEditor.Build.Reporting;
+﻿using UnityEditor.Build.Reporting;
 using UnityEngine;
 
 namespace UniModules.UniCore.EditorTools.Editor.BuildTools

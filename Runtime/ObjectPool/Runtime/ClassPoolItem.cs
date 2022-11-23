@@ -1,8 +1,7 @@
-﻿namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
+﻿namespace UniGame.Runtime.ObjectPool
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Collections.Generic;
 
     public static class ClassPoolItem<T> 
         where T : class

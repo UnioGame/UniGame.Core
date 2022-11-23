@@ -1,11 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
 using Unity.IL2CPP.CompilerServices;
 
-namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Extensions
+namespace UniGame.Runtime.ObjectPool.Extensions
 {
     using System;
     using System.Collections.Generic;
-    using Interfaces;
     using UnityEngine;
 
     [Il2CppSetOption(Option.NullChecks, false)]

@@ -1,6 +1,6 @@
-﻿namespace UniModules.UniCore.Runtime.ObjectPool.Runtime
+﻿namespace UniGame.Runtime.ObjectPool
 {
-    using Interfaces;
+    using UniGame.Core.Runtime.ObjectPool;
 
     public class DummyPoolContainer : IPoolContainer
     {

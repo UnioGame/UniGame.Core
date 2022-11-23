@@ -2,11 +2,11 @@
 
 using System;
 using Sirenix.OdinInspector;
-using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+using UniGame.Core.Runtime;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace UniModules.UniGame.Context.Editor.LifeTimeEditorWindow
+namespace UniGame.Context.Editor
 {
     [Serializable]
     [InlineProperty]

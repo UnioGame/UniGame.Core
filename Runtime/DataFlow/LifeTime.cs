@@ -7,9 +7,9 @@ namespace UniModules.UniCore.Runtime.DataFlow
     using System;
     using System.Collections.Generic;
     using System.Threading;
-    using ObjectPool.Runtime.Interfaces;
+    using global::UniGame.Core.Runtime.ObjectPool;
     using UniGame.Core.Runtime.DataFlow;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
+    using global::UniGame.Core.Runtime;
 
     public class LifeTime : ILifeTime, IPoolable
     {
@@ -164,14 +164,22 @@ namespace UniModules.UniCore.Runtime.DataFlow
 
         #endregion
 
-        #region editor
+        #if UNITY_EDITOR
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         public static void OnDomainReload()
         {
+            Application.quitting -= OnApplicationQuitting;
+            Application.quitting += OnApplicationQuitting;
             _editorLifeTime?.Release();
         }
-
-        #endregion
+        
+        public static void OnApplicationQuitting()
+        {
+            Application.quitting -= OnApplicationQuitting;
+            _editorLifeTime?.Release();
+        }
+        
+        #endif
     }
 }

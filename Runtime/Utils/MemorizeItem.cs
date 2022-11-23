@@ -22,6 +22,8 @@
             set => _cache[x] = value;
         }
 
+        public bool Remove(TKey key) => _cache.Remove(key);
+
         public TData GetValue(TKey key)
         {
             if (_cache.TryGetValue(key, out var value) && value != null) 

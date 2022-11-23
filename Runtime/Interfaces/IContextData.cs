@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.Runtime.Interfaces
+﻿namespace UniGame.Core.Runtime
 {
     using System;
     using System.Collections.Generic;

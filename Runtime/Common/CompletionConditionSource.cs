@@ -1,8 +1,8 @@
 ﻿namespace UniModules.UniCore.Runtime.Common
 {
     using System;
-    using ObjectPool.Runtime.Interfaces;
-    using UniGame.Core.Runtime.Interfaces;
+    using global::UniGame.Core.Runtime.ObjectPool;
+    using global::UniGame.Core.Runtime;
 
     public class CompletionConditionSource : ICompletionStatus , IPoolable
     {

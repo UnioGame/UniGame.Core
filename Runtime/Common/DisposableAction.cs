@@ -1,10 +1,9 @@
 ﻿namespace UniModules.UniCore.Runtime.Common
 {
     using System;
-    using ObjectPool;
-    using ObjectPool.Runtime.Extensions;
-    using ObjectPool.Runtime.Interfaces;
-    using UniGame.Core.Runtime.Interfaces;
+    using global::UniGame.Runtime.ObjectPool.Extensions;
+    using global::UniGame.Core.Runtime.ObjectPool;
+    using global::UniGame.Core.Runtime;
 
     public class DisposableAction : IDisposableItem , IPoolable
     {

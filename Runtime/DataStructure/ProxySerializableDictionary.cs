@@ -1,4 +1,4 @@
-﻿namespace Taktika.GameRuntime.Models.Data
+﻿namespace UniGame.GameRuntime.Models.Data
 {
     using System;
     using System.Collections;

@@ -1,4 +1,4 @@
-namespace UniModules.UniGame.Core.Runtime.Interfaces.Rx
+namespace UniGame.Core.Runtime.Rx
 {
     public interface IContainerValueStatus
     {

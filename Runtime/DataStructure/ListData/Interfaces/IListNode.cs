@@ -1,8 +1,8 @@
 ﻿namespace UniModules.UniGame.Core.Runtime.DataStructure.LinkedList.Interfaces
 {
     using System;
-    using Runtime.Interfaces;
-    using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+    using global::UniGame.Core.Runtime;
+    using global::UniGame.Core.Runtime.ObjectPool;
 
     public interface IListNode<T> : 
         IReadonlyValue<T>,

@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace UniModules.UniGame.Core.Runtime.DataFlow.Interfaces
+namespace UniGame.Core.Runtime
 {
     using System;
 

@@ -1,8 +1,9 @@
-﻿namespace UniModules.UniGame.Core.Runtime.SerializableType.Editor.SerializableTypeEditor
+﻿using UniModules.UniCore.Runtime.ReflectionUtils;
+
+namespace UniGame.Core.Runtime.SerializableType.Editor.SerializableTypeEditor
 {
     using System;
     using System.Collections.Generic;
-    using UniCore.Runtime.ReflectionUtils;
     using UnityEditor;
     using UnityEngine;
 

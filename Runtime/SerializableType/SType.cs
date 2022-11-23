@@ -1,9 +1,7 @@
-﻿using UnityEngine.Profiling;
-
-namespace UniModules.UniGame.Core.Runtime.SerializableType
+﻿namespace UniGame.Core.Runtime.SerializableType
 {
     using System;
-    using Taktika.GameRuntime.Types;
+    using GameRuntime.Types;
     using UnityEngine;
 
 #if ODIN_INSPECTOR

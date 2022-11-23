@@ -1,7 +1,7 @@
-namespace UniModules.UniGame.Core.Runtime.Interfaces
-{
-    using DataFlow.Interfaces;
+using UniGame.Core.Runtime;
 
+namespace UniGame.Core.Runtime
+{
     public interface ILifeTimeContext
     {
         ILifeTime LifeTime { get; }

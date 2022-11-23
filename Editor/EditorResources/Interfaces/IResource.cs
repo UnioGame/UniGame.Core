@@ -1,7 +1,6 @@
 namespace UniModules.UniResourceSystem.Runtime.Interfaces
 {
-    using UniGame.Core.Runtime.Interfaces;
-    using UnityEngine;
+    using global::UniGame.Core.Runtime;
 
     /// <summary>
     /// resource item wrapper

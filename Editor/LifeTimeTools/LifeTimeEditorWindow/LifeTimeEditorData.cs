@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UniModules.UniCore.Runtime.DataFlow;
-using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-using UniModules.UniGame.Core.Runtime.ScriptableObjects;
+using UniGame.Core.Runtime;
+using UniGame.Core.Runtime.ScriptableObjects;
 
-namespace UniModules.UniGame.Context.Editor.LifeTimeEditorWindow
+namespace UniGame.Context.Editor
 {
     [Serializable]
     public class LifeTimeEditorData
@@ -36,7 +36,8 @@ namespace UniModules.UniGame.Context.Editor.LifeTimeEditorWindow
             {
                 if (lifeTime is LifetimeScriptableObject lifetimeScriptableObject)
                 {
-                    scriptableLifeTimes.Add(new LifeTimeEditorItem().Initialize(lifetimeScriptableObject));
+                    // scriptableLifeTimes.Add(new LifeTimeEditorItem()
+                    //     .Initialize(lifetimeScriptableObject));
                 }
             }
         }

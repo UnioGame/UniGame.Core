@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.Runtime.Interfaces {
+﻿namespace UniGame.Core.Runtime {
     public enum AsyncStatus {
         /// <summary>The operation has not yet completed.</summary>
         Pending = 0,

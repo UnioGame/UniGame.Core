@@ -1,7 +1,7 @@
 ﻿namespace UniModules.UniGame.Core.Runtime.Rx
 {
     using System.Collections.Generic;
-    using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+    using global::UniGame.Core.Runtime.ObjectPool;
 
     public interface IUniLinkedList<T> :
         IPoolable,

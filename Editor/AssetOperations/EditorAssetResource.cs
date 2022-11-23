@@ -1,7 +1,7 @@
 ﻿namespace UniModules.Editor
 {
     using System;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+    using global::UniGame.Core.Runtime.ObjectPool;
     using UnityEditor;
     using Object = UnityEngine.Object;
 

@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using UniModules.UniGame.Core.Runtime.Interfaces;
+    using Core.Runtime;
     using Random = UnityEngine.Random;
 
     public class WeightedRandomSelector<T> : ICollectionSelector<T>

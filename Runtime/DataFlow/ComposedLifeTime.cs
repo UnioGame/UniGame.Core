@@ -4,12 +4,11 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow
 {
     using System;
     using System.Collections.Generic;
-    using Interfaces;
+    using global::UniGame.Core.Runtime;
     using UniModules.UniCore.Runtime.Common;
     using UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniCore.Runtime.DataFlow.Interfaces;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+    using global::UniGame.Runtime.ObjectPool;
+    using global::UniGame.Core.Runtime.ObjectPool;
 
     public class ComposedLifeTime : IPoolable, IComposedLifeTime
     {

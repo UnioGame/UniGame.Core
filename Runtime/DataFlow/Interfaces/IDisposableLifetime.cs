@@ -2,9 +2,7 @@
 
 namespace UniModules.UniGame.Core.Runtime.Common
 {
-    using UniCore.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.Core.Runtime.DataFlow.Interfaces;
-    using UniModules.UniGame.Core.Runtime.Interfaces;
+    using global::UniGame.Core.Runtime;
 
     public interface IDisposableLifetime : 
         IDisposableItem, 

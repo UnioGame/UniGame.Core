@@ -3,7 +3,7 @@
 namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
 {
     using System;
-    using Interfaces;
+    using global::UniGame.Core.Runtime;
     using UnityEngine;
 
     public static class LifeTimeComponentExtension 

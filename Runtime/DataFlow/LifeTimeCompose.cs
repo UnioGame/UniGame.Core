@@ -3,11 +3,10 @@
 namespace UniModules.UniGame.Core.Runtime.DataFlow
 {
     using System.Threading;
-    using Interfaces;
+    using global::UniGame.Core.Runtime;
     using UniModules.UniCore.Runtime.DataFlow;
-    using UniModules.UniCore.Runtime.DataFlow.Interfaces;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime;
-    using UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+    using global::UniGame.Runtime.ObjectPool;
+    using global::UniGame.Core.Runtime.ObjectPool;
 
     [Serializable]
     public class LifeTimeCompose : IDisposable, IPoolable,ILifeTime

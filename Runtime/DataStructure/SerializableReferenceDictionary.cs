@@ -1,6 +1,4 @@
-﻿using UnityEngine.Profiling;
-
-namespace UniModules.UniGame.Core.Runtime.DataStructure
+﻿namespace UniModules.UniGame.Core.Runtime.DataStructure
 {
     using System;
     using System.Collections.Generic;

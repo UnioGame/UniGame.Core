@@ -1,10 +1,7 @@
 ﻿using System;
-using UniModules.UniGame.Core.Runtime.DataStructure;
 
 namespace UniModules.UniGame.Core.Runtime.DataStructure
 {
-    using System.Collections.Generic;
-
     [Serializable]
     public class SerializableStringsMap : 
         SerializableDictionary<string,string>

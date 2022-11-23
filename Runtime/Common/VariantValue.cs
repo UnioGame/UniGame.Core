@@ -4,7 +4,7 @@ namespace UniModules.UniGame.Core.Runtime.Common {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using UniCore.Runtime.ObjectPool.Runtime.Interfaces;
+    using global::UniGame.Core.Runtime.ObjectPool;
 
     [Serializable]
     public class VariantValue<TValue,TAsset,TApi> : 

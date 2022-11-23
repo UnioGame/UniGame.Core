@@ -5,7 +5,6 @@ namespace UniModules.UniGame.Core.Editor.Tools
     using System;
     using System.Diagnostics;
     using UnityEngine;
-    using Debug = UnityEngine.Debug;
 
     public static class UniEditorProfiler
     {

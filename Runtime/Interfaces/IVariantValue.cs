@@ -1,6 +1,6 @@
 ﻿namespace UniModules.UniGame.Core.Runtime.Common
 {
-    using Interfaces;
+    using global::UniGame.Core.Runtime;
 
     public interface IVariantValue<TApi> : 
         IValueContainerStatus

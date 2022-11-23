@@ -1,6 +1,6 @@
-namespace UniModules.UniCore.Runtime.ObjectPool.Runtime.Interfaces
+namespace UniGame.Core.Runtime.ObjectPool
 {
-    using UniGame.Core.Runtime.Interfaces;
+    using global::UniGame.Core.Runtime;
 
     public interface IPoolItemsContainer<T> : IResetable where T : class
     {
