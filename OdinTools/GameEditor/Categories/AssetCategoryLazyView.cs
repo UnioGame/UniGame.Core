@@ -53,6 +53,7 @@ namespace UniModules.Editor.OdinTools.GameEditor.Categories
         }
         
         [ResponsiveButtonGroup]
+        [OnInspectorInit]
         [Button("Show Inspector",ButtonSizes.Large)]
         public void ShowView()
         {

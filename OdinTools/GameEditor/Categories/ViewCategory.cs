@@ -3,7 +3,7 @@
 namespace UniModules.Editor.OdinTools.GameEditor.Categories
 {
     [Serializable]
-    public class ViewCategory<TView> : GameEditorCategory
+    public  abstract class ViewCategory<TView> : GameEditorCategory
     {
         private class InnerView : AssetCategoryLazyView<TView> { }
 
@@ -14,10 +14,7 @@ namespace UniModules.Editor.OdinTools.GameEditor.Categories
             return lazyView;
         }
 
-        public virtual TView CreateView()
-        {
-            return default;
-        }
+        public abstract TView CreateView();
     }
     
 }
