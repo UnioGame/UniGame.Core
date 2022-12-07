@@ -10,6 +10,20 @@
             return (-a.x * b.y + a.y * b.x) < 0;
 
         }
+
+        public static Vector3 GetWorldOffsetFromScreenOffset(this Vector3 pixelsOffset, Camera gameCamera)
+        {
+            return GetWorldOffsetFromScreenOffset(gameCamera, pixelsOffset);
+        }
+
+        public static Vector3 GetWorldOffsetFromScreenOffset(this Camera gameCamera,Vector3 pixelsOffset)
+        {
+            var zero = gameCamera.ScreenToWorldPoint(Vector3.zero);
+            var offsetPoint = gameCamera.ScreenToWorldPoint(pixelsOffset);
+            offsetPoint = offsetPoint - zero;
+            offsetPoint.z = 0;
+            return offsetPoint;
+        }
         
         public static bool IsLeft(this Vector3 from,Vector3 to,Vector3 direction)
         {
