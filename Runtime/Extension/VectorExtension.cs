@@ -15,6 +15,18 @@
         {
             return GetWorldOffsetFromScreenOffset(gameCamera, pixelsOffset);
         }
+        
+        public static Vector3 WorldSizeToScreenSize(this Vector3 size,Camera gameCamera)
+        {
+            var zero = gameCamera.WorldToScreenPoint(Vector3.zero);
+            var offsetPoint = gameCamera.WorldToScreenPoint(size);
+            offsetPoint -= zero;
+            offsetPoint.x = Mathf.Abs(offsetPoint.x);
+            offsetPoint.y = Mathf.Abs(offsetPoint.y);
+            offsetPoint.z = 0;
+        
+            return offsetPoint;
+        }
 
         public static Vector3 GetWorldOffsetFromScreenOffset(this Camera gameCamera,Vector3 pixelsOffset)
         {
