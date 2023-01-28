@@ -28,7 +28,7 @@ namespace UniGame.Core.Runtime.SerializableType.Editor.SerializableTypeEditor
 
             var newSelection = targetAttribute.useFilter ?
                 TypeDrawer.DrawTypeFilterPopup(position, _filter,label, targetType, selection) : 
-                TypeDrawer.DrawTypePopup(position,label,targetType,selection);
+                TypeDrawer.DrawTypePopup(position,label,targetType,selection,targetAttribute.excludeAbstract);
             
             _filter = newSelection.filter;
             

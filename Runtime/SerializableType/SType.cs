@@ -18,12 +18,14 @@
             get => GetItemType();
             set {
                 type = value;
-                #if UNITY_EDITOR
+#if UNITY_EDITOR
                 fullTypeName = type == null ? 
                     string.Empty : type.AssemblyQualifiedName;
-                #endif
+#endif
             }
         }
+
+        public string Name => type == null ? string.Empty : type.Name;
 
         public string TypeName {
             get => fullTypeName;
