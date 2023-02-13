@@ -41,19 +41,22 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
 
         public static ILifeTime GetLifeTime(this object asset)
         {
+            if (asset is GameObject gameObjectAsset)
+                return gameObjectAsset.GetAssetLifeTime();
+            
+            if (asset is Component componentAsset)
+                return componentAsset.GetAssetLifeTime();
+            
             switch (asset)
             {
                 case Scene scene:
                     return scene.GetLifeTime();
-                case GameObject gameObject:
-                    return gameObject.GetAssetLifeTime();
-                case Component component:
-                    return component.gameObject.GetAssetLifeTime();
                 case ILifeTime lifeTime:
                     return lifeTime;
                 case ILifeTimeContext lifeTimeContext:
                     return lifeTimeContext.LifeTime;
             }
+            
             return LifeTime.TerminatedLifetime;
         }
 
