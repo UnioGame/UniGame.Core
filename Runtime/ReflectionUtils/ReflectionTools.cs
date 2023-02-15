@@ -15,6 +15,13 @@
 
     public static class ReflectionTools
     {
+        public readonly static MemorizeItem<Type, string> PrettyTypeNameCache = MemorizeTool
+            .Memorize<Type, string>(PrettyNameNoCache);
+        
+        public readonly static MemorizeItem<Type, string> FormattedTypeNameCache = MemorizeTool
+            .Memorize<Type, string>(GetFormattedNameNonCached);
+
+        
         private static Type _stringType = typeof(string);
 
         public static MemorizeItem<Type, IReadOnlyList<FieldInfo>> InstanceFields =
@@ -111,6 +118,11 @@
         /// <returns>System.String.</returns>
         public static string GetFormattedName(this Type type)
         {
+            return FormattedTypeNameCache[type];
+        }
+
+        public static string GetFormattedNameNonCached(this Type type)
+        {
             if (!type.IsGenericType)
             {
                 if (simpleTypeNames.TryGetValue(type, out var typeName))
@@ -124,7 +136,7 @@
             return $"{type.Name.Substring(0, type.Name.IndexOf("`"))}"
                    + $"<{genericArguments}>";
         }
-
+        
         public static FieldInfo GetFieldInfoCached(this object target, string name) =>
             GetFieldInfoCached(target.GetType(), name);
 
@@ -636,6 +648,53 @@
                 .SelectMany(s => s.GetTypes())
                 .Where(p => type.IsAssignableFrom(p));
             return types.ToList();
+        }
+        
+                
+        /// <summary> Return a prettiefied type name. </summary>
+        public static string PrettyName(this Type type)
+        {
+            return PrettyTypeNameCache[type];
+        }
+
+        public static string PrettyNameNoCache(Type type)
+        {
+            if (type == null) return "no filter";
+            if (type == typeof(System.Object)) return "object";
+            if (type == typeof(float)) return "float";
+            if (type == typeof(int)) return "int";
+            if (type == typeof(long)) return "long";
+            if (type == typeof(double)) return "double";
+            if (type == typeof(string)) return "string";
+            if (type == typeof(bool)) return "bool";
+            if (type.IsGenericType) {
+                var s           = "";
+                var   genericType = type.GetGenericTypeDefinition();
+                s = genericType == typeof(List<>) ? "List" : type.GetGenericTypeDefinition().ToString();
+                var   types  = type.GetGenericArguments();
+                var stypes = new string[types.Length];
+                for (var i = 0; i < types.Length; i++) {
+                    stypes[i] = types[i].PrettyName();
+                }
+
+                return s + "<" + string.Join(", ", stypes) + ">";
+            }
+            if (type.IsArray) {
+                var rank = "";
+                for (var i = 1; i < type.GetArrayRank(); i++) {
+                    rank += ",";
+                }
+
+                var elementType = type.GetElementType();
+                if (!elementType.IsArray) return elementType.PrettyName() + "[" + rank + "]";
+                {
+                    var s = elementType.PrettyName();
+                    var    i = s.IndexOf('[');
+                    return s.Substring(0, i) + "[" + rank + "]" + s.Substring(i);
+                }
+            }
+
+            return type.ToString();
         }
     }
 }
