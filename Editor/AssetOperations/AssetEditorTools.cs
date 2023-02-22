@@ -608,7 +608,9 @@
             if (!asset) return string.Empty;
 
             var path = AssetDatabase.GetAssetPath(asset);
-            return string.IsNullOrEmpty(path) ? string.Empty : AssetDatabase.AssetPathToGUID(path);
+            return string.IsNullOrEmpty(path) 
+                ? string.Empty 
+                : AssetDatabase.AssetPathToGUID(path);
         }
 
         public static string GetUniqueAssetName(string path)
