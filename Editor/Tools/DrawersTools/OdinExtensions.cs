@@ -88,7 +88,7 @@ namespace UniModules.UniGame.Editor.DrawersTools
         public static Object DrawOdinPropertyField(
             this Object asset,
             Type type,
-            Action<Object> onValueChanged,
+            Action<Object> onValueChanged = null,
             bool allowSceneObjects = true,
             string label = "")
         {
