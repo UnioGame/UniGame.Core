@@ -35,9 +35,11 @@ namespace UniModules.Editor.OdinTools.GameEditor
         [Searchable(FilterOptions = SearchFilterOptions.ISearchFilterableInterface)]
         [SerializeReference] 
         [OnValueChanged(nameof(OnCategoriesChanged))]
+        [ListDrawerSettings(ListElementLabelName = nameof(IGameEditorCategory.Name))]
         public List<IGameEditorCategory> categories = new List<IGameEditorCategory>();
 
         [OnValueChanged(nameof(OnValueChanged))]
+        [ListDrawerSettings(ListElementLabelName = nameof(EditorSettingsCategory.Name))]
         public List<EditorSettingsCategory> editorGroups = new List<EditorSettingsCategory>();
 
         #endregion
