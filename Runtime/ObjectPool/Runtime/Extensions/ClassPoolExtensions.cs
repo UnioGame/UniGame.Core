@@ -4,6 +4,7 @@ using Unity.IL2CPP.CompilerServices;
 namespace UniGame.Runtime.ObjectPool.Extensions
 {
     using System;
+    using System.Buffers;
     using System.Collections.Generic;
     using UnityEngine;
 
@@ -68,7 +69,20 @@ namespace UniGame.Runtime.ObjectPool.Extensions
             DespawnItems(data);
             DespawnCollection<TValue,TData>(data);
         }
+
+#if NET_STANDARD
         
+        public static void Despawn<TData>(this TData[] value)
+        {
+            if (value == null) return;
+            for (int i = 0; i < value.Length; i++)
+                value[i] = default;
+            
+            ArrayPool<TData>.Shared.Return(value);
+        }
+        
+#endif
+
         public static void Despawn<TData>(this List<TData> value)
         {
             value.Clear();
