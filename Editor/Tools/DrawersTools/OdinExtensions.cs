@@ -10,28 +10,32 @@ namespace UniModules.UniGame.Editor.DrawersTools
     using UniModules.Editor;
     using UniCore.Runtime.Utils;
 
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+    using Sirenix.OdinInspector.Editor;
+#endif
+    
     /// <summary>
     /// Odin Inspector extensions methods
     /// </summary>
     public static class OdinExtensions
     {
 #if ODIN_INSPECTOR
-        public static Func<object, Sirenix.OdinInspector.Editor.PropertyTree> PropertyTreeFactory = MemorizeTool.
-            Create((object x) => Sirenix.OdinInspector.Editor.PropertyTree.Create(x),
-                x => x.Dispose());
+        public static MemorizeItem<object, PropertyTree> PropertyTreeFactory = MemorizeTool
+            .Memorize<object, PropertyTree>(PropertyTree.Create, x => x.Dispose());
 #endif
         
         public static Type UnityObjectType = typeof(Object);
 
 #if ODIN_INSPECTOR
-        public static Sirenix.OdinInspector.Editor.PropertyTree GetPropertyTree(this Object target)
+        public static PropertyTree GetPropertyTree(this object target)
         {
-            return PropertyTreeFactory(target);
+            return PropertyTreeFactory[target];
         }
 #endif
 
 
-        public static void DrawAssetChildWithOdin(this Object asset, Type type, int childIndex)
+        public static void DrawAssetChildWithOdin(this object asset, Type type, int childIndex)
         {
 #if ODIN_INSPECTOR
 
@@ -80,7 +84,7 @@ namespace UniModules.UniGame.Editor.DrawersTools
                 return;
             }
             
-            var drawer = PropertyTreeFactory(asset);
+            var drawer = PropertyTreeFactory[asset];
             drawer.Draw(false);
 #endif
         }
