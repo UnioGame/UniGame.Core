@@ -3,19 +3,19 @@
     using System;
 
     [Serializable]
-    public class SingleValueProperty<TValue> : ISingleValueProperty<TValue>
+    public class SignaleValueProperty<TValue> : ISignaleValueProperty<TValue>
     {
         public TValue defaultValue;
         public bool hasValue;
         public TValue value;
 
-        public SingleValueProperty()
+        public SignaleValueProperty()
         {
             defaultValue = default;
             value = default;
         }
 
-        public SingleValueProperty(TValue defaultValue)
+        public SignaleValueProperty(TValue defaultValue)
         {
             this.defaultValue = defaultValue;
             value = defaultValue;

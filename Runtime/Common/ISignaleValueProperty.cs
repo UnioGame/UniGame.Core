@@ -1,6 +1,6 @@
 ﻿namespace UniGame.Runtime.Common
 {
-    public interface ISingleValueProperty<TValue>
+    public interface ISignaleValueProperty<TValue>
     {
         bool Has { get; }
 
