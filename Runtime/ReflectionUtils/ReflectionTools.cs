@@ -423,8 +423,8 @@
         public static List<Type> GetAssignableTypes(this Type baseType,bool excludeAbstract = true)
         {
             return excludeAbstract
-                ? _assignableTypesCache.GetValue(baseType)
-                : _assignableTypesWithAbstractCache.GetValue(baseType);
+                ? _assignableTypesCache[baseType]
+                : _assignableTypesWithAbstractCache[baseType];
         }
 
         public static Type ConvertType(string fullTypeName)
@@ -438,7 +438,7 @@
         public static List<Type> GetAssignableTypesNonCached(this Type baseType)
         {
             var types = GetAssignableTypesNonCachedWithAbstract(baseType);
-            types = types.Where(x => !x.IsAbstract).ToList();
+            types = types.Where(x => !x.IsAbstract && !x.IsInterface).ToList();
             return types;
         }
         

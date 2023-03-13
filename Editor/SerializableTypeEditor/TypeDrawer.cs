@@ -86,7 +86,7 @@ namespace UniGame.Core.Runtime.SerializableType.Editor.SerializableTypeEditor
             bool filterAbstract)
         {
             //all assignable types
-            var types = baseType.GetAssignableTypes();
+            var types = baseType.GetAssignableTypes(filterAbstract);
 
             var selectedIndex = 0;
             
