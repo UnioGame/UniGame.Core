@@ -1,11 +1,14 @@
-﻿using UnityEngine;
-
-namespace UniModules.UniGame.Core.Runtime.Common {
+﻿namespace UniModules.UniGame.Core.Runtime.Common {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using global::UniGame.Core.Runtime.ObjectPool;
-
+    using UnityEditor;
+    using UnityEngine;
+#if ODIN_INSPECTOR
+    using Sirenix.OdinInspector;
+#endif
+    
     [Serializable]
     public class VariantValue<TValue,TAsset,TApi> : 
         IVariantValue<TApi>,
@@ -14,17 +17,18 @@ namespace UniModules.UniGame.Core.Runtime.Common {
         
         [SerializeReference]
         #if ODIN_INSPECTOR
-        [Sirenix.OdinInspector.InlineProperty]
-        [Sirenix.OdinInspector.HideLabel]
+        [InlineProperty]
+        [HideLabel]
+        [HideIf(nameof(IsUnityCommandInitialized))]
         #endif
         public TValue value;
 
         [Space]
 #if  ODIN_INSPECTOR
-        [Sirenix.OdinInspector.InlineEditor()]
-        [Sirenix.OdinInspector.ValueDropdown(nameof(GetAssets))]
-        [Sirenix.OdinInspector.HideIf(nameof(IsSerializedCommandInitialized))]
-        [Sirenix.OdinInspector.HideLabel]
+        [InlineEditor]
+        [ValueDropdown(nameof(GetAssets))]
+        [HideIf(nameof(IsSerializedCommandInitialized))]
+        [HideLabel]
 #endif
         [SerializeField]
         public TAsset assetValue;
@@ -68,7 +72,7 @@ namespace UniModules.UniGame.Core.Runtime.Common {
         protected virtual IEnumerable<TAsset> GetAssets()
         {
 #if UNITY_EDITOR
-            return UnityEditor.AssetDatabase.FindAssets($"t:{typeof(TAsset).Name}").OfType<TAsset>();
+            return AssetDatabase.FindAssets($"t:{typeof(TAsset).Name}").OfType<TAsset>();
 #endif
             return Enumerable.Empty<TAsset>();
         }

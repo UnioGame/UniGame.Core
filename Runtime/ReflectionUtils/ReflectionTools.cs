@@ -21,6 +21,11 @@
         public readonly static MemorizeItem<Type, string> FormattedTypeNameCache = MemorizeTool
             .Memorize<Type, string>(GetFormattedNameNonCached);
 
+        public readonly static MemorizeItem<Type, object[]> GetAttributesInherit = MemorizeTool
+            .Memorize<Type, object[]>(x => x.GetCustomAttributes(x, true));
+        
+        public readonly static MemorizeItem<Type, object[]> GetAttributesNonInherit = MemorizeTool
+            .Memorize<Type, object[]>(x => x.GetCustomAttributes(x, false));
         
         private static Type _stringType = typeof(string);
 
@@ -87,7 +92,7 @@
 
         public static IReadOnlyList<FieldInfo> GetInstanceFields(this Type type)
         {
-            return InstanceFields.GetValue(type);
+            return InstanceFields[type];
         }
 
         public static bool IsReallyAssignableFrom(this Type type, Type otherType)
@@ -558,6 +563,54 @@
         {
             var array = type.GetCustomAttributes(typeof(T), inherit);
             return array.Length != 0 ? (T) array[0] : default(T);
+        }
+        
+        /// <summary>
+        /// utility method for returning the first matching custom attribute (or <c>null</c>) of the specified member.
+        /// </summary>
+        public static (T attribute,FieldInfo field) GetCustomAttributeWithChild<T>(this Type type, bool inherit = true)
+        {
+            (T,FieldInfo) result = (default(T), null);
+            
+            if(type == null) return result;
+
+            var attribute = type.GetCustomAttributes<T>(inherit);
+            
+            if (attribute!=null) return (attribute,null);
+
+            var fields = type.GetInstanceFields();
+
+            foreach (var fieldInfo in fields)
+            {
+                var fieldAttribute = fieldInfo.GetCustomAttribute(typeof(T),inherit);
+                if (fieldAttribute is not T  customAttribute) continue;
+                return (customAttribute,fieldInfo);
+            }
+            
+            foreach (var fieldInfo in fields)
+            {
+                var fieldAttribute = fieldInfo.FieldType.GetCustomAttribute(typeof(T),inherit);
+                if (fieldAttribute is not T  customAttribute) continue;
+                return (customAttribute,fieldInfo);
+            }
+            
+            return result;
+        }
+        
+        public static TAttribute GetCustomAttributes<TAttribute>(this Type type, bool inherit = true)
+        {
+            var attributes = inherit
+                ? GetAttributesInherit[type]
+                : GetAttributesNonInherit[type];
+            
+            for (int i = 0; i < attributes.Length; i++)
+            {
+                var attribute = attributes[i];
+                if(attribute is not TAttribute targetAttribute) continue;
+                return targetAttribute;
+            }
+
+            return default;
         }
 
         /// <summary>

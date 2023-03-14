@@ -79,7 +79,7 @@
         
         public static Object MarkDirty(this Object asset)
         {
-            if (!asset) return asset;
+            if (asset == null) return asset;
             EditorUtility.SetDirty(asset);
             return asset;
         }
