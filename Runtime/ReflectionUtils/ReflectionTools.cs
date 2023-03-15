@@ -37,6 +37,15 @@
                 fields.AddRange(x.GetFields(bindingFlags));
                 return fields;
             });
+        
+        public static MemorizeItem<Type, IReadOnlyList<PropertyInfo>> InstanceProperties =
+            MemorizeTool.Memorize<Type, IReadOnlyList<PropertyInfo>>(x =>
+            {
+                var propertyInfos = new List<PropertyInfo>();
+                if (x == null) return propertyInfos;
+                propertyInfos.AddRange(x.GetProperties(propertyBindingFlags));
+                return propertyInfos;
+            });
 
         private static Dictionary<Type, string> simpleTypeNames = new Dictionary<Type, string>()
         {
@@ -79,6 +88,10 @@
                 x.source.GetAssignableWithAttributeNonCached(x.attribute).ToList());
 
         public const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
+        public const BindingFlags propertyBindingFlags = BindingFlags.Public | 
+                                                         BindingFlags.Instance | 
+                                                         BindingFlags.NonPublic | 
+                                                         BindingFlags.SetProperty;
 
         public static DoubleKeyDictionary<Type, string, FieldInfo> fieldInfos =
             new DoubleKeyDictionary<Type, string, FieldInfo>();
