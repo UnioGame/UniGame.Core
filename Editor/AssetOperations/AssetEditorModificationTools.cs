@@ -22,6 +22,16 @@ namespace UniModules.Editor
             if(asset == null) return;
             Object.DestroyImmediate(asset,true);
         }
+
+        public static string AddAssetExtension<TType>(this string path)
+        {
+            return $"{path}.{GetAssetExtension(typeof(TType))}";
+        }
+        
+        public static string AddAssetExtension(this Type assetType,string path)
+        {
+            return $"{path}.{GetAssetExtension(assetType)}";
+        }
         
         public static TAsset SaveAsset<TAsset>(this TAsset asset, string name, string folder,bool saveDatabase = true)
             where TAsset : Object
@@ -59,7 +69,7 @@ namespace UniModules.Editor
             return asset;
         }
         
-        public static TAsset CopyAsset<TAsset>(this Object source,string name, string targetPath)
+        public static TAsset CopyAsset<TAsset>(this Object source,string name, string targetPath, bool saveDatabase = false)
             where TAsset : Object
         {
             var path = AssetDatabase.GetAssetPath(source);
@@ -68,6 +78,13 @@ namespace UniModules.Editor
             var settingsPath = targetPath.CombinePath($"{name}{extension}");
             
             AssetDatabase.CopyAsset(path,settingsPath );
+
+            if (saveDatabase)
+            {
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
+            
             if(assetType.IsComponent())
                 return AssetDatabase.LoadAssetAtPath<GameObject>(settingsPath).GetComponent<TAsset>();
             var asset = AssetDatabase.LoadAssetAtPath<TAsset>(settingsPath);

@@ -66,7 +66,7 @@
             return asset;
         }
 
-        public static string GetAssetExtension(Object asset)
+        public static string GetAssetExtension(this Object asset)
         {
             switch (asset)
             {
