@@ -44,7 +44,7 @@ namespace UniModules.Editor {
             return false;
         }
 
-        public static bool DrawObjectFoldout(Object asset, bool foldOut, Type targetType, string label = "", Action<Object> onValueChanged = null)
+        public static bool DrawObjectFoldout(Object asset, bool foldout, Type targetType, string label = "", Action<Object> onValueChanged = null)
         {
             if (targetType == null || asset == null) {
                 var target = EditorGUILayout.ObjectField(label, asset, UnityObjectType, true);
@@ -55,8 +55,11 @@ namespace UniModules.Editor {
                 return false;
             }
 
-            foldOut = EditorGUILayout.Foldout(foldOut,string.Empty);            
             var rect = GUILayoutUtility.GetLastRect();
+            //rect.x -= 16;
+            //foldout = EditorGUI.Foldout(rect, foldout, string.Empty);
+            foldout = EditorGUILayout.Foldout(foldout,string.Empty);            
+            rect = GUILayoutUtility.GetLastRect();
 
             var newAsset = EditorGUI.ObjectField(rect,label, asset, targetType, true);
             if (newAsset != asset) {
@@ -64,7 +67,7 @@ namespace UniModules.Editor {
                 onValueChanged?.Invoke(newAsset);
             }
 
-            return foldOut;
+            return foldout;
         }
 
         public static bool DrawFieldFoldout(

@@ -25,8 +25,6 @@
             _onDisposed?.Invoke();
             
             Complete();
-            
-            this.DespawnWithRelease();
         }
 
         public void Complete()

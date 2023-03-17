@@ -197,5 +197,15 @@ namespace UniGame.Core.Runtime.Extension
         {
             yield return item;
         }
+
+        public static bool Has<T>(this List<T> list, T value)
+        {
+            foreach (var item in list)
+            {
+                if (item.Equals(value)) 
+                    return true;
+            }
+            return false;
+        }
     }
 }

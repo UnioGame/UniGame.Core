@@ -15,6 +15,18 @@
 
     public static class ReflectionTools
     {
+        public readonly static MemorizeItem<Type, string> PrettyTypeNameCache = MemorizeTool
+            .Memorize<Type, string>(PrettyNameNoCache);
+        
+        public readonly static MemorizeItem<Type, string> FormattedTypeNameCache = MemorizeTool
+            .Memorize<Type, string>(GetFormattedNameNonCached);
+
+        public readonly static MemorizeItem<Type, object[]> GetAttributesInherit = MemorizeTool
+            .Memorize<Type, object[]>(x => x.GetCustomAttributes(x, true));
+        
+        public readonly static MemorizeItem<Type, object[]> GetAttributesNonInherit = MemorizeTool
+            .Memorize<Type, object[]>(x => x.GetCustomAttributes(x, false));
+        
         private static Type _stringType = typeof(string);
 
         public static MemorizeItem<Type, IReadOnlyList<FieldInfo>> InstanceFields =
@@ -24,6 +36,15 @@
                 if (x == null) return fields;
                 fields.AddRange(x.GetFields(bindingFlags));
                 return fields;
+            });
+        
+        public static MemorizeItem<Type, IReadOnlyList<PropertyInfo>> InstanceProperties =
+            MemorizeTool.Memorize<Type, IReadOnlyList<PropertyInfo>>(x =>
+            {
+                var propertyInfos = new List<PropertyInfo>();
+                if (x == null) return propertyInfos;
+                propertyInfos.AddRange(x.GetProperties(propertyBindingFlags));
+                return propertyInfos;
             });
 
         private static Dictionary<Type, string> simpleTypeNames = new Dictionary<Type, string>()
@@ -67,6 +88,10 @@
                 x.source.GetAssignableWithAttributeNonCached(x.attribute).ToList());
 
         public const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic;
+        public const BindingFlags propertyBindingFlags = BindingFlags.Public | 
+                                                         BindingFlags.Instance | 
+                                                         BindingFlags.NonPublic | 
+                                                         BindingFlags.SetProperty;
 
         public static DoubleKeyDictionary<Type, string, FieldInfo> fieldInfos =
             new DoubleKeyDictionary<Type, string, FieldInfo>();
@@ -80,7 +105,7 @@
 
         public static IReadOnlyList<FieldInfo> GetInstanceFields(this Type type)
         {
-            return InstanceFields.GetValue(type);
+            return InstanceFields[type];
         }
 
         public static bool IsReallyAssignableFrom(this Type type, Type otherType)
@@ -111,6 +136,11 @@
         /// <returns>System.String.</returns>
         public static string GetFormattedName(this Type type)
         {
+            return FormattedTypeNameCache[type];
+        }
+
+        public static string GetFormattedNameNonCached(this Type type)
+        {
             if (!type.IsGenericType)
             {
                 if (simpleTypeNames.TryGetValue(type, out var typeName))
@@ -124,7 +154,7 @@
             return $"{type.Name.Substring(0, type.Name.IndexOf("`"))}"
                    + $"<{genericArguments}>";
         }
-
+        
         public static FieldInfo GetFieldInfoCached(this object target, string name) =>
             GetFieldInfoCached(target.GetType(), name);
 
@@ -411,8 +441,8 @@
         public static List<Type> GetAssignableTypes(this Type baseType,bool excludeAbstract = true)
         {
             return excludeAbstract
-                ? _assignableTypesCache.GetValue(baseType)
-                : _assignableTypesWithAbstractCache.GetValue(baseType);
+                ? _assignableTypesCache[baseType]
+                : _assignableTypesWithAbstractCache[baseType];
         }
 
         public static Type ConvertType(string fullTypeName)
@@ -426,7 +456,7 @@
         public static List<Type> GetAssignableTypesNonCached(this Type baseType)
         {
             var types = GetAssignableTypesNonCachedWithAbstract(baseType);
-            types = types.Where(x => !x.IsAbstract).ToList();
+            types = types.Where(x => !x.IsAbstract && !x.IsInterface).ToList();
             return types;
         }
         
@@ -547,6 +577,54 @@
             var array = type.GetCustomAttributes(typeof(T), inherit);
             return array.Length != 0 ? (T) array[0] : default(T);
         }
+        
+        /// <summary>
+        /// utility method for returning the first matching custom attribute (or <c>null</c>) of the specified member.
+        /// </summary>
+        public static (T attribute,FieldInfo field) GetCustomAttributeWithChild<T>(this Type type, bool inherit = true)
+        {
+            (T,FieldInfo) result = (default(T), null);
+            
+            if(type == null) return result;
+
+            var attribute = type.GetCustomAttributes<T>(inherit);
+            
+            if (attribute!=null) return (attribute,null);
+
+            var fields = type.GetInstanceFields();
+
+            foreach (var fieldInfo in fields)
+            {
+                var fieldAttribute = fieldInfo.GetCustomAttribute(typeof(T),inherit);
+                if (fieldAttribute is not T  customAttribute) continue;
+                return (customAttribute,fieldInfo);
+            }
+            
+            foreach (var fieldInfo in fields)
+            {
+                var fieldAttribute = fieldInfo.FieldType.GetCustomAttribute(typeof(T),inherit);
+                if (fieldAttribute is not T  customAttribute) continue;
+                return (customAttribute,fieldInfo);
+            }
+            
+            return result;
+        }
+        
+        public static TAttribute GetCustomAttributes<TAttribute>(this Type type, bool inherit = true)
+        {
+            var attributes = inherit
+                ? GetAttributesInherit[type]
+                : GetAttributesNonInherit[type];
+            
+            for (int i = 0; i < attributes.Length; i++)
+            {
+                var attribute = attributes[i];
+                if(attribute is not TAttribute targetAttribute) continue;
+                return targetAttribute;
+            }
+
+            return default;
+        }
 
         /// <summary>
         /// utility method for returning the first matching custom attribute (or <c>null</c>) of the specified member.
@@ -636,6 +714,53 @@
                 .SelectMany(s => s.GetTypes())
                 .Where(p => type.IsAssignableFrom(p));
             return types.ToList();
+        }
+        
+                
+        /// <summary> Return a prettiefied type name. </summary>
+        public static string PrettyName(this Type type)
+        {
+            return PrettyTypeNameCache[type];
+        }
+
+        public static string PrettyNameNoCache(Type type)
+        {
+            if (type == null) return "no filter";
+            if (type == typeof(System.Object)) return "object";
+            if (type == typeof(float)) return "float";
+            if (type == typeof(int)) return "int";
+            if (type == typeof(long)) return "long";
+            if (type == typeof(double)) return "double";
+            if (type == typeof(string)) return "string";
+            if (type == typeof(bool)) return "bool";
+            if (type.IsGenericType) {
+                var s           = "";
+                var   genericType = type.GetGenericTypeDefinition();
+                s = genericType == typeof(List<>) ? "List" : type.GetGenericTypeDefinition().ToString();
+                var   types  = type.GetGenericArguments();
+                var stypes = new string[types.Length];
+                for (var i = 0; i < types.Length; i++) {
+                    stypes[i] = types[i].PrettyName();
+                }
+
+                return s + "<" + string.Join(", ", stypes) + ">";
+            }
+            if (type.IsArray) {
+                var rank = "";
+                for (var i = 1; i < type.GetArrayRank(); i++) {
+                    rank += ",";
+                }
+
+                var elementType = type.GetElementType();
+                if (!elementType.IsArray) return elementType.PrettyName() + "[" + rank + "]";
+                {
+                    var s = elementType.PrettyName();
+                    var    i = s.IndexOf('[');
+                    return s.Substring(0, i) + "[" + rank + "]" + s.Substring(i);
+                }
+            }
+
+            return type.ToString();
         }
     }
 }

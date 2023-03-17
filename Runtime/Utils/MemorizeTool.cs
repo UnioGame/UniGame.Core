@@ -37,7 +37,7 @@ namespace UniModules.UniCore.Runtime.Utils
             CleanUp();
         }
 
-        private static void CleanUp()
+        public static void CleanUp()
         {
             foreach (var item in cacheItems)
                 item.Dispose();
@@ -52,8 +52,8 @@ namespace UniModules.UniCore.Runtime.Utils
         
 #if UNITY_EDITOR
         [UnityEditor.MenuItem("UniGame/Tools/Clear Memorize Cache")]
-#endif
         public static void Clear() => CleanUp();
-
+#endif
+        
     }
 }

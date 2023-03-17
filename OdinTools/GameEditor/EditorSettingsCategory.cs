@@ -4,7 +4,7 @@ namespace UniModules.Editor.OdinTools.GameEditor
     using UnityEngine;
 
     [Serializable]
-    public class EditorSettingsCategory : IGameEditorCategory
+    public class EditorSettingsCategory// : IGameEditorCategory
     {
         public string name;
         public Sprite icon;
@@ -18,11 +18,12 @@ namespace UniModules.Editor.OdinTools.GameEditor
         
         public void SetupConfiguration(BaseEditorConfiguration configuration) { }
 
-        public IGameEditorCategory UpdateCategory() => this;
+        //public IGameEditorCategory UpdateCategory() => this;
 
         public virtual bool IsMatch(string searchString)
         {
-            return GameEditorCategoryFilter.IsMatch(this, searchString);
+            return true;
+            //return GameEditorCategoryFilter.IsMatch(this, searchString);
         }
     }
 }

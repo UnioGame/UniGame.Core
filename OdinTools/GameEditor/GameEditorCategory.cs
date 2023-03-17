@@ -5,9 +5,12 @@ namespace UniModules.Editor.OdinTools.GameEditor
     using System.Linq;
     using Sirenix.OdinInspector;
     using UnityEngine;
-
+    
+    /// <summary>
+    /// base class for custom categories
+    /// </summary>
     [Serializable]
-    public class GameEditorCategory : IGameEditorCategory
+    public abstract class GameEditorCategory : IGameEditorCategory
     {
         private const string PathFormat = "{0}/{1}";
         
@@ -43,11 +46,12 @@ namespace UniModules.Editor.OdinTools.GameEditor
         public Color Color => color;
         
         public Sprite        Icon     => icon;
+        
         public virtual string Category => category;
 
         public virtual string Name     => name;
-        
-        public virtual object CreateDrawer() => null;
+
+        public abstract object CreateDrawer();
 
         public virtual void SetupConfiguration(BaseEditorConfiguration asset)
         {
@@ -64,7 +68,8 @@ namespace UniModules.Editor.OdinTools.GameEditor
         {
             if(configuration == null)
                return Enumerable.Empty<string>();
-            return configuration.editorGroups.Select(x => x.Name);
+            return configuration.editorGroups
+                .Select(x => x.Name);
         }
 
         public virtual bool IsMatch(string searchString)

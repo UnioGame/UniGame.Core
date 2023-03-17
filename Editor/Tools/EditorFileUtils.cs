@@ -172,6 +172,7 @@ namespace UniModules.Editor
 
         public static string GetDirectoryPath(this string path)
         {
+            if (string.IsNullOrEmpty(path)) return path;
             return path.IsFilePath() ? Path.GetDirectoryName(path) : path;
         }
 

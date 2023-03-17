@@ -43,8 +43,13 @@ namespace UniGame.Utils
 
         private readonly bool _allowStretch = false;
 
-        private readonly IEnumerable _anchors = new ValueDropdownList<Vector2>().Concat(RectTransformUtils.GetAnchorPresets().Select(p => new ValueDropdownItem<Vector2>(p.Item1, p.Item2)).ToList());
-
+#if ODIN_INSPECTOR
+        [NonSerialized]
+        private readonly IEnumerable _anchors = new ValueDropdownList<Vector2>()
+            .Concat(RectTransformUtils.GetAnchorPresets()
+                .Select(p => new ValueDropdownItem<Vector2>(p.Item1, p.Item2)).ToList());
+#endif
+        
         public Vector2 AnchorMin => _anchorMin;
         public Vector2 AnchorMax => _anchorMax;
         public Vector2 Anchor

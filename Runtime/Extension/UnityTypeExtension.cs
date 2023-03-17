@@ -3,6 +3,8 @@ using UnityEngine;
 
 namespace UniGame.Core.Runtime.Extension
 {
+    using System.Collections.Generic;
+    using UniModules.UniCore.Runtime.Utils;
     using Object = UnityEngine.Object;
 
     public static class UnityTypeExtension
@@ -38,5 +40,6 @@ namespace UniGame.Core.Runtime.Extension
         {
             return type != null && assetType.IsAssignableFrom(type);
         }
+
     }
 }

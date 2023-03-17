@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using UniCore.Runtime.ProfilerTools;
 using UniGame.Core.Runtime.Common;
 using UniGame.Core.Runtime.DataFlow;
 using UniModules.UniCore.Runtime.DataFlow;
@@ -9,6 +10,7 @@ using UniModules.UniGame.Core.Runtime.Common;
 using UniModules.UniGame.Core.Runtime.DataFlow;
 using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
 using UniGame.Core.Runtime;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
@@ -16,6 +18,17 @@ using Object = UnityEngine.Object;
 public static class LifetimeExtension
 {
 
+    public static ILifeTime LogOnRelease(this ILifeTime lifeTime,string message)
+    {
+        lifeTime.AddCleanUpAction(() => GameLog.Log(message));
+        return lifeTime;
+    }
+    public static ILifeTime LogOnRelease(this ILifeTime lifeTime,string message,Color color)
+    {
+        lifeTime.AddCleanUpAction(() => GameLog.Log(message,color));
+        return lifeTime;
+    }
+    
     public static ILifeTime DestroyWith(this ILifeTime lifeTime, GameObject gameObject)
     {
         if (!gameObject) return lifeTime;

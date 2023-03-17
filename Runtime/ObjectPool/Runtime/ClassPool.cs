@@ -1,4 +1,6 @@
-﻿namespace UniGame.Runtime.ObjectPool
+﻿using UnityEngine;
+
+namespace UniGame.Runtime.ObjectPool
 {
 	using System.Runtime.CompilerServices;
 	using UniCore.Runtime.ProfilerTools;
@@ -69,7 +71,7 @@
 			{
 				GameLog.LogError("Try to return NULL value to the object pool");
 				return;
-			} 
+			}
 #endif
 			if(instance is IPoolable poolable)
 				poolable.Release();

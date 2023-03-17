@@ -78,17 +78,26 @@ namespace UniGame.Core.Runtime.SerializableType.Editor.SerializableTypeEditor
         }
 
         
-        public static (string filter,Type type) DrawTypePopup(Rect position,GUIContent label, Type baseType, Type selectedType)
+        public static (string filter,Type type) DrawTypePopup(
+            Rect position,
+            GUIContent label, 
+            Type baseType,
+            Type selectedType,
+            bool filterAbstract)
         {
             //all assignable types
-            var types = baseType.GetAssignableTypes();
+            var types = baseType.GetAssignableTypes(filterAbstract);
 
             var selectedIndex = 0;
             
             popupValues.Clear();
             popupValues.Add(noneValue);
             for (var i = 0; i < types.Count; i++) {
+                
                 var item      = types[i];
+                if(filterAbstract && (item.IsAbstract || item.IsInterface))
+                    continue;
+                
                 var itemIndex = i + 1;
                 
                 popupValues.Add(item.Name);

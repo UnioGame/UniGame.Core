@@ -66,7 +66,7 @@
             return asset;
         }
 
-        public static string GetAssetExtension(Object asset)
+        public static string GetAssetExtension(this Object asset)
         {
             switch (asset)
             {
@@ -237,7 +237,93 @@
             return asset;
         }
 
+        public static List<AttributeItemData<T, TAttr>> GetAssetsAndFieldsWithAttribute<T, TAttr>(string[] folders = null)
+            where T : Object
+            where TAttr : Attribute
+        {
+            var result = new List<AttributeItemData<T, TAttr>>();
 
+            var assets = GetAssets<T>(folders);
+
+            foreach (var asset in assets)
+            {
+                var type      = asset.GetType();
+                var value = type.GetCustomAttributeWithChild<TAttr>();
+                var attribute = value.attribute;
+
+                if (attribute == null) continue;
+                
+                var targetValue = value.field!=null
+                    ? value.field.GetValue(asset)
+                    : asset;
+                    
+                result.Add(new AttributeItemData<T, TAttr>
+                {
+                    Attribute = attribute,
+                    Value     = asset,
+                    Target = targetValue
+                });
+            }
+
+            return result;
+        }
+
+        public static List<AttributeItemData<TAttr>> GetAssetsAndFieldsWithAttribute<TAttr>(Type assetType,string[] folders = null)
+            where TAttr : Attribute
+        {
+            var result = new List<AttributeItemData<TAttr>>();
+
+            var assets = GetAssets(assetType,folders);
+
+            foreach (var asset in assets)
+            {
+                var type      = asset.GetType();
+                var value = type.GetCustomAttributeWithChild<TAttr>();
+                var attribute = value.attribute;
+
+                if (attribute == null) continue;
+                
+                var targetValue = value.field!=null
+                    ? value.field.GetValue(asset)
+                    : asset;
+                    
+                result.Add(new AttributeItemData<TAttr>
+                {
+                    Attribute = attribute,
+                    Source     = asset,
+                    Target = targetValue
+                });
+            }
+
+            return result;
+        }
+        
+        public static AttributeItemData<TAttr> GetAttributeOnSelfOrChildren<TAttr>(this object asset)
+            where TAttr : Attribute
+        {
+            if (asset == null) return AttributeItemData<TAttr>.Empty;
+            
+            var type      = asset.GetType();
+            var value = type.GetCustomAttributeWithChild<TAttr>();
+            var attribute = value.attribute;
+
+            if (attribute == null) return AttributeItemData<TAttr>.Empty;
+                
+            var targetValue = value.field!=null
+                ? value.field.GetValue(asset)
+                : asset;
+
+            var result = new AttributeItemData<TAttr>
+            {
+                IsFound = true,
+                Attribute = attribute,
+                Source = asset,
+                Target = targetValue
+            };
+
+            return result;
+        }
+        
         public static List<AttributeItemData<T, TAttr>> GetAssetsWithAttribute<T, TAttr>(string[] folders = null)
             where T : ScriptableObject
             where TAttr : Attribute
@@ -267,7 +353,6 @@
         public static void FindItems<T>(Action<Object, T> action)
         {
             var assets = GetAllAssets();
-
             ApplyTypeItemAction(assets, action);
         }
 
@@ -608,7 +693,9 @@
             if (!asset) return string.Empty;
 
             var path = AssetDatabase.GetAssetPath(asset);
-            return string.IsNullOrEmpty(path) ? string.Empty : AssetDatabase.AssetPathToGUID(path);
+            return string.IsNullOrEmpty(path) 
+                ? string.Empty 
+                : AssetDatabase.AssetPathToGUID(path);
         }
 
         public static string GetUniqueAssetName(string path)

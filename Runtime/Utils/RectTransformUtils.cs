@@ -32,6 +32,29 @@ namespace UniGame.Utils
                 ("BottomRight", new Vector2(1f, 0f))
             };
         }
+        
+        
+        private static Vector3[] corners = new Vector3[4];
+
+        public static Rect GetScreenPositionFromRect(this RectTransform rt, Camera camera)
+        {
+            // getting the world corners
+            rt.GetWorldCorners(corners);
+             
+            // getting the screen corners
+            for (var i = 0; i < corners.Length; i++)
+                corners[i] = camera.WorldToScreenPoint(corners[i]);
+             
+            // getting the top left position of the transform
+            var position = (Vector2) corners[1];
+            // inverting the y axis values, making the top left corner = 0.
+            position.y = Screen.height - position.y;
+            // calculate the siz, width and height, in pixle format
+            var size = corners[2] - corners[0];
+             
+            return new Rect(position, size);
+        }
+
 
         public static void ResetAnchors(this RectTransform rectTransform)
         {

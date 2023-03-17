@@ -7,7 +7,7 @@
     
     public interface IFactory<in TContext,out TProduct>
     {
-        TProduct Create(TContext data);
+        public TProduct Create(TContext data);
     }
     
 }
