@@ -58,11 +58,23 @@
             return SetValue(text, stringValue);
         }
 
-        public static bool SetValue(this Image target, Sprite icon)
+        public static bool SetValue(this Image target, Sprite value)
+        {
+            if (target == null || target.sprite == value) return false;
+            
+            var enabled = value != null;
+            target.enabled = enabled;
+            
+            if(enabled) target.sprite = value;
+            
+            return true;
+        }
+        
+        public static bool SetValue(this Image target, Color icon)
         {
             if (!target) return false;
             
-            target.sprite = icon;
+            target.color = icon;
 
             return true;
         }
