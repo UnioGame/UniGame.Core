@@ -292,6 +292,25 @@ namespace UniModules.Editor
                 subDir.Delete(true);
             }
         }
+        
+        public static void DeleteDirectory(string path)
+        {
+            if (!Directory.Exists(path))
+                return;
+            Directory.Delete(path, true);
+        }
+        
+        public static void DeleteSubDirectories(string path, string[] exclude)
+        {
+            if (!Directory.Exists(path))
+                return;
+            foreach (var subDir in new DirectoryInfo(path).GetDirectories())
+            {
+                if (exclude.Contains(subDir.Name))
+                    continue;
+                subDir.Delete(true);
+            }
+        }
 
         public static void DeleteDirectory(string path, bool recursive = true)
         {
