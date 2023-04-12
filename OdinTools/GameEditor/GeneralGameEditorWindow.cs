@@ -61,15 +61,9 @@ namespace UniModules.Editor.OdinTools.GameEditor
                 tree.Add(category.Name,null,category.Icon);
             }
 
-            foreach (var editorCategory in _categories.Where(x => x.Enabled))
+            foreach (var editorCategory in _categories)
             {
-                editorCategory.SetupConfiguration(_configuration);
-                
-                var category = editorCategory.UpdateCategory();
-                var viewer = category.CreateDrawer();
-                
-                if(viewer == null) continue;
-                tree.Add(GetFullPath(editorCategory),viewer,editorCategory.Icon);
+                AddEditorCategory(editorCategory,editorCategory.Category,tree);
             }
             
             tree.Add(_configuration.Category,_configuration,_configuration.Icon);
@@ -102,7 +96,34 @@ namespace UniModules.Editor.OdinTools.GameEditor
             }
         }
 
+        private void AddEditorCategory(IGameEditorCategory editorCategory,string categoryPath,OdinMenuTree tree )
+        {
+            if (editorCategory is not {Enabled: true}) 
+                return;
+                
+            editorCategory.SetupConfiguration(_configuration);
+                
+            var category = editorCategory.UpdateCategory();
+            var viewer = category.CreateDrawer();
+                
+            if(viewer == null) return;
+
+            var path = GetFullPath(editorCategory, categoryPath);
+            
+            tree.Add(path,viewer,editorCategory.Icon);
+
+            if (category is not IGameEditorCategoryList categoryList) 
+                return;
+            
+            foreach (var item in categoryList.Categories)
+            {
+                AddEditorCategory(item, path,tree);
+            }
+        }
+        
         private string GetFullPath(IGameEditorCategory category) => $"{category.Category}/{category.Name}";
+        
+        private string GetFullPath(IGameEditorCategory category,string categoryName) => $"{categoryName}/{category.Name}";
 
 
         protected override void OnDestroy()
