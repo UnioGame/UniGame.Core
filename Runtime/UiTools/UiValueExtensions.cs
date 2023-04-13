@@ -42,6 +42,14 @@
             return true;
         }
         
+        public static bool SetValue(this TextMeshProUGUI text, Color color)
+        {
+            if (!text) return false;
+            
+            text.color = color;
+            return true;
+        }
+        
         public static bool SetValue(this TextMeshPro text, int value)
         {
             if (!text) return false;
