@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using JetBrains.Annotations;
 using UniCore.Runtime.ProfilerTools;
 using UniGame.Core.Runtime.Common;
 using UniGame.Core.Runtime.DataFlow;
@@ -10,6 +11,7 @@ using UniModules.UniGame.Core.Runtime.Common;
 using UniModules.UniGame.Core.Runtime.DataFlow;
 using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
 using UniGame.Core.Runtime;
+using UniRx;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -33,6 +35,71 @@ public static class LifetimeExtension
     {
         if (!gameObject) return lifeTime;
         DestroyWith(gameObject,lifeTime);
+        return lifeTime;
+    }
+    
+    public static ILifeTime AddTo(this ILifeTimeContext lifeTimeContext,Action action,Action cancellationAction)
+    {
+        return lifeTimeContext.LifeTime.AddTo(action,cancellationAction);
+    }
+    
+    public static ILifeTime BindEvent(this ILifeTimeContext lifeTimeContext,Action action,Action cancellationAction)
+    {
+        return lifeTimeContext.LifeTime.BindEvent(action,cancellationAction);
+    }
+    
+    public static ILifeTime BindEvent<TArg>(this ILifeTimeContext lifeTimeContext,Action<TArg> action,Action<TArg> cancellationAction)
+    {
+        return lifeTimeContext.LifeTime.BindEvent(action,cancellationAction);
+    }
+    
+    public static ILifeTime BindEvent<TArg,TArg2>(this ILifeTimeContext lifeTimeContext,Action<TArg,TArg2> action,Action<TArg,TArg2> cancellationAction)
+    {
+        return lifeTimeContext.LifeTime.BindEvent(action,cancellationAction);
+    }
+    
+    public static ILifeTime BindEvent<TArg,TArg2>(this ILifeTime lifeTime,Action<TArg,TArg2> source,Action<TArg,TArg2> listener)
+    {
+        if (source == null || listener == null || lifeTime.IsTerminated) return lifeTime;
+        
+        Observable.FromEvent(x => source+=listener,
+                x => source-=listener)
+            .Subscribe()
+            .AddTo(lifeTime);
+        
+        return lifeTime;
+    }
+    
+    public static ILifeTime BindEvent<TArg>(this ILifeTime lifeTime,Action<TArg> source,Action<TArg> listener)
+    {
+        if (source == null || listener == null || lifeTime.IsTerminated) return lifeTime;
+        
+        Observable.FromEvent(x => source+=listener,
+                x => source-=listener)
+            .Subscribe()
+            .AddTo(lifeTime);
+        
+        return lifeTime;
+    }
+    
+    public static ILifeTime BindEvent(this ILifeTime lifeTime,Action source,Action listener)
+    {
+        if (source == null || listener == null || lifeTime.IsTerminated) return lifeTime;
+        
+        Observable.FromEvent(x => source+=listener,
+                x => source-=listener)
+            .Subscribe()
+            .AddTo(lifeTime);
+        
+        return lifeTime;
+    }
+    
+    public static ILifeTime AddTo(this ILifeTime lifeTime,Action action,Action cancellationAction)
+    {
+        if (lifeTime.IsTerminated) return lifeTime;
+        
+        action?.Invoke();
+        lifeTime.AddCleanUpAction(cancellationAction);
         return lifeTime;
     }
     
