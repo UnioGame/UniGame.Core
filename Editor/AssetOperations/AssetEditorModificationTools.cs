@@ -44,12 +44,20 @@ namespace UniModules.Editor
         
         public static TAsset SaveAsset<TAsset>(this TAsset asset, string name, 
             string folder,
-            bool saveDatabase = true)
+            bool saveDatabase = true,
+            bool replace = false)
             where TAsset : Object
         {
             var skinTypePath = GetAssetPath(folder, name, asset);
+            var exists = File.Exists(skinTypePath);
+
+            if (exists && replace)
+            {
+                AssetDatabase.DeleteAsset(skinTypePath);
+                exists = false;
+            }
             
-            var itemPath     = File.Exists(skinTypePath) ?
+            var itemPath     = exists ?
                 AssetDatabase.GenerateUniqueAssetPath(skinTypePath) : 
                 skinTypePath;
 
