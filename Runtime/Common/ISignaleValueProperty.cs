@@ -7,6 +7,8 @@
         void SetValue(TValue value);
         
         TValue Take();
+        
+        bool Take(out TValue result);
 
         TValue Look();
     }

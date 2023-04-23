@@ -1,8 +1,13 @@
 ﻿namespace UniGame.Runtime.Common
 {
     using System;
+    using System.Runtime.CompilerServices;
+    using Unity.IL2CPP.CompilerServices;
 
     [Serializable]
+    [Il2CppSetOption(Option.NullChecks, false)]
+    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public class SignaleValueProperty<TValue> : ISignaleValueProperty<TValue>
     {
         public TValue defaultValue;
@@ -33,12 +38,14 @@
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetValue(TValue newValue)
         {
             value = newValue;
             hasValue = true;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TValue Take()
         {
             if (!hasValue) return defaultValue;
@@ -48,6 +55,20 @@
             return result;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Take(out TValue result)
+        {
+            if (!hasValue)
+            {
+                result = default;
+                return false;
+            }
+
+            result = Take();
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TValue Look() => value;
 
     }

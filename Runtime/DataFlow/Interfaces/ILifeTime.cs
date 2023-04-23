@@ -26,6 +26,6 @@ namespace UniGame.Core.Runtime
         /// </summary>
         bool IsTerminated { get; }
         
-        CancellationToken TokenSource { get; }
+        CancellationToken CancellationToken { get; }
     }
 }

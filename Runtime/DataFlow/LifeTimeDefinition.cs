@@ -23,7 +23,7 @@ namespace UniModules.UniCore.Runtime.DataFlow
         
         public bool IsTerminated => lifeTime.isTerminated;
 
-        public CancellationToken TokenSource => lifeTime.TokenSource;
+        public CancellationToken CancellationToken => lifeTime.CancellationToken;
 
         public ILifeTime LifeTime => lifeTime;
 
