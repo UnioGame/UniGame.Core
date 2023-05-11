@@ -10,19 +10,19 @@
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
 #endif
-    public class SignaleValueProperty<TValue> : ISignaleValueProperty<TValue>
+    public class SignalValueProperty<TValue> : ISignalValueProperty<TValue>
     {
         public TValue defaultValue;
         public bool hasValue;
         public TValue value;
 
-        public SignaleValueProperty()
+        public SignalValueProperty()
         {
             defaultValue = default;
             value = default;
         }
 
-        public SignaleValueProperty(TValue defaultValue)
+        public SignalValueProperty(TValue defaultValue)
         {
             this.defaultValue = defaultValue;
             value = defaultValue;
