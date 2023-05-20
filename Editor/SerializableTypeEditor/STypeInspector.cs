@@ -1,4 +1,4 @@
-﻿using UniModules.UniGame.CoreModules.UniGame.Core.Editor.SerializableTypeEditor;
+﻿using UniGame.CoreModules.Editor.SerializableTypeEditor;
 
 namespace UniGame.Core.Runtime.SerializableType.Editor.SerializableTypeEditor
 {
