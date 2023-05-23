@@ -5,7 +5,7 @@ using UniGame.Core.Runtime.SerializableType.Attributes;
 using UnityEditor;
 using UnityEngine;
 
-namespace UniModules.UniGame.CoreModules.UniGame.Core.Editor.SerializableTypeEditor
+namespace UniGame.CoreModules.Editor.SerializableTypeEditor
 {
     public static class SerializedTypeExtensions
     {
