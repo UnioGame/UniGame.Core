@@ -51,6 +51,7 @@
         [Conditional("UNITY_EDITOR")]
         public static void DrawCircle(Vector3 position,Quaternion rotation, float radius, Color color)
         {
+#if UNITY_EDITOR
             var transformMatrix = Matrix4x4.TRS(position, rotation, UnityEditor.Handles.matrix.lossyScale);
             
             using (new UnityEditor.Handles.DrawingScope(transformMatrix))
@@ -60,6 +61,7 @@
                 UnityEditor.Handles.DrawWireDisc(Vector3.zero, Vector3.up, radius);
                 UnityEditor.Handles.color = defaultColor;
             }
+#endif
         }
         
         [Conditional("UNITY_EDITOR")]
