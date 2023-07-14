@@ -270,7 +270,7 @@
 #endif
             if (targetGameObject == null) return targetGameObject;
             
-            var parent = containerObject ? containerObject : null;
+            var parent = containerObject != null ? containerObject : null;
             // Move it under this GO
             if (targetGameObject.transform.parent != null) 
                 targetGameObject.transform.SetParent(parent, false);
