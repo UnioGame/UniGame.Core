@@ -85,6 +85,7 @@ namespace UniGame.Runtime.ObjectPool.Extensions
         
 #endif
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Despawn<TData>(this List<TData> value)
         {
             value.Clear();
