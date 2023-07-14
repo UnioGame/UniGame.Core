@@ -15,6 +15,13 @@
         {
             return IntConverter.Invoke(value);
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToStringFromCache(this bool value)
+        {
+            var convertedValue = value ? 1 : 0;
+            return convertedValue.ToStringFromCache();
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string ToStringRoundToInt(this float value)
