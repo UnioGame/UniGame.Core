@@ -147,6 +147,19 @@ public static class LifetimeExtension
     }
 
     
+    public static ILifeTime DespawnWith(this Object asset, ILifeTime lifeTime)
+    {
+        if (!asset) return lifeTime;
+        if (lifeTime.IsTerminated)
+        {
+            asset.Despawn();
+            return lifeTime;
+        }
+
+        lifeTime.AddCleanUpAction(asset.Despawn);
+        return lifeTime;
+    }
+    
     public static Component DestroyComponentWith(Component asset, ILifeTime lifeTime)
     {
         if (!asset) return asset;

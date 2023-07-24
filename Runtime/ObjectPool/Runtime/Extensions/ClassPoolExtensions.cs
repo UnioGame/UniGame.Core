@@ -7,6 +7,7 @@ namespace UniGame.Runtime.ObjectPool.Extensions
     using System.Buffers;
     using System.Collections.Generic;
     using UnityEngine;
+    using Object = UnityEngine.Object;
 
 #if ENABLE_IL2CPP
     [Il2CppSetOption(Option.NullChecks, false)]
@@ -55,6 +56,9 @@ namespace UniGame.Runtime.ObjectPool.Extensions
                     return;
                 case Component component:
                     component.gameObject.DespawnAsset();
+                    return;
+                default:
+                    Object.Destroy(data);
                     return;
             }
         }
