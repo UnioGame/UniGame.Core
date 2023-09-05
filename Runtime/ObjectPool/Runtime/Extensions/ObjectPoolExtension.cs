@@ -30,7 +30,8 @@ namespace UniGame.Runtime.ObjectPool.Extensions
             return pawn;
         }
         
-        public static T Spawn<T>(this T prototype, Vector3 position,
+        public static T Spawn<T>(this T prototype, 
+            Vector3 position,
             Quaternion rotation, 
             Transform parent = null,
             bool stayWorldPosition = false)
