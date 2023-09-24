@@ -8,6 +8,11 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
     using UnityEngine.SceneManagement;
     using UniCore.Runtime.Utils;
 
+#if UNITY_EDITOR
+    using UnityEditor;
+    using UnityEditor.SceneManagement;
+#endif
+    
     public static class SceneLifeTimeExtension
     {
         private static MemorizeItem<string,ILifeTime> _sceneLifeTimes = MemorizeTool
@@ -39,6 +44,14 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
             SceneManager.sceneUnloaded -= OnSceneUnloaded;
             SceneManager.sceneUnloaded += OnSceneUnloaded;
 
+#if UNITY_EDITOR
+            EditorApplication.playModeStateChanged += OnSceneModeChanged;
+                
+            static void OnSceneModeChanged(PlayModeStateChange state)
+            {
+                _sceneLifeTimes.Dispose();
+            }
+#endif
             static void OnSceneUnloaded(Scene scene)
             {
                 _sceneLifeTimes.Remove(scene.path);
