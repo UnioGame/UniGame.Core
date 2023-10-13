@@ -78,6 +78,12 @@ namespace UniGame.Runtime.ObjectPool.Extensions
 
 #if NET_STANDARD
         
+#if ENABLE_IL2CPP
+    [Il2CppSetOption(Option.NullChecks, false)]
+    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
+#endif
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Despawn<TData>(this TData[] value)
         {
             if (value == null) return;
