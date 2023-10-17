@@ -18,6 +18,9 @@
         public readonly static MemorizeItem<Type, string> PrettyTypeNameCache = MemorizeTool
             .Memorize<Type, string>(PrettyNameNoCache);
         
+        public readonly static MemorizeItem<MethodInfo, ParameterInfo[]> ParametersInfo = MemorizeTool
+            .Memorize<MethodInfo, ParameterInfo[]>(GetParametersInfoNonCached);
+        
         public readonly static MemorizeItem<Type, string> FormattedTypeNameCache = MemorizeTool
             .Memorize<Type, string>(GetFormattedNameNonCached);
 
@@ -154,6 +157,8 @@
             return $"{type.Name.Substring(0, type.Name.IndexOf("`"))}"
                    + $"<{genericArguments}>";
         }
+        
+        
         
         public static FieldInfo GetFieldInfoCached(this object target, string name) =>
             GetFieldInfoCached(target.GetType(), name);
@@ -543,6 +548,16 @@
             }
 
             return types;
+        }
+        
+        public static ParameterInfo[] GetParametersInfo(this MethodInfo methodInfo)
+        {
+            return ParametersInfo[methodInfo];
+        }
+            
+        public static ParameterInfo[] GetParametersInfoNonCached(this MethodInfo methodInfo)
+        {
+            return methodInfo.GetParameters();
         }
 
         public static bool Validate(object item, Type searchType)
