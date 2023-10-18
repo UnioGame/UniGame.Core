@@ -10,6 +10,8 @@
     [Serializable]
     public class SType : ISerializationCallbackReceiver, IReadOnlyType
     {
+        public string name;
+        
         public string fullTypeName;
         
         public Type type;
@@ -18,6 +20,7 @@
             get => GetItemType();
             set {
                 type = value;
+                name = value.Name;
 #if UNITY_EDITOR
                 fullTypeName = type == null ? 
                     string.Empty : type.AssemblyQualifiedName;
@@ -75,6 +78,7 @@
         public void OnAfterDeserialize()
         {
             type = Type.GetType(fullTypeName, false, true);
+            name = type == null ? string.Empty : type.Name;
         }
 
         #endregion
