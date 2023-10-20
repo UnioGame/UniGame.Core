@@ -7,6 +7,7 @@ namespace UniGame.Runtime.ObjectPool.Extensions
     using System.Buffers;
     using System.Collections.Generic;
     using UnityEngine;
+    using UnityEngine.Pool;
     using Object = UnityEngine.Object;
 
 #if ENABLE_IL2CPP
@@ -99,7 +100,7 @@ namespace UniGame.Runtime.ObjectPool.Extensions
         public static void Despawn<TData>(this List<TData> value)
         {
             value.Clear();
-            ClassPool.Despawn(value);
+            ListPool<TData>.Release(value);
         }
         
         public static void Despawn<TData>(this HashSet<TData> value)
@@ -117,17 +118,10 @@ namespace UniGame.Runtime.ObjectPool.Extensions
         public static void Despawn<TKey,TValue>(this Dictionary<TKey,TValue> value)
         {
             value.Clear();
-            ClassPool.Despawn(value);
+            DictionaryPool<TKey,TValue>.Release(value);
         }
         
         public static void Despawn<TData>(this Queue<TData> value)
-        {
-            value.Clear();
-            ClassPool.Despawn(value);
-        }
-        
-        public static void DespawnCollection<TData>(this List<TData> value)
-            where  TData : class
         {
             value.Clear();
             ClassPool.Despawn(value);
@@ -138,13 +132,6 @@ namespace UniGame.Runtime.ObjectPool.Extensions
         {
             value.Clear();
             ClassPool.Despawn(value);
-        }
-
-        public static void DespawnDictionary<TData,TKey,TValue>(this TData data)
-            where TData : class, IDictionary<TKey,TValue>, new()
-        {
-            data.Clear();
-            ClassPool.Despawn(data);
         }
 
         public static void DespawnItems<TData>(this ICollection<TData> data) where TData : class, new()
