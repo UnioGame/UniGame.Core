@@ -1,6 +1,7 @@
 ﻿namespace UniCore.Runtime.ProfilerTools
 {
     using System;
+    using System.Runtime.CompilerServices;
     using Interfaces;
     using UniModules.UniCore.Runtime.Utils;
     using UnityEngine;
@@ -25,18 +26,20 @@
             Name = name;
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Log(string message, Object source = null)
         {
-#if UNITY_EDITOR || GAME_LOGS_ENABLED
+#if UNITY_EDITOR || GAME_LOGS_ENABLED || DEBUG
 
             LogRuntime(message, source);
 
 #endif
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LogFormatWithTrace(string template, params object[] values)
         {
-#if UNITY_EDITOR || GAME_LOGS_ENABLED
+#if UNITY_EDITOR || GAME_LOGS_ENABLED || DEBUG
 
             LogFormat(template, values);
             LogFormat("Stack Trace {0}", System.Environment.StackTrace);
@@ -44,9 +47,10 @@
 #endif
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LogFormat(string template, Color color, params object[] values)
         {
-#if UNITY_EDITOR || GAME_LOGS_ENABLED
+#if UNITY_EDITOR || GAME_LOGS_ENABLED || DEBUG
 
             var message = values == null || values.Length == 0 ? template : string.Format(template, values);
             Log(message, color);
@@ -54,16 +58,18 @@
 #endif
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LogFormat(string template, params object[] values)
         {
-#if UNITY_EDITOR || GAME_LOGS_ENABLED
+#if UNITY_EDITOR || GAME_LOGS_ENABLED || DEBUG
             LogFormatRuntime(template, values);
 #endif
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Log(string message, Color color, Object source = null)
         {
-#if UNITY_EDITOR || GAME_LOGS_ENABLED
+#if UNITY_EDITOR || GAME_LOGS_ENABLED || DEBUG
             LogRuntime(message, color, source);
 #endif
         }
@@ -107,6 +113,7 @@
             Debug.LogWarning(GetLogMessageWithPrefix(message));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LogWarningFormat(string template, params object[] values)
         {
             if (!Enabled) return;
@@ -114,6 +121,7 @@
             Debug.LogWarning(GetLogMessageWithPrefix(message));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LogError(string message, Object source = null)
         {
             if (source) {
@@ -134,18 +142,21 @@
             Debug.LogError(message);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LogErrorFormat(string message, params object[] objects)
         {
             var value = string.Format(message, objects);
             Debug.LogError(value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LogFormatRuntime(string template, params object[] values)
         {
             var message = values == null || values.Length == 0 ? template : string.Format(template, values);
             LogRuntime(message);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LogRuntime(string message, Color color, Object source = null)
         {
             if (!Enabled || string.IsNullOrEmpty(message)) return;
