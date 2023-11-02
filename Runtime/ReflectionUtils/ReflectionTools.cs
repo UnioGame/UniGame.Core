@@ -9,6 +9,7 @@
     using global::UniGame.Runtime.ObjectPool.Extensions;
     using System.Reflection;
     using DataStructure;
+    using UnityEditor;
     using UnityEngine;
     using Utils;
     using Object = UnityEngine.Object;
@@ -470,23 +471,8 @@
         /// </summary>
         public static List<Type> GetAssignableTypesNonCachedWithAbstract(this Type baseType)
         {
-            var types = new List<Type>();
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assemblies)
-            {
-                try
-                {
-                    var asmTypes = assembly.GetTypes();
-                    var items = asmTypes.Where(baseType.IsAssignableFrom);
-                    types.AddRange(items);
-                }
-                catch (ReflectionTypeLoadException e)
-                {
-                    Debug.LogWarning(e);
-                }
-            }
-
-            return types;
+            var collection = TypeCache.GetTypesDerivedFrom(baseType);
+            return collection.ToList();
         }
 
         public static bool HasCustomAttribute<TAttribute>(this PropertyInfo info)
@@ -511,7 +497,6 @@
         {
             return info.GetCustomAttribute<TAttribute>() != null;
         }
-
         
         public static List<Attribute> GetAttributesOfTypes(Type attributeType)
         {
