@@ -9,11 +9,14 @@
     using global::UniGame.Runtime.ObjectPool.Extensions;
     using System.Reflection;
     using DataStructure;
-    using UnityEditor;
     using UnityEngine;
     using Utils;
     using Object = UnityEngine.Object;
 
+#if UNITY_EDITOR
+    using UnityEditor;
+#endif
+    
     public static class ReflectionTools
     {
         public readonly static MemorizeItem<Type, string> PrettyTypeNameCache = MemorizeTool
@@ -471,8 +474,28 @@
         /// </summary>
         public static List<Type> GetAssignableTypesNonCachedWithAbstract(this Type baseType)
         {
+#if UNITY_EDITOR
             var collection = TypeCache.GetTypesDerivedFrom(baseType);
             return collection.ToList();
+#endif
+            
+            var types = new List<Type>();
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var assembly in assemblies)
+            {
+                try
+                {
+                    var asmTypes = assembly.GetTypes();
+                    var items = asmTypes.Where(baseType.IsAssignableFrom);
+                    types.AddRange(items);
+                }
+                catch (ReflectionTypeLoadException e)
+                {
+                    Debug.LogWarning(e);
+                }
+            }
+
+            return types;
         }
 
         public static bool HasCustomAttribute<TAttribute>(this PropertyInfo info)
@@ -515,6 +538,10 @@
 
         public static List<Type> GetAttributesTypes(Type attributeType)
         {
+#if UNITY_EDITOR
+            var typesList = TypeCache.GetTypesWithAttribute(attributeType);
+            return typesList.ToList();
+#endif
             var types = new List<Type>();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var assembly in assemblies)
@@ -528,8 +555,6 @@
                 {
                     Debug.LogWarning(e);
                 }
-
-                ;
             }
 
             return types;
@@ -559,14 +584,8 @@
         public static bool Validate(Type type, Type searchType)
         {
             if (type == null) return false;
-            if (type.IsValueType)
-                return false;
-            if (type == _stringType && searchType != _stringType)
-            {
-                return false;
-            }
-
-            return true;
+            if (type.IsValueType) return false;
+            return type != _stringType || searchType == _stringType;
         }
 
         /// <summary>
