@@ -21,7 +21,7 @@
         private static int ProfileEnabled = -1;
         private const string ProfileEditorKey = "ProfileEditorKey";
 
-#if ENABLE_PROFILING
+#if ENABLE_PROFILING || DEBUG
         public static bool Enabled = true;
 #else
         public static bool Enabled = false;
