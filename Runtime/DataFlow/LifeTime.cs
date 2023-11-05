@@ -54,7 +54,7 @@ namespace UniModules.UniCore.Runtime.DataFlow
         /// </summary>
         public bool IsTerminated => isTerminated;
 
-        public CancellationToken CancellationToken
+        public CancellationToken Token
         {
             get
             {
@@ -160,7 +160,7 @@ namespace UniModules.UniCore.Runtime.DataFlow
 
         #region type convertion
 
-        public static implicit operator CancellationToken(LifeTime lifeTime) => lifeTime.CancellationToken;
+        public static implicit operator CancellationToken(LifeTime lifeTime) => lifeTime.Token;
 
         #endregion
 

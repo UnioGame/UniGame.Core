@@ -362,7 +362,7 @@ public static class LifetimeExtension
     
     public static CancellationToken AsCancellationToken(this ILifeTime lifeTime)
     {
-        return lifeTime.CancellationToken;
+        return lifeTime.Token;
     } 
     
     #endregion

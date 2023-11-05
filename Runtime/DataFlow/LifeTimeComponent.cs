@@ -21,7 +21,7 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow
 
         public bool IsTerminated => _lifeTime.IsTerminated;
         
-        public CancellationToken CancellationToken => _lifeTime.CancellationToken;
+        public CancellationToken Token => _lifeTime.Token;
 
         private void OnDestroy()
         {
