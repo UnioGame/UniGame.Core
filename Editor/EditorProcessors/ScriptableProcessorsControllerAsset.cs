@@ -16,7 +16,7 @@
     {
         #region static methods
 
-        //[InitializeOnLoadMethod]
+        [InitializeOnLoadMethod]
         [MenuItem(itemName: "UniGame/ScriptableProcessors/Restart")]
         public static void ProcessorsInitialize() => EditorApplication.delayCall +=
             () => EditorCoroutineUtility.StartCoroutineOwnerless(InitializeRoutine());
