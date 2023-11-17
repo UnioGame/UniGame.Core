@@ -77,7 +77,7 @@ namespace UniGame.Runtime.ObjectPool.Extensions
         
         public static GameObject Spawn(this GameObject prototype, Transform parent = null, bool stayWorldPosition = false)
         {
-            if (!prototype) return null;
+            if (prototype == null) return null;
             var pawn = ObjectPool.Spawn(prototype, Vector3.zero, Quaternion.identity,
                                                     parent, stayWorldPosition);
             return pawn;
