@@ -37,8 +37,9 @@ namespace UniModules.UniGame.Core.Runtime.Utils
         static void Initialize()
         {
 #if UNITY_EDITOR
+            EditorApplication.playModeStateChanged -= PlayModeChanged;
             EditorApplication.playModeStateChanged += PlayModeChanged;
-            _isPlaying = UnityEditor.EditorApplication.isPlaying;
+            _isPlaying = EditorApplication.isPlaying;
 #endif
         }
         
