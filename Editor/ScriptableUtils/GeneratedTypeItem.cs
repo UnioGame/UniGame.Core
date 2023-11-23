@@ -92,10 +92,7 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
         private static ScriptableObject LoadAssetInternal(Type targetType)
         {
             var info = targetType.GetCustomAttribute<GeneratedAssetInfoAttribute>();
-            
-            // _assetPath ??= EditorPathConstants.GeneratedContentDefaultPath
-            //     .CombinePath($"GeneratedAsset/Editor/{ProcessorType.Namespace}/{ProcessorType.Name}");
-            
+
             var path = info == null || string.IsNullOrEmpty(info.Location) 
                 ? GetAssetPath(targetType)
                 : EditorPathConstants.GeneratedContentDefaultPath.CombinePath(info.Location);
