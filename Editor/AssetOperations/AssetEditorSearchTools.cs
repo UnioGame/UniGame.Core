@@ -136,7 +136,12 @@ namespace UniModules.Editor
         {
             return GetAsset(UnityTypeExtension.assetType,filter, folders);
         }
-
+        
+        public static Object GetAsset(Type type, string[] folders = null)
+        {
+            return GetAsset(GetTypeFilter(type), folders);
+        }
+        
         public static List<Object> GetAssets(Type type, string filter, string[] folders = null)
         {
             var isComponent = type.IsComponent();

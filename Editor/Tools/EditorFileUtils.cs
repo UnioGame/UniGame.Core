@@ -137,8 +137,6 @@ namespace UniModules.Editor
             return path.TrimStart(Path.PathSeparator).TrimStart(MoveDirectorySeparator).TrimStart('\\');
         }
         
-            
-
         /// <summary>Checks if this FTP path is a top level path</summary>
         public static bool IsAbsolutePath(this string path) => path.StartsWith("/") || path.StartsWith("./") || path.StartsWith("../");
 

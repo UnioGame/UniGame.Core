@@ -104,16 +104,39 @@
                 action(asset);
             }
         }
+        
+        public static ScriptableObject LoadOrCreate(
+            Type assetType,
+            string path,
+            string assetName,
+            Action<Object> onCreateAction = null,
+            bool refreshDatabase = false)
+        {
+            assetName = string.IsNullOrEmpty(assetName) ? assetType.Name : assetName;
+
+            if (TryGetAsset(assetType,path,out var  asset)) return asset as ScriptableObject;
+
+            asset = ScriptableObject.CreateInstance(assetType);
+            
+            onCreateAction?.Invoke(asset);
+            
+            asset = asset != null 
+                ? asset.SaveAsset(assetName, path, refreshDatabase) 
+                : asset;
+            
+            return asset as ScriptableObject;
+        }
 
         public static TAsset LoadOrCreate<TAsset>(
-            this TAsset asset,
+            TAsset asset,
             string path,
-            string assetName = "", 
-            bool refreshDatabase = false)
-            where TAsset : ScriptableObject
+            string assetName, 
+            Action<TAsset> onCreateAction = null,
+            bool refreshDatabase = false) where TAsset : ScriptableObject
         {
-            assetName = string.IsNullOrEmpty(assetName) ? typeof(TAsset).Name : assetName;
-            return asset ? asset : LoadOrCreate<TAsset>(path, assetName,null, refreshDatabase);
+            return asset!=null 
+                ? asset 
+                : LoadOrCreate<TAsset>(path, assetName,onCreateAction, refreshDatabase);
         }
         
         public static TAsset LoadOrCreate<TAsset>(string path)
@@ -125,7 +148,7 @@
         public static TAsset LoadOrCreate<TAsset>(Type assetType,string path)
             where TAsset : ScriptableObject
         {
-            return LoadOrCreate<TAsset>(assetType,path, typeof(TAsset).Name, null);
+            return LoadOrCreate<TAsset>(path, typeof(TAsset).Name, null);
         }
         
         public static TAsset LoadOrCreate<TAsset>(string path, Action<TAsset> action)
@@ -140,40 +163,57 @@
             Action<TAsset> action)
             where TAsset : ScriptableObject
         {
-            return asset ? asset : LoadOrCreate(path, typeof(TAsset).Name, action);
+            return asset 
+                ? asset 
+                : LoadOrCreate(path, typeof(TAsset).Name, action);
         }
 
         public static TAsset LoadOrCreate<TAsset>(
             string path,
             string assetName,
-            Action<TAsset> onCreateAction,
+            Action<TAsset> onCreateAction = null,
             bool refreshDatabase = false) where TAsset : ScriptableObject
         {
-            return LoadOrCreate(typeof(TAsset), path, assetName, onCreateAction, refreshDatabase);
+            var assetType = typeof(TAsset);
+            var asset = LoadOrCreate(assetType,path,assetName,null,refreshDatabase);
+            var result = asset as TAsset;
+            onCreateAction?.Invoke(result);
+        
+            return result;
         }
         
         public static TAsset LoadOrCreate<TAsset>(
             Type assetType,
             string path,
             string assetName,
-            Action<TAsset> onCreateAction,
+            Action<TAsset> onCreateAction = null,
             bool refreshDatabase = false) where TAsset : ScriptableObject
         {
-            assetName = string.IsNullOrEmpty(assetName) ? typeof(TAsset).Name : assetName;
-
-            if (TryGetAsset<TAsset>(path,out var  asset)) return asset;
-
-            asset = ScriptableObject.CreateInstance(assetType) as TAsset;
-            onCreateAction?.Invoke(asset);
-            asset?.SaveAsset(assetName, path, refreshDatabase);
-            
-            return asset;
+            var asset = LoadOrCreate(assetType,path,assetName,null,refreshDatabase);
+            var result = asset as TAsset;
+            onCreateAction?.Invoke(result);
+        
+            return result;
         }
 
         public static bool TryGetAsset<TAsset>(string path, out TAsset asset)
             where TAsset : Object
         {
-            asset = GetAsset<TAsset>(path);
+            if (TryGetAsset(typeof(TAsset), path, out var assetObject))
+                asset = assetObject as TAsset;
+            else
+            {
+                asset = null;
+            }
+            return asset!=null;
+        }
+        
+        private static string[] _pathsCache = new string[1];
+        public static bool TryGetAsset(Type assetType,string path, out Object asset)
+        {
+            _pathsCache[0] = path;
+            asset = GetAsset(assetType,_pathsCache);
+            
             if (asset != null) return asset != null;
             
             var fullPath = path.ToAbsoluteProjectPath();
@@ -184,7 +224,7 @@
             AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
             AssetDatabase.Refresh();
             
-            asset = AssetDatabase.LoadAssetAtPath<TAsset>(path);
+            asset = AssetDatabase.LoadAssetAtPath<Object>(path);
                     
             if (asset == null)
                 Debug.LogError("AssetDatabase load filed after refresh");

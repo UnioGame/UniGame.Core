@@ -62,7 +62,6 @@
         private static void InitializeInline(ScriptableProcessorsControllerAsset source)
         {
             var asset = source;
-            
             var types = ProcessorApiType.GetAssignableTypes();
             
             var allProcessors = types
@@ -76,8 +75,7 @@
             asset.processors.AddRange(allProcessors);
             asset.MarkDirty();
             
-            if (!asset.activateOnLoad)
-                return;
+            if (!asset.activateOnLoad) return;
 
             asset.Stop();
             asset.Start();

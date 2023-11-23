@@ -7,89 +7,129 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
     
     using System;
     using System.Collections.Generic;
+    using UniCore.Runtime.ReflectionUtils;
+    using UniCore.Runtime.Utils;
     using UniModules.Editor;
-    using UniModules.UniCore.Runtime.ReflectionUtils;
     using UniModules.UniGame.Core.EditorTools.Editor;
     using UnityEditor;
     using UnityEngine;
-    
-    public static class GeneratedTypeItem<TAsset>
-        where TAsset : ScriptableObject
+
+    public static class GeneratedTypeItem
     {
-        public readonly static Type ProcessorType = typeof(TAsset);
-
+        private static MemorizeItem<Type, ScriptableObject> _assetCache = 
+            MemorizeTool.Memorize<Type, ScriptableObject>(null);
+        
+        private static MemorizeItem<Type, string> _pathCache = 
+            MemorizeTool.Memorize<Type, string>(null);
+        
         private static bool _initialized;
-        private static bool _assetRequested;
         private static string _assetPath;
-        private static TAsset _selector;
-        private static List<Action<TAsset>> _callbacks = new();
-
-        public static string AssetPath
-        {
-            get
-            {
-                _assetPath ??= EditorPathConstants.GeneratedContentDefaultPath
-                    .CombinePath($"GeneratedAsset/Editor/{ProcessorType.Namespace}/{ProcessorType.Name}");
-                return _assetPath;
-            }
-            private set => _assetPath = value;
-        }
+        private static Dictionary<Type,List<Action<ScriptableObject>>> _callbacks = new();
         
         public static bool IsInitialized => _initialized;
-        
-        public static TAsset Asset => Load();
 
-        public static void Load(Action<TAsset> callback)
+        public static string GetAssetPath<TAsset>(bool includeNamespace = false) where TAsset : ScriptableObject
         {
-            if (_initialized && _selector != null)
-            {
-                callback?.Invoke(_selector);
-                return;
-            }
-            
-            _callbacks.Add(callback);
+            var targetType = typeof(TAsset);
+            return GetAssetPath(targetType,includeNamespace);
         }
         
-        public static TAsset Load()
+        public static string GetAssetPath(Type targetType,bool includeNamespace = false)
         {
-            if (!_initialized)
+            if(_pathCache.ContainsKey(targetType))
+                return _pathCache[targetType];
+            
+            var generatedPath = EditorPathConstants.GeneratedContentDefaultPath;
+            var assetPath = includeNamespace 
+                ? generatedPath.CombinePath(targetType.Namespace).CombinePath(targetType.Name)
+                : generatedPath.CombinePath(targetType.Name);
+            
+            _pathCache[targetType] = assetPath;
+            
+            return assetPath;
+        }
+
+        public static TAsset LoadAsset<TAsset>() where TAsset : ScriptableObject
+        {
+            return LoadAsset<TAsset>(static x => Preload(x));
+        }
+
+        public static TAsset LoadAsset<TAsset>(Action<TAsset> callback) where TAsset : ScriptableObject
+        {
+            var assetType = typeof(TAsset);
+            
+            return LoadAsset(assetType, x => callback?.Invoke(x as TAsset)) as TAsset;
+        }
+        
+        public static ScriptableObject LoadAsset(Type assetType,Action<ScriptableObject> callback)
+        {
+            if (_initialized)
             {
-                _assetRequested = true;
-                return default;
+                if (_assetCache.ContainsKey(assetType))
+                {
+                    callback?.Invoke(_assetCache[assetType]);
+                }
+
+                var asset = LoadAssetInternal( assetType);
+                return asset;
+            }
+
+            if (!_callbacks.TryGetValue(assetType, out var callbacks))
+            {
+                callbacks = new List<Action<ScriptableObject>>();
+                _callbacks[assetType] = callbacks;
             }
             
-            if (_selector != null) return _selector;
+            callbacks.Add(callback);
+            return null;
+        }
+
+        private static void Preload(ScriptableObject asset)
+        {
             
-            GameLog.Log($"GeneratedAsset Create asset of type {nameof(TAsset)} : with path : {AssetPath}");
-   
-            var info = ProcessorType.GetCustomAttribute<GeneratedAssetInfoAttribute>();
+        }
+        
+        private static ScriptableObject LoadAssetInternal(Type targetType)
+        {
+            var info = targetType.GetCustomAttribute<GeneratedAssetInfoAttribute>();
+            
+            // _assetPath ??= EditorPathConstants.GeneratedContentDefaultPath
+            //     .CombinePath($"GeneratedAsset/Editor/{ProcessorType.Namespace}/{ProcessorType.Name}");
+            
             var path = info == null || string.IsNullOrEmpty(info.Location) 
-                ? AssetPath 
+                ? GetAssetPath(targetType)
                 : EditorPathConstants.GeneratedContentDefaultPath.CombinePath(info.Location);
                 
-            AssetPath = path;
-                
-            var newAsset  = AssetEditorTools.LoadOrCreate<TAsset>(ProcessorType, path);
-            _selector = newAsset;
+            GameLog.Log($"GeneratedAsset Create asset of type {targetType.Name} : with path : {path}");
 
-            foreach (var callback in _callbacks)
-                callback?.Invoke(_selector);
+            _pathCache[targetType] = path;
             
-            _callbacks.Clear();
-            return _selector;
+            var newAsset  = AssetEditorTools.LoadOrCreate<ScriptableObject>(targetType, path,targetType.Name);
+
+            if (!_callbacks.TryGetValue(targetType, out var callbacks)) 
+                return newAsset;
+            
+            foreach (var callback in callbacks)
+                callback?.Invoke(newAsset);
+            
+            callbacks.Clear();
+
+            return newAsset;
         }
-        
+
         [InitializeOnLoadMethod]
-        public static void EditorInitialize()
+        private static void OnInitialize()
         {
             EditorApplication.delayCall -= OnDelayedCall;
             EditorApplication.delayCall += OnDelayedCall;
         }
-
+        
         private static void OnDelayedCall()
         {
             _initialized = true;
-            if (_assetRequested) Load();
+
+            foreach (var callbackValue in _callbacks)
+                LoadAssetInternal(callbackValue.Key);
         }
         
     }

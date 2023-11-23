@@ -12,10 +12,9 @@ namespace UniModules.Editor.OdinTools.GameEditor
     {
         #region static data
         
-        public static TConfiguration Asset => GeneratedTypeItem<TConfiguration>.Asset;
+        public static TConfiguration Asset => GeneratedTypeItem.LoadAsset<TConfiguration>();
         
         #endregion
-
     }
     
     public class BaseEditorConfiguration : ScriptableObject, IGameEditorConfiguration
