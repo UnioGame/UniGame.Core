@@ -18,8 +18,7 @@ namespace UniModules.Editor.OdinTools.GameEditor
 
     }
     
-    public class BaseEditorConfiguration : ScriptableObject, 
-        IGameEditorConfiguration
+    public class BaseEditorConfiguration : ScriptableObject, IGameEditorConfiguration
     {
         public const string SettingsCategoryName = "Editor Settings";
 
@@ -36,11 +35,11 @@ namespace UniModules.Editor.OdinTools.GameEditor
         [SerializeReference] 
         [OnValueChanged(nameof(OnCategoriesChanged))]
         [ListDrawerSettings(ListElementLabelName = nameof(IGameEditorCategory.Name))]
-        public List<IGameEditorCategory> categories = new List<IGameEditorCategory>();
+        public List<IGameEditorCategory> categories = new();
 
         [OnValueChanged(nameof(OnValueChanged))]
         [ListDrawerSettings(ListElementLabelName = nameof(EditorSettingsCategory.Name))]
-        public List<EditorSettingsCategory> editorGroups = new List<EditorSettingsCategory>();
+        public List<EditorSettingsCategory> editorGroups = new();
 
         #endregion
 
@@ -64,6 +63,7 @@ namespace UniModules.Editor.OdinTools.GameEditor
         public List<EditorSettingsCategory> EditorSettingsCategories => editorGroups;
         
         public object CreateDrawer() => this;
+        
         public IGameEditorCategory UpdateCategory() => this;
 
         public void SetupConfiguration(BaseEditorConfiguration configuration) {}

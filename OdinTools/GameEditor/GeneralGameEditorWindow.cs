@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Sirenix.OdinInspector.Editor;
-using UniModules.Editor.OdinTools.GameEditor.Categories;
-using UniModules.UniCore.Runtime.DataFlow;
-
-namespace UniModules.Editor.OdinTools.GameEditor
+﻿namespace UniModules.Editor.OdinTools.GameEditor
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Sirenix.OdinInspector.Editor;
+    using Categories;
+    using UniCore.Runtime.DataFlow;
+    
     public class GeneralGameEditorWindow<TConfiguration> : OdinMenuEditorWindow
         where TConfiguration : BaseEditorConfiguration<TConfiguration>
     {
 
         private TConfiguration _configuration;
 
-        private HashSet<OdinMenuItem> _selectedItems = new HashSet<OdinMenuItem>();
-        private List<IGameEditorCategory> _categories = new List<IGameEditorCategory>();
-        private LifeTimeDefinition _lifeTimeDefinition = new LifeTimeDefinition();
+        private HashSet<OdinMenuItem> _selectedItems = new();
+        private List<IGameEditorCategory> _categories = new();
+        private LifeTimeDefinition _lifeTimeDefinition = new();
 
         protected override void Initialize()
         {
@@ -31,6 +30,8 @@ namespace UniModules.Editor.OdinTools.GameEditor
 
             _configuration.UpdateAction -= Rebuild;
             _configuration.UpdateAction += Rebuild;
+
+            Rebuild();
         }
 
         private void Rebuild()

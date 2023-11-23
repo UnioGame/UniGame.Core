@@ -8,7 +8,7 @@
     using UniModules.Editor;
 #endif
     
-    public class GeneratedAsset<TAsset> : 
+    public abstract class GeneratedAsset<TAsset> : 
         ScriptableObject
         where TAsset : ScriptableObject
     {
@@ -16,27 +16,23 @@
         
         #region static data
 
-        private static TAsset selector;
+        private static TAsset _selector;
 
-        public static readonly Type ProcessorType = typeof(TAsset);
+        public static readonly Type AssetType = typeof(TAsset);
 
         public static string AssetPath =>  GeneratedTypeItem<TAsset>.AssetPath;
 
         public static TAsset Asset => GeneratedTypeItem<TAsset>.Asset;
-
-        [InitializeOnLoadMethod]
-        public static void InitializeByEditor()
+        
+        public static void Load(Action<TAsset> action)
         {
-            EditorApplication.delayCall += InnerInitialize;
+            GeneratedTypeItem<TAsset>.Load(x => Load(x, action));
         }
-
-        private static void InnerInitialize()
+        
+        private static void Load(TAsset asset, Action<TAsset> action)
         {
-#if UNITY_EDITOR
-            if (EditorApplication.isPlayingOrWillChangePlaymode)
-                return;
-#endif
-            var asset = Asset;
+            _selector = asset;
+            action?.Invoke(asset);
         }
         
         #endregion
@@ -46,10 +42,10 @@
 #endif
         public void DestroyAsset()
         {
-            if (!selector) return;
-            var path = AssetDatabase.GetAssetPath(selector);
+            if (!_selector) return;
+            var path = AssetDatabase.GetAssetPath(_selector);
             AssetDatabase.DeleteAsset(path);
-            selector = null;
+            _selector = null;
             this.MarkDirty();
         }
 
