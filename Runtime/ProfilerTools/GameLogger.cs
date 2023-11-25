@@ -2,6 +2,7 @@
 {
     using System;
     using System.Runtime.CompilerServices;
+    using Cysharp.Text;
     using Interfaces;
     using UniModules.UniCore.Runtime.Utils;
     using UnityEngine;
@@ -52,7 +53,7 @@
         {
 #if UNITY_EDITOR || GAME_LOGS_ENABLED || DEBUG
 
-            var message = values == null || values.Length == 0 ? template : string.Format(template, values);
+            var message = values == null || values.Length == 0 ? template : ZString.Format(template, values);
             Log(message, color);
 
 #endif
@@ -117,7 +118,7 @@
         public void LogWarningFormat(string template, params object[] values)
         {
             if (!Enabled) return;
-            var message = string.Format(template, values);
+            var message = ZString.Format(template, values);
             Debug.LogWarning(GetLogMessageWithPrefix(message));
         }
 
@@ -166,7 +167,7 @@
 
         public string GetColorTemplate(string message, Color color)
         {
-            var colorMessage = string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>",
+            var colorMessage = ZString.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>",
                                              (byte) (color.r * 255f), (byte) (color.g * 255f), (byte) (color.b * 255f),
                                              message);
             return colorMessage;
@@ -188,12 +189,12 @@
 
         private string GetNamePrefix()
         {
-            return string.Format(NameTemplate, Name, _counter.ToStringFromCache());
+            return ZString.Format(NameTemplate, Name, _counter.ToStringFromCache());
         }
 
         private string GetLogMessageWithPrefix(string message)
         {
-            return string.Format(LogTemplate,
+            return ZString.Format(LogTemplate,
                 DateTime.Now.ToLongTimeString(), 
                 LogPrefix, message);
         }
