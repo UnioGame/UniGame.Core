@@ -41,7 +41,16 @@ namespace UniModules.Editor
             var path = EditorFileUtils.Combine(folder,$"{name}.{GetAssetExtension(asset)}");
             return path;
         }
-        
+
+        public static TAsset SaveAsset<TAsset>(this TAsset asset,
+            string folder,
+            bool saveDatabase = true,
+            bool replace = false)
+            where TAsset : Object
+        {
+            return SaveAsset(asset, asset.name, folder, saveDatabase, replace);
+        }
+
         public static TAsset SaveAsset<TAsset>(this TAsset asset, string name, 
             string folder,
             bool saveDatabase = true,
