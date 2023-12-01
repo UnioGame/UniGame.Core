@@ -28,7 +28,7 @@ namespace UniGame.Core.Runtime.Extension
 
         public static bool IsGameObject(this Type type)
         {
-            return type != null && gameObjectType.IsAssignableFrom(type);
+            return type != null && gameObjectType == type;
         }
 
         public static bool IsScriptableObject(this Type type)
