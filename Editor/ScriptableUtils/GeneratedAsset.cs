@@ -26,9 +26,9 @@
             ? _selector 
             : GeneratedTypeItem.LoadAsset<TAsset>(x => _selector = x);
         
-        public static void Load(Action<TAsset> action)
+        public static TAsset Load(Action<TAsset> action)
         {
-            GeneratedTypeItem.LoadAsset<TAsset>(x => Load(x, action));
+            return GeneratedTypeItem.LoadAsset<TAsset>(x => Load(x, action));
         }
         
         private static void Load(TAsset asset, Action<TAsset> action)

@@ -64,12 +64,32 @@ namespace UniGame.Runtime.ObjectPool.Extensions
             }
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DespawnClass<T>(this T data, Action cleanupAction)
             where T: class, new()
         {
             ClassPool.Despawn(data,cleanupAction);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DespawnRecursive<TValue>(this List<TValue> list) 
+            where TValue : class, new()
+        {
+            foreach (var item in list)
+                ClassPool.DespawnWithRelease(item);
+            list.Despawn();
+        }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DespawnItems<TValue>(this List<TValue> list) 
+            where TValue : class, new()
+        {
+            foreach (var item in list)
+                ClassPool.DespawnWithRelease(item);
+            list.Clear();
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DespawnRecursive<TValue,TData>(this TValue data)
             where TValue : class, ICollection<TData>, new() where TData : class, new()
         {
