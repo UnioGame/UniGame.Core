@@ -12,10 +12,8 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow
         MonoBehaviour, 
         ILifeTime
     {
-        [FormerlySerializedAs("releaseOnDisable")]
-        public bool isReleaseOnDisable;
-        
-        private readonly LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
+        private readonly LifeTimeDefinition _lifeTime = new();
+        private readonly LifeTimeDefinition _disableLifeTime = new();
 
         public ILifeTime AddCleanUpAction(Action cleanAction) => _lifeTime.AddCleanUpAction(cleanAction);
 
@@ -23,25 +21,26 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow
 
         public ILifeTime AddRef(object o) => _lifeTime.AddRef(o);
 
+        public ILifeTime DisableLifeTime => _disableLifeTime;
+        
         public bool IsTerminated => _lifeTime.IsTerminated;
         
         public CancellationToken Token => _lifeTime.Token;
 
         private void OnEnable()
         {
-            if (isReleaseOnDisable)
-                _lifeTime.Release();
+            _disableLifeTime.Release();
         }
 
         private void OnDisable()
         {
-            if (isReleaseOnDisable)
-                _lifeTime.Terminate();
+            _disableLifeTime.Terminate();
         }
 
         private void OnDestroy()
         {
             _lifeTime.Terminate();
+            _disableLifeTime.Terminate();
         }
     }
 }

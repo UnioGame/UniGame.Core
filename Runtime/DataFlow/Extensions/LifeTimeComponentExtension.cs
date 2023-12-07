@@ -10,14 +10,15 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
     {
         public static ILifeTime GetAssetLifeTime(this GameObject gameObject, bool terminateOnDisable = false)
         {
-            var lifetimeComponent = gameObject.GetComponent<ILifeTime>(); 
-            if (lifetimeComponent != null)
-            {
-                return lifetimeComponent;
-            }
-            var newLifetimeComponent = gameObject.AddComponent<LifeTimeComponent>();
-            newLifetimeComponent.isReleaseOnDisable = terminateOnDisable;
-            return newLifetimeComponent;
+            var lifetimeComponent = gameObject.GetComponent<LifeTimeComponent>(); 
+
+            lifetimeComponent = lifetimeComponent != null
+                ? lifetimeComponent
+                : gameObject.AddComponent<LifeTimeComponent>();
+            
+            return terminateOnDisable 
+                ? lifetimeComponent.DisableLifeTime 
+                : lifetimeComponent;
         }
 
         public static ILifeTime DestroyOnCleanup(this LifeTime lifeTime, GameObject gameObject)
