@@ -557,7 +557,7 @@
             items.AddRange(scriptableObjects);
             return items;
         }
-
+        
         public static T GetAsset<T>(string path) where T : Object
         {
             var asset = AssetDatabase.LoadAssetAtPath<T>(path);
@@ -568,6 +568,12 @@
             return asset;
         }
 
+        public static T GetAsset<T>(string filter,string[] folders) where T : Object
+        {
+            var asset = GetAsset(typeof(T),filter, folders) as T;
+            return asset;
+        }
+        
         public static T GetAsset<T>(string[] folders = null) where T : Object
         {
             var asset = GetAsset(typeof(T),string.Empty, folders) as T;
