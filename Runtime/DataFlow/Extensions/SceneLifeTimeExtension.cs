@@ -34,7 +34,7 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
                 
                 var sceneObject = new GameObject();
                 SceneManager.MoveGameObjectToScene(sceneObject,scene);
-                var sceneLifeTime = sceneObject.AddComponent<LifeTimeComponent>();
+                var sceneLifeTime = sceneObject.AddComponent<LifeTimeBehaviour>();
                 return sceneLifeTime;
             });
 

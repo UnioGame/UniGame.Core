@@ -8,7 +8,7 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow
     using UniModules.UniCore.Runtime.DataFlow;
     using UnityEngine.Serialization;
 
-    public class LifeTimeComponent :
+    public class LifeTimeBehaviour :
         MonoBehaviour, 
         ILifeTime
     {

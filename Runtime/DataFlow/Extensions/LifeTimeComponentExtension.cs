@@ -10,11 +10,11 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
     {
         public static ILifeTime GetAssetLifeTime(this GameObject gameObject, bool terminateOnDisable = false)
         {
-            var lifetimeComponent = gameObject.GetComponent<LifeTimeComponent>(); 
+            var lifetimeComponent = gameObject.GetComponent<LifeTimeBehaviour>(); 
 
             lifetimeComponent = lifetimeComponent != null
                 ? lifetimeComponent
-                : gameObject.AddComponent<LifeTimeComponent>();
+                : gameObject.AddComponent<LifeTimeBehaviour>();
             
             return terminateOnDisable 
                 ? lifetimeComponent.DisableLifeTime 
