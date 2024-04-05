@@ -6,12 +6,14 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow
     using System;
     using global::UniGame.Core.Runtime;
     using UniModules.UniCore.Runtime.DataFlow;
+    using UnityEngine.Serialization;
 
-    public class LifeTimeComponent :
+    public class LifeTimeBehaviour :
         MonoBehaviour, 
         ILifeTime
     {
-        private readonly LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
+        private readonly LifeTimeDefinition _lifeTime = new();
+        private readonly LifeTimeDefinition _disableLifeTime = new();
 
         public ILifeTime AddCleanUpAction(Action cleanAction) => _lifeTime.AddCleanUpAction(cleanAction);
 
@@ -19,13 +21,26 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow
 
         public ILifeTime AddRef(object o) => _lifeTime.AddRef(o);
 
+        public ILifeTime DisableLifeTime => _disableLifeTime;
+        
         public bool IsTerminated => _lifeTime.IsTerminated;
         
-        public CancellationToken TokenSource => _lifeTime.TokenSource;
+        public CancellationToken Token => _lifeTime.Token;
+
+        private void OnEnable()
+        {
+            _disableLifeTime.Release();
+        }
+
+        private void OnDisable()
+        {
+            _disableLifeTime.Terminate();
+        }
 
         private void OnDestroy()
         {
             _lifeTime.Terminate();
+            _disableLifeTime.Terminate();
         }
     }
 }

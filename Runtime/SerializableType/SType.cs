@@ -8,8 +8,13 @@
     //[Sirenix.OdinInspector.LabelText()]
 #endif
     [Serializable]
-    public class SType : ISerializationCallbackReceiver, IReadOnlyType
+    public class SType : ISerializationCallbackReceiver, 
+        IReadOnlyType, 
+        IEquatable<SType>,
+        IEquatable<Type>
     {
+        public string name;
+        
         public string fullTypeName;
         
         public Type type;
@@ -18,6 +23,7 @@
             get => GetItemType();
             set {
                 type = value;
+                name = value.Name;
 #if UNITY_EDITOR
                 fullTypeName = type == null ? 
                     string.Empty : type.AssemblyQualifiedName;
@@ -31,7 +37,6 @@
             get => fullTypeName;
             set => type = Type.GetType(value, false, true);
         }
-        
 		
         public Type GetItemType()
         {
@@ -75,6 +80,7 @@
         public void OnAfterDeserialize()
         {
             type = Type.GetType(fullTypeName, false, true);
+            name = type == null ? string.Empty : type.Name;
         }
 
         #endregion

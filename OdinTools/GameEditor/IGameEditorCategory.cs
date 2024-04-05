@@ -3,6 +3,8 @@ using UnityEngine;
 
 namespace UniModules.Editor.OdinTools.GameEditor
 {
+    using System.Collections.Generic;
+
     public interface IGameEditorCategory : ISearchFilterable
     {
         public bool   Enabled  { get; }
@@ -15,5 +17,10 @@ namespace UniModules.Editor.OdinTools.GameEditor
         void SetupConfiguration(BaseEditorConfiguration configuration);
         
         IGameEditorCategory UpdateCategory();
+    }
+    
+    public interface IGameEditorCategoryList : IGameEditorCategory
+    {
+        List<IGameEditorCategory> Categories { get; }
     }
 }

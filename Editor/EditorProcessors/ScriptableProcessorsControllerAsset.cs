@@ -16,12 +16,11 @@
     {
         #region static methods
 
+        public static Type ProcessorApiType = typeof(IEditorProcess);
+        
         [InitializeOnLoadMethod]
         [MenuItem(itemName: "UniGame/ScriptableProcessors/Restart")]
-        public static void ProcessorsInitialize() => EditorApplication.delayCall +=
-            () => EditorCoroutineUtility.StartCoroutineOwnerless(InitializeRoutine());
-
-        public static Type ProcessorApiType = typeof(IEditorProcess);
+        public static void ProcessorsInitialize() => InitializeRoutine();
         
         #endregion
 
@@ -39,32 +38,34 @@
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Button]
 #endif
-        public void Restart() => InitializeByEditor();
+        public void Restart() => InitializeRoutine();
         
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Button]
 #endif
-        public void Start() =>  processors.OfType<IEditorProcess>().ForEach(x => x.Start());
+        public void Start() =>  processors
+            .OfType<IEditorProcess>()
+            .ForEach(static x => x.Start());
 
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.Button]
 #endif
-        public void Stop() => processors.OfType<IEditorProcess>().ForEach(x => x.Stop());
+        public void Stop() => processors
+            .OfType<IEditorProcess>()
+            .ForEach(static x => x.Stop());
 
-        private static IEnumerator InitializeRoutine()
+        private static void InitializeRoutine()
         {
-            yield return null;
-            yield return null;
-            yield return null;
-            InitializeInline();
+            Load(InitializeInline);
         }
 
-        private static void InitializeInline()
+        private static void InitializeInline(ScriptableProcessorsControllerAsset source)
         {
-            var asset = Asset;
+            var asset = source;
             var types = ProcessorApiType.GetAssignableTypes();
             
-            var allProcessors = types.Select(x => AssetEditorTools.GetAssets(x))
+            var allProcessors = types
+                .Select(x => AssetEditorTools.GetAssets(x))
                 .SelectMany(x => x)
                 .Where(x => x is ScriptableObject and IEditorProcess)
                 .Select(x => x as ScriptableObject)
@@ -74,8 +75,7 @@
             asset.processors.AddRange(allProcessors);
             asset.MarkDirty();
             
-            if (!asset.activateOnLoad)
-                return;
+            if (!asset.activateOnLoad) return;
 
             asset.Stop();
             asset.Start();

@@ -84,6 +84,14 @@
             return asset;
         }
         
+        public static Object SaveAsset(this Object asset)
+        {
+            if (asset == null) return asset;
+            asset.MarkDirty();
+            AssetDatabase.SaveAssetIfDirty(asset);
+            return asset;
+        }
+        
         /// <summary>
         /// Gets all childrens of `SerializedObjects`
         /// at 1 level depth if includeChilds == false.

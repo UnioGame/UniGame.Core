@@ -136,7 +136,12 @@ namespace UniModules.Editor
         {
             return GetAsset(UnityTypeExtension.assetType,filter, folders);
         }
-
+        
+        public static Object GetAsset(Type type, string[] folders = null)
+        {
+            return GetAsset(GetTypeFilter(type), folders);
+        }
+        
         public static List<Object> GetAssets(Type type, string filter, string[] folders = null)
         {
             var isComponent = type.IsComponent();
@@ -224,18 +229,27 @@ namespace UniModules.Editor
         {
             var searchFilter = CreateFilter(type, filter);
             var ids = GetAssetFilterGuids(searchFilter,folders,false);
-
+    
             foreach (var id in ids)
             {
                 var assetPath = AssetDatabase.GUIDToAssetPath(id);
-                if (string.IsNullOrEmpty(assetPath))
-                {
-                    Debug.LogErrorFormat("Asset importer {0} with NULL path detected", id);
+                if (string.IsNullOrEmpty(assetPath)) continue;
+                
+                var fileName = Path.GetFileNameWithoutExtension(assetPath);
+                if(!fileName.Equals(filter,StringComparison.OrdinalIgnoreCase))
                     continue;
-                }
+                
+                var asset = AssetDatabase.LoadAssetAtPath(assetPath, type);
+                if (asset != null) return asset;
+            }
+            
+            foreach (var id in ids)
+            {
+                var assetPath = AssetDatabase.GUIDToAssetPath(id);
+                if (string.IsNullOrEmpty(assetPath)) continue;
 
                 var asset = AssetDatabase.LoadAssetAtPath(assetPath, type);
-                if (asset) return asset;
+                if (asset != null) return asset;
             }
 
             return null;

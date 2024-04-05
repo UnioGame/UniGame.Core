@@ -8,7 +8,8 @@ using System.Reflection;
 namespace UniModules.Editor
 {
     [InitializeOnLoad]
-    public static class FixGameViewScale {
+    public static class FixGameViewScale 
+    {
         private const string       PREFS_KEY     = "FIX_GAMEVIEW_SCALES";
         private const BindingFlags BINDING_FLAGS = BindingFlags.Instance | BindingFlags.NonPublic;
 

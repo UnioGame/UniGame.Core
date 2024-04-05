@@ -13,10 +13,17 @@
     using Utils;
     using Object = UnityEngine.Object;
 
+#if UNITY_EDITOR
+    using UnityEditor;
+#endif
+    
     public static class ReflectionTools
     {
         public readonly static MemorizeItem<Type, string> PrettyTypeNameCache = MemorizeTool
             .Memorize<Type, string>(PrettyNameNoCache);
+        
+        public readonly static MemorizeItem<MethodInfo, ParameterInfo[]> ParametersInfo = MemorizeTool
+            .Memorize<MethodInfo, ParameterInfo[]>(GetParametersInfoNonCached);
         
         public readonly static MemorizeItem<Type, string> FormattedTypeNameCache = MemorizeTool
             .Memorize<Type, string>(GetFormattedNameNonCached);
@@ -154,6 +161,8 @@
             return $"{type.Name.Substring(0, type.Name.IndexOf("`"))}"
                    + $"<{genericArguments}>";
         }
+        
+        
         
         public static FieldInfo GetFieldInfoCached(this object target, string name) =>
             GetFieldInfoCached(target.GetType(), name);
@@ -465,6 +474,11 @@
         /// </summary>
         public static List<Type> GetAssignableTypesNonCachedWithAbstract(this Type baseType)
         {
+#if UNITY_EDITOR
+            var collection = TypeCache.GetTypesDerivedFrom(baseType);
+            return collection.ToList();
+#endif
+            
             var types = new List<Type>();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var assembly in assemblies)
@@ -506,7 +520,6 @@
         {
             return info.GetCustomAttribute<TAttribute>() != null;
         }
-
         
         public static List<Attribute> GetAttributesOfTypes(Type attributeType)
         {
@@ -525,6 +538,10 @@
 
         public static List<Type> GetAttributesTypes(Type attributeType)
         {
+#if UNITY_EDITOR
+            var typesList = TypeCache.GetTypesWithAttribute(attributeType);
+            return typesList.ToList();
+#endif
             var types = new List<Type>();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var assembly in assemblies)
@@ -538,11 +555,19 @@
                 {
                     Debug.LogWarning(e);
                 }
-
-                ;
             }
 
             return types;
+        }
+        
+        public static ParameterInfo[] GetParametersInfo(this MethodInfo methodInfo)
+        {
+            return ParametersInfo[methodInfo];
+        }
+            
+        public static ParameterInfo[] GetParametersInfoNonCached(this MethodInfo methodInfo)
+        {
+            return methodInfo.GetParameters();
         }
 
         public static bool Validate(object item, Type searchType)
@@ -559,14 +584,8 @@
         public static bool Validate(Type type, Type searchType)
         {
             if (type == null) return false;
-            if (type.IsValueType)
-                return false;
-            if (type == _stringType && searchType != _stringType)
-            {
-                return false;
-            }
-
-            return true;
+            if (type.IsValueType) return false;
+            return type != _stringType || searchType == _stringType;
         }
 
         /// <summary>

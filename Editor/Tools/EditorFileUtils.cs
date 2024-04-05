@@ -137,8 +137,6 @@ namespace UniModules.Editor
             return path.TrimStart(Path.PathSeparator).TrimStart(MoveDirectorySeparator).TrimStart('\\');
         }
         
-            
-
         /// <summary>Checks if this FTP path is a top level path</summary>
         public static bool IsAbsolutePath(this string path) => path.StartsWith("/") || path.StartsWith("./") || path.StartsWith("../");
 
@@ -289,6 +287,25 @@ namespace UniModules.Editor
                 return;
             foreach (var subDir in new DirectoryInfo(path).GetDirectories())
             {
+                subDir.Delete(true);
+            }
+        }
+        
+        public static void DeleteDirectory(string path)
+        {
+            if (!Directory.Exists(path))
+                return;
+            Directory.Delete(path, true);
+        }
+        
+        public static void DeleteSubDirectories(string path, string[] exclude)
+        {
+            if (!Directory.Exists(path))
+                return;
+            foreach (var subDir in new DirectoryInfo(path).GetDirectories())
+            {
+                if (exclude.Contains(subDir.Name))
+                    continue;
                 subDir.Delete(true);
             }
         }

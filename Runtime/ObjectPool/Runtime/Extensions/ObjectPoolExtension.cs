@@ -8,7 +8,6 @@ namespace UniGame.Runtime.ObjectPool.Extensions
 
     public static class ObjectPoolExtension
     {
-
         public static void CreatePool(this GameObject asset, int preloadCount = 0)
         {
             ObjectPool.CreatePool(asset,preloadCount);
@@ -30,7 +29,8 @@ namespace UniGame.Runtime.ObjectPool.Extensions
             return pawn;
         }
         
-        public static T Spawn<T>(this T prototype, Vector3 position,
+        public static T Spawn<T>(this T prototype, 
+            Vector3 position,
             Quaternion rotation, 
             Transform parent = null,
             bool stayWorldPosition = false)
@@ -74,9 +74,20 @@ namespace UniGame.Runtime.ObjectPool.Extensions
             return pawn;
         }
         
+        public static ILifeTime AttachPoolToLifeTime(this GameObject prototype, ILifeTime lifeTime, bool createPoolIfNone = false, int preload = 0)
+        {
+            return ObjectPool.AttachToLifeTime(prototype, lifeTime,createPoolIfNone,preload);
+        }
+                
+        public static GameObject Spawn(this GameObject source, ILifeTime lifeTime, int preload = 0)
+        {
+            source.AttachPoolToLifeTime(lifeTime, true, preload);
+            return source;
+        }
+        
         public static GameObject Spawn(this GameObject prototype, Transform parent = null, bool stayWorldPosition = false)
         {
-            if (!prototype) return null;
+            if (prototype == null) return null;
             var pawn = ObjectPool.Spawn(prototype, Vector3.zero, Quaternion.identity,
                                                     parent, stayWorldPosition);
             return pawn;
@@ -97,11 +108,6 @@ namespace UniGame.Runtime.ObjectPool.Extensions
             return pawn;
         }
 
-        public static ILifeTime AttachPoolToLifeTime(this GameObject prototype, ILifeTime lifeTime, bool createPoolIfNone = false, int preload = 0)
-        {
-            return ObjectPool.AttachToLifeTime(prototype, lifeTime,createPoolIfNone,preload);
-        }
-        
         public static GameObject Spawn(this GameObject prototype,bool activateOnSpawn, Vector3 position, Quaternion rotation, Transform parent = null, bool stayWorldPosition = false)
         {
             if (!prototype) return null;
@@ -141,5 +147,6 @@ namespace UniGame.Runtime.ObjectPool.Extensions
         {
             ObjectPool.Despawn(data,destroy);
         }
+
     }
 }

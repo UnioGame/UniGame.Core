@@ -13,5 +13,12 @@
             return unixTimestamp;
         }
 
+        public static int GetMidnightOnUnix(this DateTime date)
+        {
+            var unixTimestamp = (int)(date.ToUniversalTime().
+                Subtract(UnitTime)).TotalSeconds;
+            var nextMidnight = ((unixTimestamp / (24 * 3600)) + 1) * (24 * 3600);
+            return nextMidnight;
+        }
     }
 }

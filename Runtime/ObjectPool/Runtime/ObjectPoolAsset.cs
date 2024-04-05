@@ -112,6 +112,11 @@ namespace UniGame.Runtime.ObjectPool
 #endif
             var component = target as Component;
             var isComponent = component != null;
+            var isGameObject = target is GameObject;
+
+            if (!isComponent && !isGameObject) 
+                return Instantiate(target) as T;
+            
             // Clone this prefabs's GameObject
             var asset = isComponent ? component.gameObject : target;
             var clone = Spawn(asset, position, rotation, parent, stayWorld, 0);

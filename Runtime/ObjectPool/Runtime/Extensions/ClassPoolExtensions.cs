@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using Unity.IL2CPP.CompilerServices;
 
 namespace UniGame.Runtime.ObjectPool.Extensions
 {
@@ -7,10 +6,16 @@ namespace UniGame.Runtime.ObjectPool.Extensions
     using System.Buffers;
     using System.Collections.Generic;
     using UnityEngine;
+    using UnityEngine.Pool;
+    using Object = UnityEngine.Object;
+
+#if ENABLE_IL2CPP
+    using Unity.IL2CPP.CompilerServices;
 
     [Il2CppSetOption(Option.NullChecks, false)]
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
+#endif
     public static class ClassPoolExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -54,15 +59,38 @@ namespace UniGame.Runtime.ObjectPool.Extensions
                 case Component component:
                     component.gameObject.DespawnAsset();
                     return;
+                default:
+                    Object.Destroy(data);
+                    return;
             }
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DespawnClass<T>(this T data, Action cleanupAction)
             where T: class, new()
         {
             ClassPool.Despawn(data,cleanupAction);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DespawnRecursive<TValue>(this List<TValue> list) 
+            where TValue : class, new()
+        {
+            foreach (var item in list)
+                ClassPool.DespawnWithRelease(item);
+            list.Despawn();
+        }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DespawnItems<TValue>(this List<TValue> list) 
+            where TValue : class, new()
+        {
+            foreach (var item in list)
+                ClassPool.DespawnWithRelease(item);
+            list.Clear();
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DespawnRecursive<TValue,TData>(this TValue data)
             where TValue : class, ICollection<TData>, new() where TData : class, new()
         {
@@ -72,6 +100,12 @@ namespace UniGame.Runtime.ObjectPool.Extensions
 
 #if NET_STANDARD
         
+#if ENABLE_IL2CPP
+    [Il2CppSetOption(Option.NullChecks, false)]
+    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
+#endif
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Despawn<TData>(this TData[] value)
         {
             if (value == null) return;
@@ -83,10 +117,11 @@ namespace UniGame.Runtime.ObjectPool.Extensions
         
 #endif
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Despawn<TData>(this List<TData> value)
         {
             value.Clear();
-            ClassPool.Despawn(value);
+            ListPool<TData>.Release(value);
         }
         
         public static void Despawn<TData>(this HashSet<TData> value)
@@ -104,17 +139,10 @@ namespace UniGame.Runtime.ObjectPool.Extensions
         public static void Despawn<TKey,TValue>(this Dictionary<TKey,TValue> value)
         {
             value.Clear();
-            ClassPool.Despawn(value);
+            DictionaryPool<TKey,TValue>.Release(value);
         }
         
         public static void Despawn<TData>(this Queue<TData> value)
-        {
-            value.Clear();
-            ClassPool.Despawn(value);
-        }
-        
-        public static void DespawnCollection<TData>(this List<TData> value)
-            where  TData : class
         {
             value.Clear();
             ClassPool.Despawn(value);
@@ -125,13 +153,6 @@ namespace UniGame.Runtime.ObjectPool.Extensions
         {
             value.Clear();
             ClassPool.Despawn(value);
-        }
-
-        public static void DespawnDictionary<TData,TKey,TValue>(this TData data)
-            where TData : class, IDictionary<TKey,TValue>, new()
-        {
-            data.Clear();
-            ClassPool.Despawn(data);
         }
 
         public static void DespawnItems<TData>(this ICollection<TData> data) where TData : class, new()

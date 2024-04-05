@@ -5,6 +5,12 @@
     public static class CanvasGroupExtension
     {
         public static CanvasGroupState Disabled = new CanvasGroupState();
+        public static CanvasGroupState Enabled  = new CanvasGroupState() {
+            Alpha         = 1,
+            Interactable  = true,
+            IgnoreParent  = false,
+            BlockRaycasts = true
+        };
         
         public static CanvasGroupState SetState(
             this CanvasGroup group, 

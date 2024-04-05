@@ -24,7 +24,7 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow
 
         public bool IsTerminated => _lifeTime.IsTerminated;
         
-        public CancellationToken TokenSource => _lifeTime.TokenSource;
+        public CancellationToken Token => _lifeTime.Token;
 
         #endregion
 

@@ -32,16 +32,41 @@ namespace UniModules.Editor
         {
             return $"{path}.{GetAssetExtension(assetType)}";
         }
-        
-        public static TAsset SaveAsset<TAsset>(this TAsset asset, string name, string folder,bool saveDatabase = true)
-            where TAsset : Object
+
+        public static string GetAssetPath(string folder,string name, Object asset)
         {
             if (folder.IndexOf('\\', folder.Length - 1) >= 0) {
                 folder = folder.Remove(folder.Length - 1);
             }
+            var path = EditorFileUtils.Combine(folder,$"{name}.{GetAssetExtension(asset)}");
+            return path;
+        }
 
-            var skinTypePath = EditorFileUtils.Combine(folder,$"{name}.{GetAssetExtension(asset)}");
-            var itemPath     = File.Exists(skinTypePath) ?
+        public static TAsset SaveAsset<TAsset>(this TAsset asset,
+            string folder,
+            bool saveDatabase = true,
+            bool replace = false)
+            where TAsset : Object
+        {
+            return SaveAsset(asset, asset.name, folder, saveDatabase, replace);
+        }
+
+        public static TAsset SaveAsset<TAsset>(this TAsset asset, string name, 
+            string folder,
+            bool saveDatabase = true,
+            bool replace = false)
+            where TAsset : Object
+        {
+            var skinTypePath = GetAssetPath(folder, name, asset);
+            var exists = File.Exists(skinTypePath);
+
+            if (exists && replace)
+            {
+                AssetDatabase.DeleteAsset(skinTypePath);
+                exists = false;
+            }
+            
+            var itemPath     = exists ?
                 AssetDatabase.GenerateUniqueAssetPath(skinTypePath) : 
                 skinTypePath;
 

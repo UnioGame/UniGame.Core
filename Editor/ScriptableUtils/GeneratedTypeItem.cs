@@ -6,55 +6,127 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
 #if UNITY_EDITOR
     
     using System;
+    using System.Collections.Generic;
+    using UniCore.Runtime.ReflectionUtils;
+    using UniCore.Runtime.Utils;
     using UniModules.Editor;
-    using UniModules.UniCore.Runtime.ReflectionUtils;
     using UniModules.UniGame.Core.EditorTools.Editor;
+    using UnityEditor;
     using UnityEngine;
-    
-    public static class GeneratedTypeItem<TAsset>
-        where TAsset : ScriptableObject
+
+    public static class GeneratedTypeItem
     {
-        public readonly static Type ProcessorType = typeof(TAsset);
+        private static MemorizeItem<Type, ScriptableObject> _assetCache = 
+            MemorizeTool.Memorize<Type, ScriptableObject>(null);
+        
+        private static MemorizeItem<Type, string> _pathCache = 
+            MemorizeTool.Memorize<Type, string>(null);
+        
+        private static bool _initialized;
+        private static string _assetPath;
+        private static Dictionary<Type,List<Action<ScriptableObject>>> _callbacks = new();
+        
+        public static bool IsInitialized => _initialized;
 
-        private static string assetPath;
-        private static TAsset selector;
-
-        public static string AssetPath
+        public static string GetAssetPath<TAsset>(bool includeNamespace = false) where TAsset : ScriptableObject
         {
-            get
-            {
-                assetPath ??= EditorPathConstants.GeneratedContentDefaultPath.CombinePath($"GeneratedAsset/Editor/{ProcessorType.Namespace}/{ProcessorType.Name}");
-                return assetPath;
-            }
-            private set
-            {
-                assetPath = value;
-            }
+            var targetType = typeof(TAsset);
+            return GetAssetPath(targetType,includeNamespace);
         }
         
-        public static TAsset Asset
+        public static string GetAssetPath(Type targetType,bool includeNamespace = false)
         {
-            get
-            {
-                if (selector) return selector;
-                selector = Create();
-                return selector;
-            }
+            if(_pathCache.ContainsKey(targetType))
+                return _pathCache[targetType];
+            
+            var generatedPath = EditorPathConstants.GeneratedContentDefaultPath;
+            var assetPath = includeNamespace 
+                ? generatedPath.CombinePath(targetType.Namespace).CombinePath(targetType.Name)
+                : generatedPath.CombinePath(targetType.Name);
+            
+            _pathCache[targetType] = assetPath;
+            
+            return assetPath;
+        }
+
+        public static TAsset LoadAsset<TAsset>() where TAsset : ScriptableObject
+        {
+            return LoadAsset<TAsset>(static x => Preload(x));
+        }
+
+        public static TAsset LoadAsset<TAsset>(Action<TAsset> callback) where TAsset : ScriptableObject
+        {
+            var assetType = typeof(TAsset);
+            
+            return LoadAsset(assetType, x => callback?.Invoke(x as TAsset)) as TAsset;
         }
         
-        
-        public static TAsset Create()
+        public static ScriptableObject LoadAsset(Type assetType,Action<ScriptableObject> callback)
         {
-            GameLog.Log($"GeneratedAsset Create asset of type {nameof(TAsset)} : with path : {AssetPath}");
-   
-            var info = ProcessorType.GetCustomAttribute<GeneratedAssetInfoAttribute>();
-            var path = info == null || string.IsNullOrEmpty(info.Location) ? AssetPath : 
-                EditorPathConstants.GeneratedContentDefaultPath.CombinePath(info.Location);
+            if (_initialized)
+            {
+                if (_assetCache.ContainsKey(assetType))
+                {
+                    callback?.Invoke(_assetCache[assetType]);
+                }
+
+                var asset = LoadAssetInternal( assetType);
+                return asset;
+            }
+
+            if (!_callbacks.TryGetValue(assetType, out var callbacks))
+            {
+                callbacks = new List<Action<ScriptableObject>>();
+                _callbacks[assetType] = callbacks;
+            }
+            
+            callbacks.Add(callback);
+            return null;
+        }
+
+        private static void Preload(ScriptableObject asset)
+        {
+            
+        }
+        
+        private static ScriptableObject LoadAssetInternal(Type targetType)
+        {
+            var info = targetType.GetCustomAttribute<GeneratedAssetInfoAttribute>();
+
+            var path = info == null || string.IsNullOrEmpty(info.Location) 
+                ? GetAssetPath(targetType)
+                : EditorPathConstants.GeneratedContentDefaultPath.CombinePath(info.Location);
                 
-            AssetPath = path;
-                
-            var newAsset  = AssetEditorTools.LoadOrCreate<TAsset>(ProcessorType, path);
+            GameLog.Log($"GeneratedAsset Create asset of type {targetType.Name} : with path : {path}");
+
+            _pathCache[targetType] = path;
+            
+            var newAsset  = AssetEditorTools.LoadOrCreate<ScriptableObject>(targetType, path,targetType.Name);
+
+            if (!_callbacks.TryGetValue(targetType, out var callbacks)) 
+                return newAsset;
+            
+            foreach (var callback in callbacks)
+                callback?.Invoke(newAsset);
+            
+            callbacks.Clear();
+
             return newAsset;
+        }
+
+        [InitializeOnLoadMethod]
+        private static void OnInitialize()
+        {
+            EditorApplication.delayCall -= OnDelayedCall;
+            EditorApplication.delayCall += OnDelayedCall;
+        }
+        
+        private static void OnDelayedCall()
+        {
+            _initialized = true;
+
+            foreach (var callbackValue in _callbacks)
+                LoadAssetInternal(callbackValue.Key);
         }
         
     }

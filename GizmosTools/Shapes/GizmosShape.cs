@@ -49,43 +49,25 @@
         }
     
         [Conditional("UNITY_EDITOR")]
-        public static void DrawCircle(Vector3 position, float radius, Color color, bool useAlpha = false)
+        public static void DrawCircle(Vector3 position,Quaternion rotation, float radius, Color color,float thickness = 1f)
         {
-            radius = Mathf.Abs(radius);
-            if (Mathf.Approximately(radius, 0)) return;
-
-            var zeroPoint    = position;
-
-            var r = radius + 0.05f;
-            var a = 1.1f;
-
-            color.a = a;
+#if UNITY_EDITOR
+            var transformMatrix = Matrix4x4.TRS(position, rotation, UnityEditor.Handles.matrix.lossyScale);
             
-            for (var i = 0; i < 10; i++)
+            using (new UnityEditor.Handles.DrawingScope(transformMatrix))
             {
-                r -= 0.05f;
-                a = useAlpha ? a - 0.1f : a;
-                float theta   = 0;
-                var   x       = r * Mathf.Cos(theta);
-                var   y       = r * Mathf.Sin(theta);
-                var   pos     = zeroPoint + new Vector3(x, 0, y);
-                var   newPos  = pos;
-                var   lastPos = pos;
-                for (theta = 0.15f; theta < Mathf.PI * 2; theta += 0.15f)
-                {
-                    x            = r * Mathf.Cos(theta);
-                    y            = r * Mathf.Sin(theta);
-                    newPos       = zeroPoint + new Vector3(x, 0, y);
-                    color.a = a;
-                    Gizmos.color = color;
-                    Gizmos.DrawLine(pos, newPos);
-                    pos = newPos;
-                }
-                
-                color.a = a;
-                Gizmos.color = color;
-                Gizmos.DrawLine(pos, lastPos);
+                var defaultColor = UnityEditor.Handles.color;
+                UnityEditor.Handles.color =color;
+                UnityEditor.Handles.DrawWireDisc(Vector3.zero, Vector3.up, radius,thickness);
+                UnityEditor.Handles.color = defaultColor;
             }
+#endif
+        }
+        
+        [Conditional("UNITY_EDITOR")]
+        public static void DrawCircle(Vector3 position, float radius, Color color)
+        {
+            DrawCircle(position, Quaternion.identity, radius, color);
         }
 
     }

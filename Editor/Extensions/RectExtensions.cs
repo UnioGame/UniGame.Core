@@ -2,7 +2,7 @@
 // Type: Sirenix.Utilities.RectExtensions
 // Assembly: Sirenix.Utilities, Version=2.1.13.0, Culture=neutral, PublicKeyToken=null
 // MVID: 8AF05CD1-4913-45AD-BCF8-9C74E904BBB4
-// Assembly location: D:\Dev\Taktika\hog1\HogUnity\Assets\Plugins\Sirenix\Assemblies\Sirenix.Utilities.dll
+// Assembly location: D:\Dev\UniGame\hog1\HogUnity\Assets\Plugins\Sirenix\Assemblies\Sirenix.Utilities.dll
 
 using UnityEngine;
 

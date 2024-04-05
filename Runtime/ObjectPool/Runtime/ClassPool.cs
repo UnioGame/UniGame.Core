@@ -14,6 +14,8 @@ namespace UniGame.Runtime.ObjectPool
 	[Il2CppSetOption(Option.DivideByZeroChecks, false)]
 	public static class ClassPool
 	{
+		private static string lockObject = nameof(lockObject);
+		
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static TResult Spawn<TResult>(this object _, Action<TResult> onSpawn = null)
 			where TResult : class, new()
@@ -33,8 +35,11 @@ namespace UniGame.Runtime.ObjectPool
 		public static TResult Spawn<TResult>()
 			where TResult : class, new()
 		{
-			var item = GenericPool<TResult>.Get();
-			return item;
+			lock (lockObject)
+			{
+				var item = GenericPool<TResult>.Get();
+				return item;
+			}
 		}
 		
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -75,7 +80,10 @@ namespace UniGame.Runtime.ObjectPool
 #endif
 			if(instance is IPoolable poolable)
 				poolable.Release();
-			GenericPool<T>.Release(instance);
+			lock (lockObject)
+			{
+				GenericPool<T>.Release(instance);
+			}
 		}
 
 		public static void Despawn<T>(ref T instance, T defaultValue = null) where T : class, new()

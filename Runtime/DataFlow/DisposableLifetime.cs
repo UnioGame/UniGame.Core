@@ -45,7 +45,7 @@ namespace UniModules.UniGame.Core.Runtime.Common
 
         public bool IsTerminated => lifeTime == null || lifeTime.IsTerminated;
         
-        public CancellationToken TokenSource => lifeTimeDefinition.TokenSource;
+        public CancellationToken Token => lifeTimeDefinition.Token;
 
         public ILifeTime AddCleanUpAction(Action cleanAction) => lifeTime.AddCleanUpAction(cleanAction);
 
