@@ -1,7 +1,6 @@
-﻿using UniModules.UniCore.Runtime.DataFlow;
-
-namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
+﻿namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
 {
+    using UniModules.UniCore.Runtime.DataFlow;
     using System;
     using global::UniGame.Core.Runtime;
     using UnityEngine;
