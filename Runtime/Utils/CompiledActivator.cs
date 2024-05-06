@@ -4,7 +4,8 @@
     using System;
     using System.Linq.Expressions;
     using System.Reflection;
-    
+    using UnityEngine;
+
     public static class CompiledActivator
     {
         public static readonly MemorizeItem<Type, Type[]> _constructorTypes =
@@ -41,8 +42,7 @@
         {
             //get default constructor
             var ctor = _getDefaultConstructor[type];
-            if (ctor == null) 
-                return null;
+            if (ctor == null) return null;
             
             // Make a NewExpression that calls the ctor with the args we just created
             var newExp = Expression.New(ctor);                  
