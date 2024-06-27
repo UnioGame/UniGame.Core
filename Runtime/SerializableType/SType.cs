@@ -4,19 +4,14 @@
     using GameRuntime.Types;
     using UnityEngine;
 
-#if ODIN_INSPECTOR
-    //[Sirenix.OdinInspector.LabelText()]
-#endif
     [Serializable]
     public class SType : ISerializationCallbackReceiver, 
         IReadOnlyType, 
         IEquatable<SType>,
         IEquatable<Type>
     {
-        public string name;
-        
-        public string fullTypeName;
-        
+        public string name = string.Empty;
+        public string fullTypeName= string.Empty;
         public Type type;
 
         public Type Type {
