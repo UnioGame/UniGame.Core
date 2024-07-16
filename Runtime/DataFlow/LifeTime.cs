@@ -6,6 +6,7 @@ namespace UniModules.UniCore.Runtime.DataFlow
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.CompilerServices;
     using System.Threading;
     using global::UniGame.Core.Runtime.ObjectPool;
     using UniGame.Core.Runtime.DataFlow;
@@ -68,10 +69,12 @@ namespace UniModules.UniCore.Runtime.DataFlow
         /// <summary>
         /// cleanup action, call when life time terminated
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ILifeTime AddCleanUpAction(Action cleanAction) 
         {
             if (cleanAction == null)
                 return this;
+            
             //call cleanup immediate. lite time already ended
             if (isTerminated) {
                 cleanAction?.Invoke();
@@ -84,6 +87,7 @@ namespace UniModules.UniCore.Runtime.DataFlow
         /// <summary>
         /// add child disposable object
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ILifeTime AddDispose(IDisposable item)
         {
             if (isTerminated) {
@@ -98,6 +102,7 @@ namespace UniModules.UniCore.Runtime.DataFlow
         /// <summary>
         /// save object from GC
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ILifeTime AddRef(object o)
         {
             if (isTerminated)
@@ -109,6 +114,7 @@ namespace UniModules.UniCore.Runtime.DataFlow
         /// <summary>
         /// restart lifetime
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Restart()
         {
             Release();
