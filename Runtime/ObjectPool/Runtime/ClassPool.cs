@@ -78,11 +78,16 @@ namespace UniGame.Runtime.ObjectPool
 				return;
 			}
 #endif
-			if(instance is IPoolable poolable)
-				poolable.Release();
-			lock (lockObject)
+			if (instance is IPoolable poolable)
 			{
-				GenericPool<T>.Release(instance);
+				poolable.Release();
+			}
+			else
+			{
+				lock (lockObject)
+				{
+					GenericPool<T>.Release(instance);
+				}	
 			}
 		}
 
