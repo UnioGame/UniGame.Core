@@ -21,14 +21,14 @@
         public void FixedUpdate()
         {
 
-            if (UseMaxValocity && Rigidbody2D.velocity.sqrMagnitude > _sqrMaxValocity)
+            if (UseMaxValocity && Rigidbody2D.linearVelocity.sqrMagnitude > _sqrMaxValocity)
             {
-                Rigidbody2D.velocity = Rigidbody2D.velocity.normalized * MaxVelocity;
+                Rigidbody2D.linearVelocity = Rigidbody2D.linearVelocity.normalized * MaxVelocity;
             }
 
-            if (UseMinValocity && Rigidbody2D.velocity.sqrMagnitude < _sqrMinVelocity)
+            if (UseMinValocity && Rigidbody2D.linearVelocity.sqrMagnitude < _sqrMinVelocity)
             {
-                Rigidbody2D.velocity = Rigidbody2D.velocity.normalized * MinVelocity;
+                Rigidbody2D.linearVelocity = Rigidbody2D.linearVelocity.normalized * MinVelocity;
             }
 
         }
