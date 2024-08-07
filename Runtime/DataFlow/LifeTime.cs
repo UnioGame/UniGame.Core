@@ -44,7 +44,7 @@ namespace UniModules.UniCore.Runtime.DataFlow
         
 #endregion
         
-        private LifeTime()
+        public LifeTime()
         {
             id = Unique.GetId();
         }
