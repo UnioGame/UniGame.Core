@@ -18,7 +18,11 @@
 			var rigidbody2D = GetComponent<Rigidbody2D>();
 			
 			// Reset velocities
+#if UNITY_6000_0_OR_NEWER
+			rigidbody2D.velocity= Vector2.zero;
+#else
 			rigidbody2D.linearVelocity        = Vector2.zero;
+#endif
 			rigidbody2D.angularVelocity = 0.0f;
 		}
 	}
