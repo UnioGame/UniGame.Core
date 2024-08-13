@@ -48,7 +48,6 @@ namespace UniModules.UniCore.Runtime.DataFlow
         {
             id = Unique.GetId();
         }
-
         
         /// <summary>
         /// is lifetime terminated
