@@ -16,7 +16,11 @@
 			var rigidbody = GetComponent<Rigidbody>();
 			
 			// Reset velocities
-			rigidbody.linearVelocity        = Vector3.zero;
+#if UNITY_6000_0_OR_NEWER
+			rigidbody.linearVelocity = Vector3.zero;
+#else
+			rigidbody.velocity = Vector2.zero;
+#endif
 			rigidbody.angularVelocity = Vector3.zero;
 		}
 	}
