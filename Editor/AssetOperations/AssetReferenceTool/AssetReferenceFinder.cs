@@ -74,7 +74,7 @@ namespace UniModules.Editor
                     if (Directory.Exists(file))
                         return;
                     
-                    var localPath = EditorFileUtils.ToProjectPath(file);
+                    var localPath = FileUtils.ToProjectPath(file);
                     var fileValue = File.ReadAllText(file);
                     var assets = searchData.assets;
 

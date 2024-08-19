@@ -38,7 +38,7 @@ namespace UniModules.Editor
             if (folder.IndexOf('\\', folder.Length - 1) >= 0) {
                 folder = folder.Remove(folder.Length - 1);
             }
-            var path = EditorFileUtils.Combine(folder,$"{name}.{GetAssetExtension(asset)}");
+            var path = FileUtils.Combine(folder,$"{name}.{GetAssetExtension(asset)}");
             return path;
         }
 
@@ -70,7 +70,7 @@ namespace UniModules.Editor
                 AssetDatabase.GenerateUniqueAssetPath(skinTypePath) : 
                 skinTypePath;
 
-            EditorFileUtils.CreateDirectories(itemPath);
+            FileUtils.CreateDirectories(itemPath);
 
             var gameObjectAsset = asset as GameObject;
             gameObjectAsset = !gameObjectAsset && asset is Component assetComponent ? 

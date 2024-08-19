@@ -1,15 +1,13 @@
-﻿using System.IO;
-using UniCore.Runtime.ProfilerTools;
-
-namespace UniModules.Editor
+﻿namespace UniModules
 {
+    using System.IO;
     using System;
     using System.Linq;
     using System.Text.RegularExpressions;
-    using UnityEditor;
+    using global::UniCore.Runtime.ProfilerTools;
     using UnityEngine;
 
-    public static class EditorFileUtils
+    public static class FileUtils
     {
         public const string FileRefExpr = @"[\w|\W]*[\/|\\](?<filename>[\w]+)+\.(\w+)";
 
@@ -49,7 +47,10 @@ namespace UniModules.Editor
 
             Debug.Log($"WRITE CONTENT TO {path}");
 
-            AssetDatabase.Refresh();
+#if UNITY_EDITOR
+            UnityEditor.AssetDatabase.Refresh();
+#endif
+            
 
             return true;
         }
@@ -72,7 +73,9 @@ namespace UniModules.Editor
             if (!fileExists && createIfNotExists)
             {
                 File.WriteAllText(path, string.Empty);
-                AssetDatabase.Refresh();
+#if UNITY_EDITOR
+                UnityEditor.AssetDatabase.Refresh();
+#endif
                 return (path, string.Empty);
             }
 
@@ -267,8 +270,11 @@ namespace UniModules.Editor
                 Directory.CreateDirectory(directoryPath);
             }
 
+#if UNITY_EDITOR
             if (applyRefresh)
-                AssetDatabase.Refresh();
+                UnityEditor.AssetDatabase.Refresh();
+#endif
+            
         }
 
         public static void DeleteDirectoryFiles(string path)
