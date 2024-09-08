@@ -2,8 +2,7 @@
 {
     public interface ICompletionStatus
     {
-
-        bool IsComplete { get; }
+        public bool IsComplete { get; }
 
     }
 }

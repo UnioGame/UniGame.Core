@@ -2,6 +2,6 @@
 {
     public interface ICompletionSource : ICompletionStatus
     {
-        void Complete();
+        public void Complete();
     }
 }

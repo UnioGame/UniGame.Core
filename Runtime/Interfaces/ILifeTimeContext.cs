@@ -4,6 +4,6 @@ namespace UniGame.Core.Runtime
 {
     public interface ILifeTimeContext
     {
-        ILifeTime LifeTime { get; }
+        public ILifeTime LifeTime { get; }
     }
 }
