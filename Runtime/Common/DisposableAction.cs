@@ -11,10 +11,11 @@
 
         public bool IsComplete { get; private set; } = true;
     
-        public void Initialize(Action action)
+        public IDisposableItem Initialize(Action action)
         {
             IsComplete = false;
             _onDisposed = action;
+            return this;
         }
 
         public void Dispose()
