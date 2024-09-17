@@ -14,14 +14,14 @@ namespace UniModules.UniCore.Runtime.DataFlow
 
     public class LifeTime : ILifeTime, IPoolable
     {
-        private static readonly LifeTimeDefinition _editorLifeTime = new LifeTimeDefinition();
+        private static readonly LifeTimeDefinition _editorLifeTime = new();
         
         public readonly static ILifeTime TerminatedLifetime;
         public static ILifeTime EditorLifeTime => _editorLifeTime;
 
-        private List<IDisposable> disposables = new List<IDisposable>();
-        private List<object> referencies = new List<object>();
-        private List<Action> cleanupActions = new List<Action>();
+        private List<IDisposable> disposables = new();
+        private List<object> referencies = new();
+        private List<Action> cleanupActions = new();
         private CancellationTokenSource _cancellationTokenSource;
         
         public readonly int id;
