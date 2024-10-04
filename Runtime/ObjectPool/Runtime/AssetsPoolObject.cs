@@ -8,6 +8,7 @@
     using System.Collections.Generic;
     using UniGame.Core.Runtime.ObjectPool;
     using Core.Runtime;
+    using Cysharp.Threading.Tasks;
     using UnityEngine;
     using Object = UnityEngine.Object;
     
@@ -21,6 +22,7 @@
         private Component _componentAsset;
         private DisposableAction _disposableAction;
         private Func<Vector3, Quaternion, Transform, bool, Object> _factoryMethod;
+        private Func<Vector3, Quaternion, Transform, bool, UniTask<Object>> _asyncFactoryMethod;
         
         #endregion
 
@@ -80,15 +82,18 @@
             switch (asset) {
                 case GameObject gameObjectTarget:
                     _factoryMethod = CreateGameObject;
+                    _asyncFactoryMethod = CreateGameObjectAsync;
                     _gameObjectAsset = gameObjectTarget;
                     break;
                 case Component componentTarget:
                     _componentAsset = componentTarget;
                     _gameObjectAsset = componentTarget.gameObject;
                     _factoryMethod = CreateGameObject;
+                    _asyncFactoryMethod = CreateGameObjectAsync;
                     break;
                 default:
                     _factoryMethod = CreateAsset;
+                    _asyncFactoryMethod = CreateAssetAsync;
                     break;
             }
 
@@ -99,7 +104,8 @@
         }
 
         // This will return a clone from the cache, or create a new instance
-        public Object FastSpawn(Vector3 position, Quaternion rotation, Transform parent = null, bool stayWorld = false)
+        public Object FastSpawn(Vector3 position, Quaternion rotation,
+            Transform parent = null, bool stayWorld = false)
         {
 #if UNITY_EDITOR
             if (!asset) {
@@ -122,6 +128,34 @@
             }
 
             return FastClone(position, rotation, parent, stayWorld);;
+        }
+        
+        
+        // This will return a clone from the cache, or create a new instance
+        public async UniTask<Object> FastSpawnAsync(Vector3 position, Quaternion rotation,
+            Transform parent = null, bool stayWorld = false)
+        {
+#if UNITY_EDITOR
+            if (!asset) {
+                Debug.LogError("Attempting to spawn null");
+                return null;
+            }
+#endif
+
+            // Attempt to spawn from the cache
+            while (Cache.Count > 0) {
+            
+                var clone = Cache.Pop();
+                if (!clone) {
+                    GameLog.LogWarningFormat("The {0} pool contained a null cache entry",sourceName);
+                    continue;
+                }
+
+                clone = ApplyGameAssetProperties(clone, position, rotation, parent, stayWorld);
+                return clone;
+            }
+
+            return await FastCloneAsync(position, rotation, parent, stayWorld);;
         }
 
         // This will despawn a clone and add it to the cache
@@ -205,6 +239,14 @@
                 Object.Destroy(containerObject.gameObject);
         }
 
+        private async UniTask<Object> FastCloneAsync(Vector3 position, Quaternion rotation, Transform parent, bool stayWorldPosition = false)
+        {
+            if (!asset) return null;
+            var clone = await _asyncFactoryMethod(position, rotation, parent, stayWorldPosition);
+            total += 1;
+            return clone;
+        }
+        
         private Object FastClone(Vector3 position, Quaternion rotation, Transform parent, bool stayWorldPosition = false)
         {
             if (!asset) return null;
@@ -224,6 +266,26 @@
         {
             if (!asset) return null;
             var result = Object.Instantiate(_gameObjectAsset, position, rotation);
+            var resultTransform = result.transform;
+            if (resultTransform.parent != parent)
+                resultTransform.SetParent(parent, stayWorldPosition);
+            return result;
+        }
+        
+        private async UniTask<Object> CreateGameObjectAsync(
+            Vector3 position,
+            Quaternion rotation, 
+            Transform parent = null, 
+            bool stayWorldPosition = false)
+        {
+            if (!asset) return null;
+
+            var resultItems = await Object
+                .InstantiateAsync(_gameObjectAsset,1, position, rotation);
+            
+            if(resultItems.Length == 0) return null;
+            
+            var result = resultItems[0];
             var resultTransform = result.transform;
             if (resultTransform.parent != parent)
                 resultTransform.SetParent(parent, stayWorldPosition);
@@ -296,6 +358,13 @@
         private Object CreateAsset(Vector3 position, Quaternion rotation, Transform parent = null, bool stayWorldPosition = false)
         {
             return !asset ? null : Object.Instantiate(asset);
+        }
+        
+        private async UniTask<Object> CreateAssetAsync(Vector3 position, Quaternion rotation, Transform parent = null, bool stayWorldPosition = false)
+        {
+            if (asset == null) return null;
+            var resultItems = await Object.InstantiateAsync(asset,1);
+            return resultItems.Length == 0 ? default : resultItems[0];
         }
         
         

@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace UniGame.Runtime.ObjectPool
 {
+    using Cysharp.Threading.Tasks;
+
     public static class ObjectPool
     {
 
@@ -39,8 +41,20 @@ namespace UniGame.Runtime.ObjectPool
             return PoolAsset.Spawn<T>(prefab);
         }
         
-
-        public static  T Spawn<T>(Object target, Vector3 position, Quaternion rotation, Transform parent = null,bool stayWorld = false)
+        public static async  UniTask<T> SpawnAsync<T>(Object target,
+            Vector3 position,
+            Quaternion rotation, 
+            Transform parent = null,
+            bool stayWorld = false)
+            where T : Object
+        {
+            return await PoolAsset.SpawnAsync<T>(target,position,rotation,parent,stayWorld);
+        }
+        
+        public static  T Spawn<T>(Object target,
+            Vector3 position,
+            Quaternion rotation, 
+            Transform parent = null,bool stayWorld = false)
             where T : Object
         {
             return PoolAsset.Spawn<T>(target,position,rotation,parent,stayWorld);

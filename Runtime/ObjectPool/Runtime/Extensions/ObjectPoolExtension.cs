@@ -3,6 +3,7 @@
 namespace UniGame.Runtime.ObjectPool.Extensions
 {
     using System;
+    using Cysharp.Threading.Tasks;
     using UnityEngine;
     using Object = UnityEngine.Object;
 
@@ -38,6 +39,19 @@ namespace UniGame.Runtime.ObjectPool.Extensions
         {
             if (!prototype) return null;
             var pawn = ObjectPool.Spawn<T>(prototype, position, rotation, parent, stayWorldPosition);
+            return pawn;
+        }
+        
+        public static async UniTask<T> SpawnAsync<T>(this T prototype, 
+            Vector3 position,
+            Quaternion rotation, 
+            Transform parent = null,
+            bool stayWorldPosition = false)
+            where T : Object
+        {
+            if (!prototype) return null;
+            var pawn = await ObjectPool
+                .SpawnAsync<T>(prototype, position, rotation, parent, stayWorldPosition);
             return pawn;
         }
 
