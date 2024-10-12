@@ -278,10 +278,14 @@
             Transform parent = null, 
             bool stayWorldPosition = false)
         {
-            if (!asset) return null;
+            if (!_gameObjectAsset) return null;
 
-            var resultItems = await Object
-                .InstantiateAsync(_gameObjectAsset,1, position, rotation);
+            var operation =  Object
+                .InstantiateAsync(_gameObjectAsset,1,parent, position, rotation);
+            
+            await operation.ToUniTask();
+            
+            var resultItems = operation.Result;
             
             if(resultItems.Length == 0) return null;
             
@@ -360,10 +364,15 @@
             return !asset ? null : Object.Instantiate(asset);
         }
         
-        private async UniTask<Object> CreateAssetAsync(Vector3 position, Quaternion rotation, Transform parent = null, bool stayWorldPosition = false)
+        private async UniTask<Object> CreateAssetAsync(Vector3 position,
+            Quaternion rotation, 
+            Transform parent = null, 
+            bool stayWorldPosition = false)
         {
             if (asset == null) return null;
-            var resultItems = await Object.InstantiateAsync(asset,1);
+            var operation =  Object.InstantiateAsync(asset,1);
+            await operation.ToUniTask();
+            var resultItems = operation.Result;
             return resultItems.Length == 0 ? default : resultItems[0];
         }
         
