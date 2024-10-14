@@ -200,12 +200,12 @@ namespace UniModules.Editor
             string[] folders = null, 
             int count = 0)
         {
-            if (type.IsComponent())
-                return GetComponentsAssets(type, filter, folders);
-                    
-            var searchFilter = CreateFilter(type, filter);
+            var isComponent = type.IsComponent();
+            var filterType = isComponent ? UnityTypeExtension.gameObjectType : type;
+            var searchFilter = CreateFilter(filterType, filter);
             var ids = GetAssetFilterGuids(searchFilter,folders,false);
-
+            count = count <= 0 ? int.MaxValue : count;
+            
             foreach (var id in ids)
             {
                 var assetPath = AssetDatabase.GUIDToAssetPath(id);
@@ -216,14 +216,67 @@ namespace UniModules.Editor
                 }
 
                 var asset = AssetDatabase.LoadAssetAtPath(assetPath, type);
-                if (asset) resultContainer.Add(asset);
-
-                if (count <= 0) continue;
+                if(!asset) continue;
+                if (isComponent && asset is GameObject gameObject)
+                {
+                    var component = gameObject.GetComponent(type);
+                    if (!component) continue;
+                }
+                
+                resultContainer.Add(asset);
                 if (resultContainer.Count >= count) break;
             }
             
             return resultContainer;
         }
+        
+        public static  List<AssetEditorInfo> GetAssetsInfo(
+            Type type, 
+            string filter,
+            string[] folders = null, 
+            int count = 0)
+        {
+            var result = new List<AssetEditorInfo>();
+            var isComponent = type.IsComponent();
+            var targetType = isComponent ? UnityTypeExtension.gameObjectType : type;
+            var searchFilter = CreateFilter(targetType, filter);
+            var ids = GetAssetFilterGuids(searchFilter,folders,false);
+            
+            count = count <= 0 ? int.MaxValue : count;
+            
+            foreach (var id in ids)
+            {
+                var assetPath = AssetDatabase.GUIDToAssetPath(id);
+                if (string.IsNullOrEmpty(assetPath))
+                {
+                    Debug.LogErrorFormat("Asset importer {0} with NULL path detected", id);
+                    continue;
+                }
+                var asset = AssetDatabase.LoadAssetAtPath(assetPath, type);
+                if (!asset) continue;
+
+                if (isComponent && 
+                    asset is GameObject gameObject)
+                {
+                    var component = gameObject.GetComponent(type);
+                    if (!component) continue;
+                }
+ 
+                result.Add(new AssetEditorInfo()
+                {
+                    guid = id,
+                    path = assetPath,
+                    asset = asset,
+                    assetType = type
+                });
+                
+                if (result.Count >= count) break;
+            }
+            
+            return result;
+        }
+        
+
 
         public static Object GetAsset(Type type, string filter, string[] folders = null)
         {
@@ -280,5 +333,14 @@ namespace UniModules.Editor
         }
 
         #endregion
+    }
+    
+    [Serializable]
+    public struct AssetEditorInfo
+    {
+        public string guid;
+        public string path;
+        public Object asset;
+        public Type assetType;
     }
 }
