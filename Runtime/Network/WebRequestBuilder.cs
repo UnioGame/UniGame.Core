@@ -200,19 +200,8 @@ namespace UniModules.Runtime.Network
             
             return webRequest;
         }
-        
-        /// <summary>
-        /// ответ на запрос токена должен прийти через метод OnTokenReceived в WebMessageReceiver
-        /// </summary>
-        public void Authenticate()
-        {
-#if !UNITY_EDITOR
-            var finalUrl = ServerUrl + Auth;
-            UnityJSBridge.RequestToken(finalUrl);
-#endif
-        }
 
-        public void SetUserToken(string token)
+        public void SetToken(string token)
         {
             userToken = token;
             GameLog.LogRuntime($"User token set: {token}");
