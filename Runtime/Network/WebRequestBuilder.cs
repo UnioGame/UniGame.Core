@@ -224,7 +224,6 @@ namespace UniModules.Runtime.Network
                     success = false,
                     data = null,
                     error = e.Message,
-                    exception = e
                 };
             }
             
@@ -235,7 +234,6 @@ namespace UniModules.Runtime.Network
                 success = isSuccessful,
                 data = request.downloadHandler.text,
                 error = request.error,
-                exception = null
             };
         }
         
@@ -249,7 +247,6 @@ namespace UniModules.Runtime.Network
             var result = new WebServerTexture2DResult()
             {
                 error = requestResult.error,
-                exception = requestResult.exception,
                 success = requestResult.success,
                 texture = null,
             };
@@ -267,7 +264,6 @@ namespace UniModules.Runtime.Network
             var result = new WebServerSpriteResult()
             {
                 error = texture2DResult.error,
-                exception = texture2DResult.exception,
                 success = texture2DResult.success,
                 sprite = EmptySprite,
             };

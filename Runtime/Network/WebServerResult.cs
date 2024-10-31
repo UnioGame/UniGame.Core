@@ -9,7 +9,6 @@ namespace UniModules.Runtime.Network
         public bool success;
         public string data;
         public string error;
-        public Exception exception;
     }
 
     [Serializable]
@@ -18,7 +17,6 @@ namespace UniModules.Runtime.Network
         public Texture2D texture;
         public bool success;
         public string error;
-        public Exception exception;
     }
     
     [Serializable]
@@ -27,6 +25,5 @@ namespace UniModules.Runtime.Network
         public Sprite sprite;
         public bool success;
         public string error;
-        public Exception exception;
     }
 }
