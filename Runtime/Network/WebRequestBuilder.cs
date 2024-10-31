@@ -18,6 +18,7 @@ namespace UniModules.Runtime.Network
         public const string BearerValue = "Bearer {0}";
         public const string VersionParameter = "v";
         
+        public static readonly Dictionary<string,string> EmptyData = new();
         public static readonly Sprite EmptySprite = Sprite
             .Create(new Texture2D(8, 8), new Rect(0, 0, 8, 8), Vector2.zero);
         
@@ -63,15 +64,15 @@ namespace UniModules.Runtime.Network
             Dictionary<string,string> headers = null, 
             byte[] data = null)
         {
-            var post = BuildPostRequest(url,headers,data);
+            var post = BuildPostRequest(url,headers:headers,bytes:data,contentType:ContentTypeBinary);
             return await SendRequestAsync(post);
         }
         
         public async UniTask<WebServerResult> PostAsync(string url, 
-            Dictionary<string,string> headers = null, 
-            string data = null)
+            string data = null,
+            Dictionary<string,string> headers = null)
         {
-            var post = BuildPostRequest(url,headers,data);
+            var post = BuildPostRequest(url,data,headers);
             return await SendRequestAsync(post);
         }
         
@@ -134,20 +135,13 @@ namespace UniModules.Runtime.Network
         
         public UnityWebRequest BuildPostRequest(string url, WWWForm form)
         {
-            SetParameters(url, null);
-            
-            GameLog.Log("GetRequest: " + url, Color.cyan);
-            GameLog.Log("Bearer " + userToken, Color.cyan);
-            
-            var webRequest = UnityWebRequest.Post(url,form);
-            webRequest = SetHeaders(webRequest, null);
-            return webRequest;
+            return BuildPostRequest(url, headers: form.headers, bytes: form.data,contentType:ContentTypeJson);
         }
         
         public UnityWebRequest BuildPostRequest(
             string url,
-            Dictionary<string,string> headers = null,
-            string json = null)
+            string json = null,
+            Dictionary<string,string> headers = null)
         {
             json ??= string.Empty;
             
@@ -159,37 +153,45 @@ namespace UniModules.Runtime.Network
             {
                 data = data,
                 contentType = ContentTypeJson,
+                headers = headers,
+                url = url,
             };
             
-            return BuildPostRequest(url, postData, headers);
+            return BuildPostRequest(postData);
         }
         
         public UnityWebRequest BuildPostRequest(
             string url,
+            Dictionary<string,string> form = null,
+            Dictionary<string,string> parameters = null,
             Dictionary<string,string> headers = null,
-            byte[] bytes = null)
+            byte[] bytes = null,
+            string contentType = ContentTypeJson)
         {
             var postData = new PostData()
             {
-                data = bytes,
-                contentType = ContentTypeBinary,
+                url = url,
+                data = bytes == null || bytes.Length <=0 
+                    ? Array.Empty<byte>() : bytes,
+                form = form,
+                headers = headers,
+                parameters = parameters,
+                contentType = contentType,
             };
 
-            return BuildPostRequest(url, postData, headers);
+            return BuildPostRequest(postData);
         }
         
-        public UnityWebRequest BuildPostRequest(
-            string url,
-            PostData postData,
-            Dictionary<string,string> headers = null)
+        public UnityWebRequest BuildPostRequest(PostData postData)
         {
-            SetParameters(url, null);
+            var url = SetParameters(postData.url, postData.parameters);
             
             GameLog.Log("GetRequest: " + url, Color.cyan);
             GameLog.Log("Bearer " + userToken, Color.cyan);
-            
-            var webRequest = UnityWebRequest.Post(url,headers);
-            webRequest = SetHeaders(webRequest, null);
+
+            var form = postData.form ?? EmptyData;
+            var webRequest = UnityWebRequest.Post(url,form);
+            webRequest = SetHeaders(webRequest, postData.headers);
             
             var bytes = postData.data;
             if (bytes is { Length: > 0 })
@@ -204,7 +206,6 @@ namespace UniModules.Runtime.Network
         public void SetToken(string token)
         {
             userToken = token;
-            GameLog.LogRuntime($"User token set: {token}");
         }
 
         private async UniTask<WebServerResult> SendRequestAsync(UnityWebRequest request)
