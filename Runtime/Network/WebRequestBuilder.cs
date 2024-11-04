@@ -24,8 +24,7 @@ namespace UniModules.Runtime.Network
         
         public string userToken = string.Empty;
         public bool addVersion = true;
-        
-        
+
         public string GenerateSignUpUrl(string uuid, string rewardCode)
         {
             if(string.IsNullOrEmpty(rewardCode)) throw new ArgumentNullException("rewardCode");
@@ -93,6 +92,7 @@ namespace UniModules.Runtime.Network
                 query[pair.Key] = pair.Value;
             }
 
+            uriBuilder = uriBuilder.SetUrlQueryParameters(query);
             return uriBuilder.ToString();
         }
         
@@ -124,11 +124,13 @@ namespace UniModules.Runtime.Network
         {
             SetParameters(url, parameters);
             
-            GameLog.Log("GetRequest: " + url, Color.cyan);
-            GameLog.Log("Bearer " + userToken, Color.cyan);
             
             var webRequest = UnityWebRequest.Get(url);
             webRequest = SetHeaders(webRequest, headers);
+
+#if UNITY_EDITOR
+            GameLog.Log("[WeRequest]: Get | " + webRequest.url, Color.cyan);
+#endif
             
             return webRequest;
         }
@@ -186,9 +188,6 @@ namespace UniModules.Runtime.Network
         {
             var url = SetParameters(postData.url, postData.parameters);
             
-            GameLog.Log("GetRequest: " + url, Color.cyan);
-            GameLog.Log("Bearer " + userToken, Color.cyan);
-
             var form = postData.form ?? EmptyData;
             var webRequest = UnityWebRequest.Post(url,form);
             webRequest = SetHeaders(webRequest, postData.headers);
@@ -200,12 +199,63 @@ namespace UniModules.Runtime.Network
                 webRequest.SetRequestHeader(ContentTypeHeader, postData.contentType);
             }
             
+#if UNITY_EDITOR
+            GameLog.Log($"[WeRequest]: Post | {webRequest.url}", Color.cyan);
+#endif
+            
             return webRequest;
+        }
+        
+        
+        public async UniTask<WebServerTexture2DResult> GetTextureAsync(string url,Dictionary<string,string> parameters = null)
+        {
+            url = SetParameters(url, parameters);
+            
+            var request = UnityWebRequestTexture.GetTexture(url);
+            
+            SetHeaders(request, null);
+            
+            var requestResult = await SendRequestAsync(request);
+            
+            var result = new WebServerTexture2DResult()
+            {
+                error = requestResult.error,
+                success = requestResult.success,
+                texture = null,
+            };
+
+            if (!requestResult.success) return result;
+            
+            result.texture = DownloadHandlerTexture.GetContent(request);
+            return result;
+        }
+
+        public async UniTask<WebServerSpriteResult> GetSpriteAsync(string url,Dictionary<string,string> parameters = null)
+        {
+            var texture2DResult = await GetTextureAsync(url,parameters);
+            
+            var result = new WebServerSpriteResult()
+            {
+                error = texture2DResult.error,
+                success = texture2DResult.success,
+                sprite = EmptySprite,
+            };
+            
+            if (!texture2DResult.success) return result;
+
+            var texture = texture2DResult.texture;
+            result.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+            return result;
         }
 
         public void SetToken(string token)
         {
             userToken = token;
+        }
+        
+        public string GetServerUrl(string serverUrl,string path)
+        {
+            return serverUrl.MergeUrl(path);
         }
 
         private async UniTask<WebServerResult> SendRequestAsync(UnityWebRequest request)
@@ -237,44 +287,7 @@ namespace UniModules.Runtime.Network
             };
         }
         
-        private async UniTask<WebServerTexture2DResult> GetTextureAsync(string url)
-        {
-            var request = UnityWebRequestTexture.GetTexture(url);
-            SetHeaders(request, null);
-            
-            var requestResult = await SendRequestAsync(request);
-            
-            var result = new WebServerTexture2DResult()
-            {
-                error = requestResult.error,
-                success = requestResult.success,
-                texture = null,
-            };
 
-            if (!requestResult.success) return result;
-            
-            result.texture = DownloadHandlerTexture.GetContent(request);
-            return result;
-        }
-
-        private async UniTask<WebServerSpriteResult> GetSpriteAsync(string url)
-        {
-            var texture2DResult = await GetTextureAsync(url);
-            
-            var result = new WebServerSpriteResult()
-            {
-                error = texture2DResult.error,
-                success = texture2DResult.success,
-                sprite = EmptySprite,
-            };
-            
-            if (!texture2DResult.success) return result;
-
-            var texture = texture2DResult.texture;
-            result.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
-            return result;
-        }
-        
         // https://t.me/ТВОЙБОТ?start=refПОЛЬЗОВАТЕЛЬUUID
         // (https://t.me/share/url?url=https://t.me/%D0%A2%D0%92%D0%9E%D0%99%D0%91%D0%9E%D0%A2?start=ref%D0%9F%D0%9E%D0%9B%D0%AC%D0%97%D0%9E%D0%92%D0%90%D0%A2%D0%95%D0%9B%D0%ACUUID)
         //public string GetInviteUrl(string uuid) => $"https://t.me/{_settings.bot}?start=ref{uuid}";
