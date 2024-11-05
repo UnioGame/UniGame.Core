@@ -1,6 +1,6 @@
-﻿namespace UniModules.UniGame.Core.EditorTools.Editor.Controls.Layers
+﻿namespace UniModules.Editor.Controls.Layers
 {
-    using Runtime.Attributes;
+    using UniGame.Core.Runtime.Attributes;
     using UnityEditor;
     using UnityEngine;
 

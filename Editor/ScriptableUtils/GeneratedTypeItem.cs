@@ -10,7 +10,6 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
     using UniCore.Runtime.ReflectionUtils;
     using UniCore.Runtime.Utils;
     using UniModules.Editor;
-    using UniModules.UniGame.Core.EditorTools.Editor;
     using UnityEditor;
     using UnityEngine;
 

@@ -1,8 +1,7 @@
-﻿namespace UniModules.UniGame.Core.EditorTools.Editor
+﻿namespace UniModules.Editor
 {
     using System.IO;
-    using UniModules.Editor;
-    using Core.Editor.Constants;
+    using UniGame.Core.Editor.Constants;
     using UnityEditor;
 
     public class EditorPathConstants

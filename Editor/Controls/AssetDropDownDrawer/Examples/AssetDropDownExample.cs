@@ -1,6 +1,6 @@
-﻿namespace UniModules.UniGame.Core.EditorTools.Editor.Controls.AssetDropDownControl.Examples
+﻿namespace UniModules.Editor.Controls.AssetDropDownControl.Examples
 {
-    using Runtime.Attributes;
+    using UniGame.Core.Runtime.Attributes;
     using UnityEngine;
 
     [CreateAssetMenu(menuName = "UniGame/Examples/AssetDropDown/AssetDropDownExample")]
