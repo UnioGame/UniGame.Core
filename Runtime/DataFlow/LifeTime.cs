@@ -8,28 +8,19 @@ namespace UniModules.UniCore.Runtime.DataFlow
     using System.Collections.Generic;
     using System.Runtime.CompilerServices;
     using System.Threading;
-    using global::UniGame.Core.Runtime.ObjectPool;
     using UniGame.Core.Runtime.DataFlow;
     using global::UniGame.Core.Runtime;
 
-    public class LifeTime : ILifeTime, IPoolable
+    public class LifeTime : ILifeTime, IDisposable
     {
+        #region static data
+
         private static readonly LifeTimeDefinition _editorLifeTime = new();
-        
-        public readonly static ILifeTime TerminatedLifetime;
+                
+        public static readonly ILifeTime TerminatedLifetime;
+                
         public static ILifeTime EditorLifeTime => _editorLifeTime;
 
-        private List<IDisposable> disposables = new();
-        private List<object> referencies = new();
-        private List<Action> cleanupActions = new();
-        private CancellationTokenSource _cancellationTokenSource;
-        
-        public readonly int id;
-        
-        public bool isTerminated;
-        
-#region static data
-        
         static LifeTime()
         {
             var completedLifetime = new LifeTime();
@@ -42,7 +33,50 @@ namespace UniModules.UniCore.Runtime.DataFlow
             return new LifeTime();
         }
         
-#endregion
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Release(LifeTimeReference reference)
+        {
+            switch (reference.type)
+            {
+                case LifeTimeReferenceType.None:
+                    break;
+                case LifeTimeReferenceType.Reference:
+                    break;
+                case LifeTimeReferenceType.Disposable:
+                    if(reference.reference is IDisposable disposable)
+                        disposable.Dispose();
+                    break;
+                case LifeTimeReferenceType.Action:
+                    if(reference.reference is Action action)
+                        action.Invoke();
+                    break;
+                case LifeTimeReferenceType.TerminateLifeTime:
+                    if(reference.reference is LifeTime relesedLifeTime)
+                        relesedLifeTime.Release();
+                    break;
+                case LifeTimeReferenceType.RestartLifeTime:
+                    if(reference.reference is LifeTime lifeTime)
+                        lifeTime.Restart();
+                    break;
+            }
+        }
+        
+        #region type convertion
+
+        public static implicit operator CancellationToken(LifeTime lifeTime) => lifeTime.Token;
+
+        #endregion
+
+        #endregion
+        
+        private List<LifeTimeReference> dependencies = new();
+        
+        private CancellationTokenSource _cancellationTokenSource;
+        
+        public readonly int id;
+        
+        public bool isTerminated;
+ 
         
         public LifeTime()
         {
@@ -71,16 +105,36 @@ namespace UniModules.UniCore.Runtime.DataFlow
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ILifeTime AddCleanUpAction(Action cleanAction) 
         {
-            if (cleanAction == null)
-                return this;
+            if (cleanAction == null) return this;
             
             //call cleanup immediate. lite time already ended
             if (isTerminated) {
-                cleanAction?.Invoke();
+                cleanAction.Invoke();
                 return this;
             }
-            cleanupActions.Add(cleanAction);
+            
+            AddReference(cleanAction, LifeTimeReferenceType.Action);
             return this;
+        }
+        
+        public void AddChildLifeTime(LifeTime lifeTime)
+        {
+            if (isTerminated) {
+                lifeTime.Release();
+                return;
+            }
+            
+            AddReference(lifeTime, LifeTimeReferenceType.TerminateLifeTime);
+        }
+        
+        public void AddChildRestartLifeTime(LifeTime lifeTime)
+        {
+            if (isTerminated) {
+                lifeTime.Release();
+                return;
+            }
+            
+            AddReference(lifeTime, LifeTimeReferenceType.RestartLifeTime);
         }
     
         /// <summary>
@@ -94,7 +148,7 @@ namespace UniModules.UniCore.Runtime.DataFlow
                 return this;
             }
             
-            disposables.Add(item);
+            AddReference(item, LifeTimeReferenceType.Disposable);
             return this;
         }
 
@@ -104,10 +158,20 @@ namespace UniModules.UniCore.Runtime.DataFlow
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ILifeTime AddRef(object o)
         {
-            if (isTerminated)
-                return this;
-            referencies.Add(o);
+            if (isTerminated) return this;
+            
+            AddReference(o, LifeTimeReferenceType.Reference);
             return this;
+        }
+
+        public void AddReference(object reference, LifeTimeReferenceType type)
+        {
+            var referenceData = new LifeTimeReference
+            {
+                type = type,
+                reference = reference,
+            };
+            dependencies.Add(referenceData);
         }
 
         /// <summary>
@@ -119,22 +183,23 @@ namespace UniModules.UniCore.Runtime.DataFlow
             Release();
             isTerminated = false;
         }
+
+        public void Dispose() => Release();
         
         /// <summary>
         /// invoke all cleanup actions
         /// </summary>
         public void Release()
         {
-            if (isTerminated)
-                return;
+            if (isTerminated) return;
             
             isTerminated = true;
             
-            for (var i = cleanupActions.Count-1; i >= 0; i--)
+            for (var i = dependencies.Count-1; i >= 0; i--)
             {
                 try
                 {
-                    cleanupActions[i]?.Invoke();
+                    Release(dependencies[i]);
                 }
                 catch (Exception e)
                 {
@@ -142,32 +207,12 @@ namespace UniModules.UniCore.Runtime.DataFlow
                 }
             }
             
-            for (var i = disposables.Count-1; i >= 0; i--) 
-            {
-                try
-                {
-                    disposables[i].Cancel();
-                }
-                catch (Exception e)
-                {
-                    GameLog.LogError(e);
-                }
-            }
-
-            cleanupActions.Clear();
-            disposables.Clear();
-            referencies.Clear();
-
+            dependencies.Clear();
+            
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = null;
         }
-
-        #region type convertion
-
-        public static implicit operator CancellationToken(LifeTime lifeTime) => lifeTime.Token;
-
-        #endregion
 
         #if UNITY_EDITOR
 
@@ -186,5 +231,25 @@ namespace UniModules.UniCore.Runtime.DataFlow
         }
         
         #endif
+
+    }
+
+    
+    [Serializable]
+    public struct LifeTimeReference
+    {
+        //[FieldOffset(0)] public LifeTime owner;
+        public LifeTimeReferenceType type;
+        public object reference;
+    }
+    
+    public enum LifeTimeReferenceType : byte
+    {
+        None,
+        Reference,
+        Disposable,
+        Action,
+        TerminateLifeTime,
+        RestartLifeTime
     }
 }

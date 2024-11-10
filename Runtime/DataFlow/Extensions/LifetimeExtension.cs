@@ -110,6 +110,12 @@ public static class LifetimeExtension
             lifeTime.AddDispose(disposable);
         return disposable;
     }
+    
+    public static LifeTime RestartWith(this LifeTime lifeTime, ILifeTime owner)
+    {
+        
+        return lifeTime;
+    }
         
     public static IDisposableLifetime AddTo(this ILifeTime lifeTime, Action cleanupAction)
     {
