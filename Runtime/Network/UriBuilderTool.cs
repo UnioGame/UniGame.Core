@@ -39,7 +39,7 @@
         public static NameValueCollection ParseQueryString(this string query, Encoding encoding)
         {
 #if NET_STANDARD
-            return HttpUtility.ParseQueryString(uriBuilder.Query, encoding);
+            return HttpUtility.ParseQueryString(query, encoding);
 #endif
             
             var result = new NameValueCollection();
