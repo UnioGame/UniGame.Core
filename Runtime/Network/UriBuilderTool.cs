@@ -4,8 +4,14 @@
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.Runtime.CompilerServices;
-    using System.Web;
+    using System.Text;
+    
     using UnityEngine;
+    using UnityEngine.Networking;
+    
+#if NET_STANDARD
+     using System.Web;
+#endif
 
     public static class UriBuilderTool
     {
@@ -24,6 +30,65 @@
         }
         
 #endif
+
+        public static NameValueCollection ParseQueryString(this string query)
+        {
+            return ParseQueryString(query, Encoding.UTF8);
+        }
+
+        public static NameValueCollection ParseQueryString(this string query, Encoding encoding)
+        {
+#if NET_STANDARD
+            return HttpUtility.ParseQueryString(uriBuilder.Query, encoding);
+#endif
+            
+            var result = new NameValueCollection();
+            var queryLength = query.Length;
+            var namePos = query.StartsWith('?') ? 1 : 0;
+            
+            if (queryLength == namePos)
+                return result;
+
+            while (namePos <= queryLength)
+            {
+                int valuePos = -1, valueEnd = -1;
+                for (var q = namePos; q < queryLength; q++)
+                {
+                    if (valuePos == -1 && query[q] == '=')
+                    {
+                        valuePos = q + 1;
+                    }
+                    else if (query[q] == '&')
+                    {
+                        valueEnd = q;
+                        break;
+                    }
+                }
+
+                string? name;
+                
+                if (valuePos == -1)
+                {
+                    name = null;
+                    valuePos = namePos;
+                }
+                else
+                {
+                    name = UnityWebRequest.UnEscapeURL(query.Substring(namePos, valuePos - namePos - 1), encoding);
+                }
+
+                if (valueEnd < 0)
+                {
+                    valueEnd = query.Length;
+                }
+
+                namePos = valueEnd + 1;
+                string value = UnityWebRequest.UnEscapeURL(query.Substring(valuePos, valueEnd - valuePos), encoding);
+                result.Add(name, value);
+            }
+
+            return result;
+        }
         
         public static UriBuilder GetUriBuilder(string url)
         {

@@ -80,7 +80,7 @@ namespace UniModules.Runtime.Network
             if (parameters is not { Count: > 0 }) return url;
             
             var uriBuilder = new UriBuilder(url);
-            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+            var query = uriBuilder.Query.ParseQueryString();
             
             if (addVersion)
             {
@@ -292,4 +292,6 @@ namespace UniModules.Runtime.Network
         // (https://t.me/share/url?url=https://t.me/%D0%A2%D0%92%D0%9E%D0%99%D0%91%D0%9E%D0%A2?start=ref%D0%9F%D0%9E%D0%9B%D0%AC%D0%97%D0%9E%D0%92%D0%90%D0%A2%D0%95%D0%9B%D0%ACUUID)
         //public string GetInviteUrl(string uuid) => $"https://t.me/{_settings.bot}?start=ref{uuid}";
     }
+    
+    
 }
