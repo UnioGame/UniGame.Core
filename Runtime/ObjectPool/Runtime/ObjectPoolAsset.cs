@@ -248,7 +248,8 @@ namespace UniGame.Runtime.ObjectPool
         public async UniTask<Object> SpawnAsync(
             Object prefab, 
             Vector3 position, Quaternion rotation,
-            Transform parent,bool stayWorld, 
+            Transform parent,
+            bool stayWorld, 
             int preload,
             CancellationToken token = default)
         {
@@ -266,7 +267,7 @@ namespace UniGame.Runtime.ObjectPool
 #endif
             var pool = CreatePool(prefab, preload);
             // Spawn a clone from this pool
-            var clone = await pool.FastSpawnAsync(position, rotation, parent,stayWorld,token);
+            var clone = await pool.FastSpawnAsync(position, rotation, parent,stayWorld,1,token);
 
             allCloneLinks[clone] = pool;
             

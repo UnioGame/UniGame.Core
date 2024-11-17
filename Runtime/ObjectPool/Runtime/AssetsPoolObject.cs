@@ -24,7 +24,7 @@
         private Component _componentAsset;
         private DisposableAction _disposableAction;
         private Func<Vector3, Quaternion, Transform, bool, Object> _factoryMethod;
-        private Func<Vector3, Quaternion, Transform, bool, CancellationToken , UniTask<Object>> _asyncFactoryMethod;
+        private Func<Vector3, Quaternion, Transform, bool, int, CancellationToken, UniTask<Object>> _asyncFactoryMethod;
         
         #endregion
 
@@ -139,6 +139,7 @@
             Quaternion rotation,
             Transform parent = null, 
             bool stayWorld = false,
+            int count = 1,
             CancellationToken token = default)
         {
 #if UNITY_EDITOR
@@ -161,7 +162,7 @@
                 return clone;
             }
 
-            return await FastCloneAsync(position, rotation, parent, stayWorld,token);
+            return await FastCloneAsync(position, rotation, parent, stayWorld,count,token);
         }
 
         // This will despawn a clone and add it to the cache
@@ -249,10 +250,11 @@
             Vector3 position, Quaternion rotation,
             Transform parent, 
             bool stayWorldPosition = false,
+            int count = 1,
             CancellationToken token = default)
         {
             if (!asset) return null;
-            var clone = await _asyncFactoryMethod(position, rotation, parent, stayWorldPosition,token)
+            var clone = await _asyncFactoryMethod(position, rotation, parent, stayWorldPosition,count,token)
                 .AttachExternalCancellation(token);
             total += 1;
             return clone;
@@ -288,13 +290,16 @@
             Quaternion rotation, 
             Transform parent = null, 
             bool stayWorldPosition = false,
+            int count = 1,
             CancellationToken token = default)
         {
             if (!_gameObjectAsset) return null;
 
             var operation =  Object
-                .InstantiateAsync(_gameObjectAsset,1,parent, position, rotation);
+                .InstantiateAsync(_gameObjectAsset,count,parent, position, rotation);
 
+            CleanupResourceOnCancellation(operation, token);
+            
             var assetResult = await operation
                 .ToUniTask(cancellationToken:token)
                 .SuppressCancellationThrow();
@@ -334,6 +339,23 @@
             return target;
         }
 
+        private void CleanupResourceOnCancellation<TAsset>(AsyncInstantiateOperation<TAsset> operation, CancellationToken token)
+            where TAsset : Object
+        {
+#if UNITY_EDITOR
+            operation.completed += operationHandle =>
+            {
+                if(!token.IsCancellationRequested) return;
+                if(operation.Result == null) return;
+                foreach (var gameObject in operation.Result)
+                {
+                    if(gameObject == null) continue;
+                    Object.DestroyImmediate(gameObject);
+                }
+            };
+#endif
+        }
+        
         private void ApplyGameAssetProperties(GameObject target, Vector3 position,
             Quaternion rotation, Transform parent, bool stayWorldPosition = false)
         {
@@ -388,11 +410,25 @@
             Quaternion rotation, 
             Transform parent = null, 
             bool stayWorldPosition = false,
+            int count = 1,
             CancellationToken token = default)
         {
             if (asset == null) return null;
-            var operation =  Object.InstantiateAsync(asset,1);
-            await operation.ToUniTask();
+            
+            var operation =  Object.InstantiateAsync(asset,count);
+
+            CleanupResourceOnCancellation(operation, token);
+            
+            var assetResult = await operation
+                .ToUniTask(cancellationToken:token)
+                .SuppressCancellationThrow();
+
+            if (assetResult.IsCanceled)
+            {
+                operation.Cancel();
+                throw new TaskCanceledException();
+            }
+            
             var resultItems = operation.Result;
             return resultItems.Length == 0 ? default : resultItems[0];
         }
