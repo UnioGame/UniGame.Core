@@ -5,7 +5,8 @@
     public interface IReadonlyObjectValue
     {
         Type Type { get; }
-        object GetValue();
+        
+        object ObjectValue { get; }
     }
     
     public interface IObjectValue
