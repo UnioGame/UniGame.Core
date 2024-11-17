@@ -7,6 +7,7 @@
     using System;
     using System.Collections.Generic;
     using System.Threading;
+    using System.Threading.Tasks;
     using UniGame.Core.Runtime.ObjectPool;
     using Core.Runtime;
     using Cysharp.Threading.Tasks;
@@ -23,7 +24,7 @@
         private Component _componentAsset;
         private DisposableAction _disposableAction;
         private Func<Vector3, Quaternion, Transform, bool, Object> _factoryMethod;
-        private Func<Vector3, Quaternion, Transform, bool, UniTask<Object>> _asyncFactoryMethod;
+        private Func<Vector3, Quaternion, Transform, bool, CancellationToken , UniTask<Object>> _asyncFactoryMethod;
         
         #endregion
 
@@ -251,7 +252,7 @@
             CancellationToken token = default)
         {
             if (!asset) return null;
-            var clone = await _asyncFactoryMethod(position, rotation, parent, stayWorldPosition)
+            var clone = await _asyncFactoryMethod(position, rotation, parent, stayWorldPosition,token)
                 .AttachExternalCancellation(token);
             total += 1;
             return clone;
@@ -286,14 +287,23 @@
             Vector3 position,
             Quaternion rotation, 
             Transform parent = null, 
-            bool stayWorldPosition = false)
+            bool stayWorldPosition = false,
+            CancellationToken token = default)
         {
             if (!_gameObjectAsset) return null;
 
             var operation =  Object
                 .InstantiateAsync(_gameObjectAsset,1,parent, position, rotation);
-            
-            await operation.ToUniTask();
+
+            var assetResult = await operation
+                .ToUniTask(cancellationToken:token)
+                .SuppressCancellationThrow();
+
+            if (assetResult.IsCanceled)
+            {
+                operation.Cancel();
+                throw new TaskCanceledException();
+            }
             
             var resultItems = operation.Result;
             
@@ -377,7 +387,8 @@
         private async UniTask<Object> CreateAssetAsync(Vector3 position,
             Quaternion rotation, 
             Transform parent = null, 
-            bool stayWorldPosition = false)
+            bool stayWorldPosition = false,
+            CancellationToken token = default)
         {
             if (asset == null) return null;
             var operation =  Object.InstantiateAsync(asset,1);
