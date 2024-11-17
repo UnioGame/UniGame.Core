@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace UniGame.Runtime.ObjectPool
 {
+    using System.Threading;
     using Cysharp.Threading.Tasks;
 
     public static class ObjectPool
@@ -45,10 +46,11 @@ namespace UniGame.Runtime.ObjectPool
             Vector3 position,
             Quaternion rotation, 
             Transform parent = null,
-            bool stayWorld = false)
+            bool stayWorld = false,
+            CancellationToken token = default)
             where T : Object
         {
-            return await PoolAsset.SpawnAsync<T>(target,position,rotation,parent,stayWorld);
+            return await PoolAsset.SpawnAsync<T>(target,position,rotation,parent,stayWorld,token);
         }
         
         public static  T Spawn<T>(Object target,

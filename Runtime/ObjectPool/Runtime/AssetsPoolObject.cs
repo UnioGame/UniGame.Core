@@ -6,6 +6,7 @@
     using UniModules.UniCore.Runtime.DataFlow;
     using System;
     using System.Collections.Generic;
+    using System.Threading;
     using UniGame.Core.Runtime.ObjectPool;
     using Core.Runtime;
     using Cysharp.Threading.Tasks;
@@ -132,8 +133,12 @@
         
         
         // This will return a clone from the cache, or create a new instance
-        public async UniTask<Object> FastSpawnAsync(Vector3 position, Quaternion rotation,
-            Transform parent = null, bool stayWorld = false)
+        public async UniTask<Object> FastSpawnAsync(
+            Vector3 position, 
+            Quaternion rotation,
+            Transform parent = null, 
+            bool stayWorld = false,
+            CancellationToken token = default)
         {
 #if UNITY_EDITOR
             if (!asset) {
@@ -155,7 +160,7 @@
                 return clone;
             }
 
-            return await FastCloneAsync(position, rotation, parent, stayWorld);;
+            return await FastCloneAsync(position, rotation, parent, stayWorld,token);
         }
 
         // This will despawn a clone and add it to the cache
@@ -239,10 +244,15 @@
                 Object.Destroy(containerObject.gameObject);
         }
 
-        private async UniTask<Object> FastCloneAsync(Vector3 position, Quaternion rotation, Transform parent, bool stayWorldPosition = false)
+        private async UniTask<Object> FastCloneAsync(
+            Vector3 position, Quaternion rotation,
+            Transform parent, 
+            bool stayWorldPosition = false,
+            CancellationToken token = default)
         {
             if (!asset) return null;
-            var clone = await _asyncFactoryMethod(position, rotation, parent, stayWorldPosition);
+            var clone = await _asyncFactoryMethod(position, rotation, parent, stayWorldPosition)
+                .AttachExternalCancellation(token);
             total += 1;
             return clone;
         }

@@ -8,6 +8,7 @@ namespace UniGame.Runtime.ObjectPool
     using Core.Runtime;
     using global::UniGame.Core.Runtime.Extension;
     using System.Collections.Generic;
+    using System.Threading;
     using Cysharp.Threading.Tasks;
     using UnityEngine;
 
@@ -204,8 +205,10 @@ namespace UniGame.Runtime.ObjectPool
         
         public async UniTask<T> SpawnAsync<T>(Object target, 
             Vector3 position, 
-            Quaternion rotation, Transform parent = null,
-            bool stayWorld = false)
+            Quaternion rotation, 
+            Transform parent = null,
+            bool stayWorld = false,
+            CancellationToken token = default)
             where T : Object
         {
 #if UNITY_EDITOR
@@ -220,7 +223,7 @@ namespace UniGame.Runtime.ObjectPool
             
             // Clone this prefabs's GameObject
             var asset = isComponent ? component.gameObject : target;
-            var clone = await SpawnAsync(asset, position, rotation, parent, stayWorld, 0);
+            var clone = await SpawnAsync(asset, position, rotation, parent, stayWorld, 0,token);
 
             var result = isComponent && clone is GameObject gameAsset 
                 ? gameAsset.GetComponent<T>() 
@@ -230,21 +233,24 @@ namespace UniGame.Runtime.ObjectPool
             return result as T;
         }
         
-        public async UniTask<T> SpawnAsync<T>(GameObject prefab)
+        public async UniTask<T> SpawnAsync<T>(GameObject prefab,CancellationToken token = default)
         {
 #if UNITY_EDITOR
             if (Application.isPlaying == false) return default;
 #endif
             var item = await SpawnAsync(prefab, Vector3.zero,
-                Quaternion.identity, null, false);
+                Quaternion.identity, null, false,token:token);
             var result = item.GetComponent<T>();
             if (result == null) Despawn(item);
             return result;
         }
         
-        public async UniTask<Object> SpawnAsync(Object prefab, 
+        public async UniTask<Object> SpawnAsync(
+            Object prefab, 
             Vector3 position, Quaternion rotation,
-            Transform parent,bool stayWorld, int preload)
+            Transform parent,bool stayWorld, 
+            int preload,
+            CancellationToken token = default)
         {
             
 #if UNITY_EDITOR
@@ -260,20 +266,25 @@ namespace UniGame.Runtime.ObjectPool
 #endif
             var pool = CreatePool(prefab, preload);
             // Spawn a clone from this pool
-            var clone = await pool.FastSpawnAsync(position, rotation, parent,stayWorld);
+            var clone = await pool.FastSpawnAsync(position, rotation, parent,stayWorld,token);
 
             allCloneLinks[clone] = pool;
             
             return clone;
         }
         
-        public async UniTask<GameObject> SpawnAsync(GameObject prefab, Vector3 position,
-            Quaternion rotation, Transform parent,bool stayWorld)
+        public async UniTask<GameObject> SpawnAsync(
+            GameObject prefab, 
+            Vector3 position,
+            Quaternion rotation, 
+            Transform parent,
+            bool stayWorld,
+            CancellationToken token = default)
         {
 #if UNITY_EDITOR
             if (Application.isPlaying == false) return null;
 #endif
-            var pawn = await SpawnAsync(prefab, position, rotation, parent, stayWorld, 0);
+            var pawn = await SpawnAsync(prefab, position, rotation, parent, stayWorld, 0,token);
             return pawn as GameObject;
         }
         
