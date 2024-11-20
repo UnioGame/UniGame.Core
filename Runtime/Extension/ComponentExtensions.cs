@@ -3,6 +3,7 @@ using UniGame.Core.Runtime;
 
 namespace UniGame.Core.Runtime.Extension
 {
+    using System.Runtime.CompilerServices;
     using UnityEngine;
 
     public static class ComponentExtensions
@@ -27,6 +28,7 @@ namespace UniGame.Core.Runtime.Extension
             return component;
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Object GetRootAsset(this Object target)
         {
             if (target is Component component) return component.gameObject;

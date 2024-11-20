@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace UniGame.Runtime.ObjectPool
 {
+    using System.Runtime.CompilerServices;
     using System.Threading;
     using Cysharp.Threading.Tasks;
 
@@ -14,7 +15,16 @@ namespace UniGame.Runtime.ObjectPool
 
         public static ObjectPoolAsset PoolAsset => GetPool();
 
-        public static ILifeTime AttachToLifeTime(Object poolAsset, ILifeTime lifeTime, bool createIfEmpty = false,int preload = 0)
+        public static ILifeTime AttachToLifeTime(Component poolAsset, 
+            ILifeTime lifeTime, 
+            bool createIfEmpty = false,int preload = 0)
+        {
+            return PoolAsset.AttachToLifeTime(poolAsset.gameObject, lifeTime, createIfEmpty,preload);
+        }
+        
+        public static ILifeTime AttachToLifeTime(GameObject poolAsset, 
+            ILifeTime lifeTime, 
+            bool createIfEmpty = false,int preload = 0)
         {
             return PoolAsset.AttachToLifeTime(poolAsset, lifeTime, createIfEmpty,preload);
         }
@@ -42,7 +52,9 @@ namespace UniGame.Runtime.ObjectPool
             return PoolAsset.Spawn<T>(prefab);
         }
         
-        public static async  UniTask<T> SpawnAsync<T>(Object target,
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async  UniTask<T> SpawnAsync<T>(
+            Object target,
             Vector3 position,
             Quaternion rotation, 
             Transform parent = null,
@@ -50,10 +62,26 @@ namespace UniGame.Runtime.ObjectPool
             CancellationToken token = default)
             where T : Object
         {
-            return await PoolAsset.SpawnAsync<T>(target,position,rotation,parent,stayWorld,token);
+            return await PoolAsset.SpawnAsync<T>(target,position,rotation,parent,stayWorld,0,token);
         }
         
-        public static  T Spawn<T>(Object target,
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async  UniTask<ObjectsItemResult<GameObject>> SpawnAsync(
+            GameObject target,
+            int count,
+            Vector3 position,
+            Quaternion rotation, 
+            Transform parent = null,
+            bool stayWorld = false,
+            CancellationToken token = default)
+        {
+            var result = await PoolAsset.SpawnAsync(target,count,position,rotation,parent,stayWorld,token);
+            return result;
+        }
+        
+        
+        public static  T Spawn<T>(
+            Object target,
             Vector3 position,
             Quaternion rotation, 
             Transform parent = null,bool stayWorld = false)
@@ -97,7 +125,12 @@ namespace UniGame.Runtime.ObjectPool
             return PoolAsset.Spawn(prefab,activate,position,rotation,parent,stayWorld,preload);
         }
         
-        public static void CreatePool(Object targetPrefab, int preloads = 0)
+        public static void CreatePool(Component targetPrefab, int preloads = 0)
+        {
+            PoolAsset.CreatePool(targetPrefab.gameObject,preloads);
+        }
+        
+        public static void CreatePool(GameObject targetPrefab, int preloads = 0)
         {
             PoolAsset.CreatePool(targetPrefab,preloads);
         }

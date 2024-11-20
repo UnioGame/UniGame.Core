@@ -6,7 +6,7 @@
     public class AssetsPool : MonoBehaviour
     {
         [Tooltip("The prefab the clones will be based on")]
-        public Object asset;
+        public GameObject asset;
 
         [Tooltip("Should this pool preload some clones?")]
         public int preload;
