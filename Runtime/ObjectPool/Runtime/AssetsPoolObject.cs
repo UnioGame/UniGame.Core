@@ -94,7 +94,8 @@
         }
 
         // This will return a clone from the cache, or create a new instance
-        public Object Spawn(Vector3 position, 
+        public Object Spawn(
+            Vector3 position, 
             Quaternion rotation,
             Transform parent = null, 
             bool stayWorld = false)
@@ -109,19 +110,52 @@
             // Attempt to spawn from the cache
             while (Cache.Count > 0) {
             
-                var clone = Cache.Pop();
-                if (!clone) {
-                    GameLog.LogWarningFormat("The {0} pool contained a null cache entry",sourceName);
-                    continue;
-                }
-
-                clone = ApplyGameAssetProperties(clone, position, rotation, parent, stayWorld);
+                var clone = TakeFromCache(position, rotation, parent, stayWorld);
+                if(clone == null) continue;
                 return clone;
             }
 
             return CreateGameObject(position, rotation, parent, stayWorld);
         }
         
+        // This will return a clone from the cache, or create a new instance
+        public async UniTask<ObjectsItemResult> SpawnAsync(
+            int count,
+            Vector3 position, 
+            Quaternion rotation,
+            Transform parent = null, 
+            CancellationToken token = default)
+        {
+#if UNITY_EDITOR
+            if (!asset) {
+                Debug.LogError("Attempting to spawn null");
+                return ObjectsItemResult.Empty;
+            }
+#endif
+
+            var result = TakeFromCache(count, position, rotation, parent);
+            if(result.Success && result.Length == count) 
+                return result;
+
+            var amount = count - result.Length;
+            
+            var spawnedItems = await CreateGameObjectAsync(
+                amount,
+                position,
+                rotation,
+                parent,
+                token);
+            
+            var spawnCompleted = spawnedItems.Length == count;
+            if (spawnCompleted) return spawnedItems;
+            
+            spawnedItems.Items.CopyTo(result.Items,result.Length);
+            result.First = result.Length > 0 ? result.Items[0] : default;
+            result.Length += spawnedItems.Length;
+            result.Success = true;
+            
+            return result;
+        }
 
         // This will despawn a clone and add it to the cache
         public void Despawn(Object clone, bool destroy = false)
@@ -146,8 +180,6 @@
             Cache.Push(target);
         }
         
-
-        // This allows you to make another clone and add it to the cache
         public void PreloadAsset()
         {
             if (!_gameObjectAsset) return;
@@ -155,6 +187,11 @@
             // Create clone
             var clone = CreateGameObject(Vector3.zero, Quaternion.identity, null);
 
+            AddIntoCache(clone);
+        }
+
+        private void AddIntoCache(GameObject clone)
+        {
             var rootAsset = clone.GetRootAsset();
             if (rootAsset is GameObject gameObjectClone)
             {
@@ -166,7 +203,7 @@
             
             Cache.Push(pawn);
         }
-
+        
         // Makes sure the right amount of prefabs have been preloaded
         public void UpdatePreload()
         {
@@ -177,52 +214,15 @@
         }
 
         #region private methods
-        
-        // This will return a clone from the cache, or create a new instance
-        public async UniTask<ObjectsItemResult<GameObject>> SpawnAsync(
-            int count,
-            Vector3 position, 
-            Quaternion rotation,
-            Transform parent = null, 
-            bool stayWorld = false,
-            CancellationToken token = default)
-        {
-#if UNITY_EDITOR
-            if (!asset) {
-                Debug.LogError("Attempting to spawn null");
-                return ObjectsItemResult<GameObject>.Empty;
-            }
-#endif
 
-            var result = TakeFromCache(count, position, rotation, parent, stayWorld);
-            if(result.Success) return result;
-
-            var spawnedItems = await CreateGameObjectAsync(
-                    count,
-                    position, rotation,
-                    parent, stayWorld,token).AttachExternalCancellation(token);
-
-            return spawnedItems;
-        }
-
-        public ObjectsItemResult<GameObject> TakeFromCache(
-            int count,
+        private GameObject TakeFromCache(
             Vector3 position,
             Quaternion rotation,
             Transform parent = null,
             bool stayWorld = false)
         {
-            if(count > Cache.Count) return ObjectsItemResult<GameObject>.Empty;
-            
-            var result = ObjectsItemResult<GameObject>.Single;
-            var spawnedCount = 0;
-            var isSingle = count == 1;
-            result.Items = isSingle ? Array.Empty<GameObject>() 
-                : ArrayPool<GameObject>.Shared.Rent(count);
-            result.Success = true;
-            
             // Attempt to spawn from the cache
-            while (Cache.Count > 0 && spawnedCount < count) {
+            while (Cache.Count > 0) {
                 
                 var clone = Cache.Pop();
                 
@@ -232,18 +232,38 @@
                 }
                 
                 clone = ApplyGameAssetProperties(clone, position, rotation, parent, stayWorld);
+                return clone;
+            }
+            
+            return default;
+        }
 
-                if (isSingle)
-                {
-                    result.First = clone;
-                    return result;
-                }
+        private ObjectsItemResult TakeFromCache(
+            int count,
+            Vector3 position,
+            Quaternion rotation,
+            Transform parent = null,
+            bool stayWorld = false)
+        {
+            if(count <= 0 || count > Cache.Count) return ObjectsItemResult.Empty;
+            
+            var result = new ObjectsItemResult();
+            var spawnedCount = 0;
+            
+            result.Items = new GameObject[count];
+            
+            // Attempt to spawn from the cache
+            while (Cache.Count > 0 && spawnedCount < count) {
+                var clone = TakeFromCache(position, rotation, parent, stayWorld);
+                if(clone == null) continue;
                 
                 result.Items[spawnedCount] = clone;
                 spawnedCount++;
             }
             
+            result.First = spawnedCount > 0 ? result.Items[0] : default;
             result.Length = spawnedCount;
+            result.Success = spawnedCount == count;
             return result;
         }
         
@@ -359,90 +379,48 @@
             }
             return null;
         }
-        
-        private Object CreateAsset(Vector3 position, Quaternion rotation, Transform parent = null, bool stayWorldPosition = false)
-        {
-            if(asset == null) return default;
-            return Object.Instantiate(asset);
-        }
-        
-        private async UniTask<ObjectsItemResult<Object>> CreateAssetAsync(
-            int count,
-            Vector3 position,
-            Quaternion rotation, 
-            Transform parent = null, 
-            bool stayWorldPosition = false,
-            CancellationToken token = default)
-        {
-            if(asset == null) return ObjectsItemResult<Object>.Empty;
-            if(count <= 0) return ObjectsItemResult<Object>.Empty;
-            
-            var operation =  Object.InstantiateAsync(asset,count);
-
-            CleanupResourceOnCancellation(operation, token);
-            
-            var assetResult = await operation
-                .ToUniTask(cancellationToken:token)
-                .SuppressCancellationThrow();
-
-            if (assetResult.IsCanceled)
-            {
-                operation.Cancel();
-                throw new TaskCanceledException();
-            }
-            
-            var resultItems = operation.Result;
-            if (resultItems == null || resultItems.Length == 0)
-                return ObjectsItemResult<Object>.Empty;
-            
-            return new ObjectsItemResult<Object>()
-            {
-                First = resultItems[0],
-                Items = resultItems,
-                Success = true,
-            };
-            
-        }
                 
-        private async UniTask<ObjectsItemResult<GameObject>> CreateGameObjectAsync(
+        private async UniTask<ObjectsItemResult> CreateGameObjectAsync(
             int count,
             Vector3 position,
             Quaternion rotation, 
             Transform parent = null, 
-            bool stayWorldPosition = false,
             CancellationToken token = default)
         {
             if (_gameObjectAsset == null) 
-                return ObjectsItemResult<GameObject>.Empty;
+                return ObjectsItemResult.Empty;
             
             if(count <= 0) 
-                return ObjectsItemResult<GameObject>.Empty;
+                return ObjectsItemResult.Empty;
 
-            var operation =  Object.InstantiateAsync(_gameObjectAsset,count,parent, position, rotation,token);
+            var operation =  Object.InstantiateAsync(_gameObjectAsset,
+                count,parent, 
+                position, rotation,
+                token);
 
 #if UNITY_EDITOR
-            CleanupResourceOnCancellation(operation, token);
+            //CleanupResourceOnCancellation(operation, token);
 #endif
-            
-            var assetResult = await operation
-                .ToUniTask(cancellationToken:token)
-                .SuppressCancellationThrow();
 
-            if (assetResult.IsCanceled)
-            {
-                operation.Cancel();
-                throw new TaskCanceledException();
-            }
+            var assetResult = await operation
+                .ToUniTask(cancellationToken: token);
+
+            // if (assetResult.IsCanceled)
+            // {
+            //     operation.Cancel();
+            //     throw new TaskCanceledException();
+            // }
             
-            var resultItems = operation.Result;
+            var resultItems = assetResult;
             
             if (resultItems == null || resultItems.Length == 0)
-                return ObjectsItemResult<GameObject>.Empty;
+                return ObjectsItemResult.Empty;
             
             var spawnedCount = resultItems.Length;
             total += spawnedCount;
+
             
-            return new ObjectsItemResult<GameObject>()
+            return new ObjectsItemResult()
             {
                 First = resultItems[0],
                 Items = resultItems,

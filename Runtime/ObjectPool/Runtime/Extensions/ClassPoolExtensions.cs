@@ -21,7 +21,7 @@ namespace UniGame.Runtime.ObjectPool.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Despawn<T>(this T data) where T : class, new()
         {
-            if (data is UnityEngine.Object asset)
+            if (data is Object asset)
             {
                 Despawn(asset);
                 return;
@@ -42,7 +42,7 @@ namespace UniGame.Runtime.ObjectPool.Extensions
             ClassPool.DespawnWithRelease(data);
         }
         
-        public static void Despawn(this UnityEngine.Object data)
+        public static void Despawn(this Object data)
         {
 #if UNITY_EDITOR
             if (data == null)

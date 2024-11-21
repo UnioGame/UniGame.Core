@@ -13,7 +13,7 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
     using UnityEditor.SceneManagement;
 #endif
     
-    public static class SceneLifeTimeExtension
+    public static class SceneLifeTime
     {
         private static MemorizeItem<string,ILifeTime> _sceneLifeTimes = MemorizeTool
             .Memorize<string,ILifeTime>(sceneId =>
@@ -21,7 +21,7 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
                 var sceneCount = SceneManager.sceneCount;
                 Scene scene = default;
 
-                for (int i = 0; i < sceneCount; i++)
+                for (var i = 0; i < sceneCount; i++)
                 {
                     var targetScene = SceneManager.GetSceneAt(i);
                     if(!sceneId.Equals(targetScene.path,StringComparison.OrdinalIgnoreCase))
@@ -34,7 +34,7 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
                 
                 var sceneObject = new GameObject();
                 SceneManager.MoveGameObjectToScene(sceneObject,scene);
-                var sceneLifeTime = sceneObject.AddComponent<LifeTimeBehaviour>();
+                var sceneLifeTime = sceneObject.GetAssetLifeTime();
                 return sceneLifeTime;
             });
 

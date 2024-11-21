@@ -42,55 +42,48 @@ namespace UniGame.Runtime.ObjectPool
         }
         
         // These methods allows you to spawn prefabs via Component with varying levels of transform data
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T Spawn<T>(Object asset) where T : Object
         {
             return PoolAsset.Spawn<T>(asset);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T Spawn<T>(GameObject prefab)
         {
             return PoolAsset.Spawn<T>(prefab);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async  UniTask<T> SpawnAsync<T>(
-            Object target,
-            Vector3 position,
-            Quaternion rotation, 
-            Transform parent = null,
-            bool stayWorld = false,
-            CancellationToken token = default)
-            where T : Object
-        {
-            return await PoolAsset.SpawnAsync<T>(target,position,rotation,parent,stayWorld,0,token);
-        }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async  UniTask<ObjectsItemResult<GameObject>> SpawnAsync(
+        public static  UniTask<ObjectsItemResult> SpawnAsync(
             GameObject target,
             int count,
             Vector3 position,
             Quaternion rotation, 
             Transform parent = null,
-            bool stayWorld = false,
             CancellationToken token = default)
         {
-            var result = await PoolAsset.SpawnAsync(target,count,position,rotation,parent,stayWorld,token);
-            return result;
+            return PoolAsset.SpawnAsync(target,count,position,rotation,parent,token);
         }
         
-        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static  T Spawn<T>(
             Object target,
             Vector3 position,
             Quaternion rotation, 
-            Transform parent = null,bool stayWorld = false)
+            Transform parent = null,
+            bool stayWorld = false)
             where T : Object
         {
             return PoolAsset.Spawn<T>(target,position,rotation,parent,stayWorld);
         }
 
-        public static  T Spawn<T>(Object target,bool activate, Vector3 position, Quaternion rotation, Transform parent = null,bool stayWorld = false)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static  T Spawn<T>(Object target,
+            bool activate, Vector3 position, 
+            Quaternion rotation, 
+            Transform parent = null,
+            bool stayWorld = false)
             where T : Object
         {
             var asset = PoolAsset.Spawn<T>(target,position,rotation,parent,stayWorld);
@@ -141,6 +134,7 @@ namespace UniGame.Runtime.ObjectPool
         }
         
         // This allows you to despawn a clone via GameObject, with optional delay
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static  void Despawn(Object clone,bool destroy = false)
         {
             PoolAsset.Despawn(clone,destroy);

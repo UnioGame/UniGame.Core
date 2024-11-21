@@ -45,36 +45,18 @@ namespace UniGame.Runtime.ObjectPool.Extensions
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async UniTask<T> SpawnAsync<T>(this T prototype, 
-            Vector3 position,
-            Quaternion rotation, 
-            Transform parent = null,
-            bool stayWorldPosition = false,
-            CancellationToken token = default)
-            where T : Object
-        {
-            if (prototype == null) return null;
-            
-            var pawn = await ObjectPool
-                .SpawnAsync<T>(prototype, position, rotation, parent, stayWorldPosition,token);
-            
-            return pawn;
-        }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async UniTask<ObjectsItemResult<GameObject>> SpawnAsync(
+        public static async UniTask<ObjectsItemResult> SpawnAsync(
             this GameObject prototype, 
             int count,
             Vector3 position,
             Quaternion rotation, 
             Transform parent = null,
-            bool stayWorldPosition = false,
             CancellationToken token = default)
         {
-            if (prototype == null) return ObjectsItemResult<GameObject>.Empty;
+            if (prototype == null) return ObjectsItemResult.Empty;
             
             var pawn = await ObjectPool
-                .SpawnAsync(prototype,count, position, rotation, parent, stayWorldPosition,token);
+                .SpawnAsync(prototype,count, position, rotation, parent, token);
             
             return pawn;
         }

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace UniModules.UniCore.Runtime.DataFlow
 {
     using System;
-    using System.Collections.Generic;
+    using System.Buffers;
     using System.Runtime.CompilerServices;
     using System.Threading;
     using UniGame.Core.Runtime.DataFlow;
@@ -16,9 +16,10 @@ namespace UniModules.UniCore.Runtime.DataFlow
         #region static data
 
         private static readonly LifeTimeDefinition _editorLifeTime = new();
-                
+        
         public static readonly ILifeTime TerminatedLifetime;
-                
+        public static readonly int DefaultCapacity = 2;
+        
         public static ILifeTime EditorLifeTime => _editorLifeTime;
 
         static LifeTime()
@@ -34,7 +35,7 @@ namespace UniModules.UniCore.Runtime.DataFlow
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Release(LifeTimeReference reference)
+        public static void Release(ref LifeTimeReference reference)
         {
             switch (reference.type)
             {
@@ -69,8 +70,10 @@ namespace UniModules.UniCore.Runtime.DataFlow
 
         #endregion
         
-        private List<LifeTimeReference> dependencies = new();
+        private LifeTimeReference signleReference;
+        private LifeTimeReference[] dependencies = Array.Empty<LifeTimeReference>();
         
+        public int length = 0;
         private CancellationTokenSource _cancellationTokenSource;
         
         public readonly int id;
@@ -171,7 +174,32 @@ namespace UniModules.UniCore.Runtime.DataFlow
                 type = type,
                 reference = reference,
             };
-            dependencies.Add(referenceData);
+            
+            if (signleReference.type == LifeTimeReferenceType.None)
+            {
+                signleReference = referenceData;
+                return;
+            }
+
+            if (dependencies.Length == 0 || length >= dependencies.Length)
+            {
+                var size = Mathf.Max(length, DefaultCapacity);
+                var newSize = size << 1;
+                var newArray = ArrayPool<LifeTimeReference>
+                    .Shared
+                    .Rent(newSize);
+
+                if (dependencies.Length > 0)
+                {
+                    Array.Copy(dependencies, newArray, length);
+                    ArrayPool<LifeTimeReference>.Shared.Return(dependencies);
+                }
+                
+                dependencies = newArray;
+            }
+            
+            dependencies[length] = referenceData;
+            length++;
         }
 
         /// <summary>
@@ -195,23 +223,30 @@ namespace UniModules.UniCore.Runtime.DataFlow
             
             isTerminated = true;
             
-            for (var i = dependencies.Count-1; i >= 0; i--)
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
+            
+            if(dependencies == null) return;
+            
+            for (var i = length-1; i >= 0; i--)
             {
+#if UNITY_EDITOR
                 try
                 {
-                    Release(dependencies[i]);
+                    Release(ref dependencies[i]);
                 }
                 catch (Exception e)
                 {
                     GameLog.LogError(e);
                 }
+#else
+                Release(ref dependencies[i]);
+#endif
             }
             
-            dependencies.Clear();
-            
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
-            _cancellationTokenSource = null;
+            Release(ref signleReference);
+            length = 0;
         }
 
         #if UNITY_EDITOR
