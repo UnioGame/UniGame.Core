@@ -246,6 +246,11 @@ namespace UniModules.UniCore.Runtime.DataFlow
             }
             
             Release(ref signleReference);
+            
+            if(dependencies.Length > 0)
+                ArrayPool<LifeTimeReference>.Shared.Return(dependencies);
+            
+            dependencies = Array.Empty<LifeTimeReference>();
             length = 0;
         }
 
