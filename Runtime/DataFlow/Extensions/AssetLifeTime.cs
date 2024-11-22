@@ -156,16 +156,6 @@
             assetLifeTimeCount++;
             
             return handle.lifeTime;
-            
-            // var lifetimeComponent = gameObject.GetComponent<LifeTimeBehaviour>(); 
-            //
-            // lifetimeComponent = lifetimeComponent != null
-            //     ? lifetimeComponent
-            //     : gameObject.AddComponent<LifeTimeBehaviour>();
-            //
-            // return terminateOnDisable 
-            //     ? lifetimeComponent.DisableLifeTime 
-            //     : lifetimeComponent;
         }
 
         public static ILifeTime DestroyOnCleanup(this LifeTime lifeTime, GameObject gameObject)
