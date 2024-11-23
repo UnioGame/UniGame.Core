@@ -20,8 +20,7 @@
             public Object asset;
         }
         
-        public const int DefaultCapacity = 128;
-        
+        public const int DefaultCapacity = 64;
         public static AssetLifeTimeHandle[] assetLifeTimeHandles;
         public static Dictionary<int, int> lifeTimeMap;
         public static int[] emptySlots;
@@ -49,7 +48,7 @@
                 UpdateLifeTimesAsync().Forget();
         }
 
-        public static async UniTask UpdateLifeTimesAsync()
+        private static async UniTask UpdateLifeTimesAsync()
         {
             while (!cancellationSource.IsCancellationRequested)
             {
@@ -59,7 +58,7 @@
             }
         }
 
-        public static void UpdateLifeTimes()
+        private static void UpdateLifeTimes()
         {
             var space = 0;
             var size = assetLifeTimeCount;
@@ -100,7 +99,7 @@
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void TryResizeLifeTimes()
+        private static void TryResizeLifeTimes()
         {
             if (assetLifeTimeCount < assetLifeTimeHandles.Length) return;
 
@@ -111,7 +110,7 @@
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ResizeLifeTimes(int newSize)
+        private static void ResizeLifeTimes(int newSize)
         {
             var size = newSize;
             var oldSize = assetLifeTimeHandles.Length;
@@ -158,12 +157,13 @@
             return handle.lifeTime;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ILifeTime DestroyOnCleanup(this LifeTime lifeTime, GameObject gameObject)
         {
             lifeTime.AddCleanUpAction(() =>
             {
-                if (gameObject)
-                    UnityEngine.Object.Destroy(gameObject);
+                if (gameObject == null) return;
+                Object.Destroy(gameObject);
             });
             return lifeTime;
         }
@@ -178,33 +178,35 @@
             lifeTime.AddCleanUpAction(() =>
             {
                 if (component)
-                    UnityEngine.Object.Destroy(component);
+                    Object.Destroy(component);
             });
             
             return lifeTime;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ILifeTime GetAssetLifeTime(this Component component, bool terminateOnDisable = false)
         {
             return component.gameObject.GetAssetLifeTime(terminateOnDisable);
         }
         
-        public static ILifeTime AddTo(this GameObject gameObject, IDisposable disposable)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ILifeTime AddDisposable(this Object gameObject, IDisposable disposable)
         {
             return gameObject.GetAssetLifeTime().AddDispose(disposable);
         }
         
-        public static ILifeTime AddCleanUp(this GameObject gameObject, Action cleanupAction)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ILifeTime AddCleanUp(this Object gameObject, Action cleanupAction)
         {
             return gameObject.GetAssetLifeTime().AddCleanUpAction(cleanupAction);
         }
         
-        public static ILifeTime AddTo(this Component component, IDisposable disposable) => AddTo(component.gameObject, disposable);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ILifeTime AddDisposable(this Component component, IDisposable disposable) => AddDisposable(component.gameObject, disposable);
         
-        public static ILifeTime AddTo(this Component component, Action action) =>AddCleanUp(component.gameObject, action);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ILifeTime AddCleanUp(this Component component, Action action) =>AddCleanUp(component.gameObject, action);
         
-        
-        public static ILifeTime AddCleanUp(this Component component, Action cleanupAction) => AddCleanUp(component.gameObject, cleanupAction);
-
     }
 }

@@ -11,6 +11,7 @@ namespace UniModules.UniCore.Runtime.DataFlow
     using UniGame.Core.Runtime.DataFlow;
     using global::UniGame.Core.Runtime;
 
+    
     public class LifeTime : ILifeTime, IDisposable
     {
         #region static data
@@ -19,6 +20,7 @@ namespace UniModules.UniCore.Runtime.DataFlow
         
         public static readonly ILifeTime TerminatedLifetime;
         public static readonly int DefaultCapacity = 2;
+        public static readonly ArrayPool<LifeTimeReference> ReferencePool;
         
         public static ILifeTime EditorLifeTime => _editorLifeTime;
 
@@ -26,7 +28,10 @@ namespace UniModules.UniCore.Runtime.DataFlow
         {
             var completedLifetime = new LifeTime();
             completedLifetime.Release();
+            
             TerminatedLifetime = completedLifetime;
+            
+            ReferencePool = ArrayPool<LifeTimeReference>.Create();
         }
 
         public static LifeTime Create()
@@ -185,14 +190,12 @@ namespace UniModules.UniCore.Runtime.DataFlow
             {
                 var size = Mathf.Max(length, DefaultCapacity);
                 var newSize = size << 1;
-                var newArray = ArrayPool<LifeTimeReference>
-                    .Shared
-                    .Rent(newSize);
+                var newArray = ReferencePool.Rent(newSize);
 
                 if (dependencies.Length > 0)
                 {
                     Array.Copy(dependencies, newArray, length);
-                    ArrayPool<LifeTimeReference>.Shared.Return(dependencies);
+                    ReferencePool.Return(dependencies);
                 }
                 
                 dependencies = newArray;
@@ -248,7 +251,7 @@ namespace UniModules.UniCore.Runtime.DataFlow
             Release(ref signleReference);
             
             if(dependencies.Length > 0)
-                ArrayPool<LifeTimeReference>.Shared.Return(dependencies);
+                ReferencePool.Return(dependencies);
             
             dependencies = Array.Empty<LifeTimeReference>();
             length = 0;

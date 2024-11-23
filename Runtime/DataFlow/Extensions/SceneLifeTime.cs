@@ -70,51 +70,24 @@ namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
         {
             return _sceneLifeTimes[scene.path];
         }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ILifeTime GetLifeTime(this Scene scene)
-        {
-            return GetSceneLifeTime(scene);
-        }
-
-        public static ILifeTime GetLifeTime(this object asset)
-        {
-            if (asset is GameObject gameObjectAsset)
-                return gameObjectAsset.GetAssetLifeTime();
-            
-            if (asset is Component componentAsset)
-                return componentAsset.GetAssetLifeTime();
-            
-            switch (asset)
-            {
-                case Scene scene:
-                    return scene.GetSceneLifeTime();
-                case ILifeTime lifeTime:
-                    return lifeTime;
-                case ILifeTimeContext lifeTimeContext:
-                    return lifeTimeContext.LifeTime;
-            }
-            
-            return LifeTime.TerminatedLifetime;
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ILifeTime AddTo(this IDisposable disposable, Scene scene)
         {
-            return AddTo(disposable, scene.path);
+            return AddToScene(disposable, scene.path);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ILifeTime AddToActiveScene(this IDisposable disposable)
         {
             var activeScene = SceneManager.GetActiveScene();
-            return AddTo(disposable, activeScene.path);
+            return AddToScene(disposable, activeScene.path);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ILifeTime AddTo(this IDisposable disposable,string sceneId)
+        public static ILifeTime AddToScene(this IDisposable disposable,string scenePath)
         {
-            var sceneLifeTime = _sceneLifeTimes[sceneId];
+            var sceneLifeTime = _sceneLifeTimes[scenePath];
             return sceneLifeTime.AddDispose(disposable);
         }
 
