@@ -16,7 +16,7 @@
             _applicationPath = Application.streamingAssetsPath;
         }
         
-        public static async UniTask<StreamingAssetFromWebResult> LoadDataLikeWeb(string fileName)
+        public static async UniTask<StreamingAssetFromWebResult> LoadDataFromWeb(string fileName)
         {
             var path = Path.Combine(_applicationPath, fileName);
             var request = UnityWebRequest.Get(path);
@@ -46,7 +46,7 @@
             };
         }
         
-        public static async UniTask<ReadTextResult> LoadDataLikeFile(string fileName)
+        public static async UniTask<ReadTextResult> LoadDataFromFile(string fileName)
         {
             var path = Path.Combine(_applicationPath, fileName);
             string requestText;
