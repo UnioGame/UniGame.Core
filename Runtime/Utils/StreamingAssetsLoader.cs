@@ -16,7 +16,7 @@
             _applicationPath = Application.streamingAssetsPath;
         }
         
-        public static async UniTask<StreamingAssetFromWebResult> LoadDataFromWeb(string fileName)
+        public static async UniTask<StreamingAssetResult> LoadDataFromWeb(string fileName)
         {
             var path = Path.Combine(_applicationPath, fileName);
             var request = UnityWebRequest.Get(path);
@@ -28,7 +28,7 @@
             catch (Exception e)
             {
                 GameLog.LogError("error on web request: " + path + " " + e.Message);
-                return new StreamingAssetFromWebResult 
+                return new StreamingAssetResult 
                 {
                     success = false,
                     data = null,
@@ -38,7 +38,7 @@
 
             var result = request.downloadHandler.text.TrimStart('\uFEFF');
             
-            return new StreamingAssetFromWebResult
+            return new StreamingAssetResult
             {
                 success = true,
                 data = result,
@@ -46,7 +46,7 @@
             };
         }
         
-        public static async UniTask<ReadTextResult> LoadDataFromFile(string fileName)
+        public static async UniTask<StreamingAssetResult> LoadDataFromFile(string fileName)
         {
             var path = Path.Combine(_applicationPath, fileName);
             string requestText;
@@ -58,7 +58,7 @@
             catch (Exception e)
             {
                 GameLog.LogError("error on read text result: " + path + " " + e.Message);
-                return new ReadTextResult 
+                return new StreamingAssetResult 
                 {
                     success = false,
                     data = null,
@@ -68,7 +68,7 @@
 
             var result = requestText.TrimStart('\uFEFF');
             
-            return new ReadTextResult
+            return new StreamingAssetResult
             {
                 success = true,
                 data = result,
@@ -77,14 +77,7 @@
         }
     }
     
-    public struct ReadTextResult
-    {
-        public bool success;
-        public string data;
-        public Exception Error;
-    }
-    
-    public struct StreamingAssetFromWebResult
+    public struct StreamingAssetResult
     {
         public bool success;
         public string data;
