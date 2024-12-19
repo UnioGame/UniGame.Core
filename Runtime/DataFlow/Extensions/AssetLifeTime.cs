@@ -31,6 +31,12 @@
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         public static void Reset()
         {
+            if (assetLifeTimeHandles != null)
+            {
+                foreach (var variableHandle in assetLifeTimeHandles)
+                    variableHandle.lifeTime?.Release();
+            }
+            
             lifeTimeMap?.Clear();
             cancellationSource?.Cancel();
             cancellationSource?.Dispose();
@@ -46,6 +52,9 @@
             
             if(Application.isPlaying)
                 UpdateLifeTimesAsync().Forget();
+
+            Application.quitting -= Reset;
+            Application.quitting += Reset;
         }
 
         private static async UniTask UpdateLifeTimesAsync()
