@@ -9,6 +9,9 @@
         IReadOnlyType, 
         IEquatable<SType>,
         IEquatable<Type>
+#if ODIN_INSPECTOR
+    ,Sirenix.OdinInspector.ISearchFilterable
+#endif
     {
         public string name = string.Empty;
         public string fullTypeName= string.Empty;
@@ -63,6 +66,13 @@
            return typeValue == null ? 
                0 : 
                typeValue.GetHashCode();
+        }
+
+        public bool IsMatch(string searchString)
+        {
+            if(string.IsNullOrEmpty(searchString)) return true;
+            if(Type?.FullName == null) return false;
+            return Type.FullName.Contains(searchString);
         }
 
         #region ISerializationCallbackReceiver
