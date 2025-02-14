@@ -25,6 +25,8 @@ namespace UniModules.Runtime.Network
         public string userToken = string.Empty;
         public bool addVersion = true;
 
+        private Vector2 _spritePivot = new(0.5f, 0.5f);
+
         public string GenerateSignUpUrl(string uuid, string rewardCode)
         {
             if(string.IsNullOrEmpty(rewardCode)) throw new ArgumentNullException("rewardCode");
@@ -244,7 +246,7 @@ namespace UniModules.Runtime.Network
             if (!texture2DResult.success) return result;
 
             var texture = texture2DResult.texture;
-            result.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+            result.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), _spritePivot);
             return result;
         }
 
