@@ -83,6 +83,21 @@
             EditorUtility.SetDirty(asset);
             return asset;
         }
+
+        public static TAsset CreateAsset<TAsset>(this Object assetLocation,string assetName)
+            where TAsset : ScriptableObject
+        {
+            if(!assetLocation) return default;
+            var thisPath = AssetDatabase.GetAssetPath(assetLocation);
+            if (string.IsNullOrEmpty(thisPath)) return default;
+            var directory = thisPath.GetDirectoryPath();
+            var resultStatesPath = directory.CombinePath($"{assetName}.asset");
+            var resultAsset = ScriptableObject.CreateInstance<TAsset>();
+            AssetDatabase.CreateAsset(resultAsset, resultStatesPath);
+            AssetDatabase.Refresh();
+            resultAsset = AssetDatabase.LoadAssetAtPath<TAsset>(resultStatesPath);
+            return resultAsset;
+        }
         
         public static Object SaveAsset(this Object asset)
         {
