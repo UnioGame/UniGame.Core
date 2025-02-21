@@ -281,8 +281,6 @@ namespace UniModules.Runtime.Network
             }
             
             var isSuccessful = request.result == UnityWebRequest.Result.Success;
-            
-            Profiler.BeginSample("WebRequestBuilder.SendRequestAsync.GetText");
 
             var resultData = targetType == typeof(string)
                 ? request.downloadHandler.text
@@ -294,8 +292,6 @@ namespace UniModules.Runtime.Network
                 data = resultData,
                 error = request.error,
             };
-            
-            Profiler.EndSample();
             
             return webResult;
         }
