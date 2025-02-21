@@ -2,12 +2,11 @@ namespace UniModules.Runtime.Network
 {
     using System;
     using System.Collections.Generic;
-    using System.Web;
     using Cysharp.Threading.Tasks;
     using global::UniCore.Runtime.ProfilerTools;
     using UnityEngine;
     using UnityEngine.Networking;
-    using UnityEngine.Profiling;
+    using Object = UnityEngine.Object;
 
     [Serializable]
     public class WebRequestBuilder
@@ -25,6 +24,7 @@ namespace UniModules.Runtime.Network
         
         public string userToken = string.Empty;
         public bool addVersion = true;
+        public TextureFormat defaultTextureFormat = TextureFormat.ASTC_4x4;
 
         private Vector2 _spritePivot = new(0.5f, 0.5f);
 
@@ -209,6 +209,20 @@ namespace UniModules.Runtime.Network
             return webRequest;
         }
         
+        public Texture2D ConvertTextureFormat(Texture2D sourceTexture,TextureFormat format)
+        {
+            if (!SystemInfo.SupportsTextureFormat(format))
+            {
+                return sourceTexture; 
+            }
+
+            var compressedTexture = new Texture2D(sourceTexture.width, sourceTexture.height,format, false);
+
+            compressedTexture.SetPixels(sourceTexture.GetPixels());
+            compressedTexture.Apply();
+            return compressedTexture;
+        }
+        
         
         public async UniTask<WebServerTexture2DResult> GetTextureAsync(string url,Dictionary<string,string> parameters = null)
         {
@@ -229,7 +243,14 @@ namespace UniModules.Runtime.Network
 
             if (!requestResult.success) return result;
             
-            result.texture = DownloadHandlerTexture.GetContent(request);
+            var texture = DownloadHandlerTexture.GetContent(request);
+            var compressedTexture = ConvertTextureFormat(texture,defaultTextureFormat);
+            if(compressedTexture!=texture)
+                Object.Destroy(texture);
+            
+            texture = compressedTexture;
+            result.texture = texture;
+            
             return result;
         }
 
