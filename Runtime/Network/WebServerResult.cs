@@ -7,7 +7,7 @@ namespace UniModules.Runtime.Network
     public struct WebServerResult
     {
         public bool success;
-        public string data;
+        public object data;
         public string error;
     }
 

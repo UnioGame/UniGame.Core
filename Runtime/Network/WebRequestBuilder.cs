@@ -7,6 +7,7 @@ namespace UniModules.Runtime.Network
     using global::UniCore.Runtime.ProfilerTools;
     using UnityEngine;
     using UnityEngine.Networking;
+    using UnityEngine.Profiling;
 
     [Serializable]
     public class WebRequestBuilder
@@ -52,13 +53,13 @@ namespace UniModules.Runtime.Network
             Dictionary<string, string> headers = null)
         {
             var webRequest = BuildGetRequest(url, parameters, headers);
-            return await SendRequestAsync(webRequest);
+            return await SendRequestAsync(webRequest,typeof(string));
         }
         
         public async UniTask<WebServerResult> PostAsync(string url, WWWForm form)
         {
             var post = BuildPostRequest(url,form);
-            return await SendRequestAsync(post);
+            return await SendRequestAsync(post,typeof(string));
         }
         
         public async UniTask<WebServerResult> PostAsync(string url, 
@@ -66,7 +67,7 @@ namespace UniModules.Runtime.Network
             byte[] data = null)
         {
             var post = BuildPostRequest(url,headers:headers,bytes:data,contentType:ContentTypeBinary);
-            return await SendRequestAsync(post);
+            return await SendRequestAsync(post,typeof(string));
         }
         
         public async UniTask<WebServerResult> PostAsync(string url, 
@@ -74,7 +75,7 @@ namespace UniModules.Runtime.Network
             Dictionary<string,string> headers = null)
         {
             var post = BuildPostRequest(url,data,headers);
-            return await SendRequestAsync(post);
+            return await SendRequestAsync(post,typeof(string));
         }
         
         public string SetParameters(string url, Dictionary<string, string> parameters = null)
@@ -217,7 +218,7 @@ namespace UniModules.Runtime.Network
             
             SetHeaders(request, null);
             
-            var requestResult = await SendRequestAsync(request);
+            var requestResult = await SendRequestAsync(request,typeof(Texture2D));
             
             var result = new WebServerTexture2DResult()
             {
@@ -260,7 +261,7 @@ namespace UniModules.Runtime.Network
             return serverUrl.MergeUrl(path);
         }
 
-        private async UniTask<WebServerResult> SendRequestAsync(UnityWebRequest request)
+        private async UniTask<WebServerResult> SendRequestAsync(UnityWebRequest request,Type targetType)
         {
             try
             {
@@ -281,12 +282,22 @@ namespace UniModules.Runtime.Network
             
             var isSuccessful = request.result == UnityWebRequest.Result.Success;
             
-            return new WebServerResult
+            Profiler.BeginSample("WebRequestBuilder.SendRequestAsync.GetText");
+
+            var resultData = targetType == typeof(string)
+                ? request.downloadHandler.text
+                : string.Empty;
+            
+            var webResult =  new WebServerResult
             {
                 success = isSuccessful,
-                data = request.downloadHandler.text,
+                data = resultData,
                 error = request.error,
             };
+            
+            Profiler.EndSample();
+            
+            return webResult;
         }
         
 
