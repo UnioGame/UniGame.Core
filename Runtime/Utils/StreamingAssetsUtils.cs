@@ -6,16 +6,49 @@
     using UnityEngine;
     using UnityEngine.Networking;
     using Cysharp.Threading.Tasks;
+    using Newtonsoft.Json;
+    using UniModules;
 
-    public static class StreamingAssetsLoader
+    public static class StreamingAssetsUtils
     {
         private static string _applicationPath;
 
-        static StreamingAssetsLoader()
+        static StreamingAssetsUtils()
         {
             _applicationPath = Application.streamingAssetsPath;
         }
         
+        public static void SaveToStreamingAssets(string fileName,object value)
+        {
+#if UNITY_EDITOR
+            var path = Application.streamingAssetsPath.CombinePath(fileName);
+            var json = JsonUtility.ToJson(value, true);
+            File.WriteAllText(path, json);
+#endif
+        }
+
+        public static async UniTask<StreamingAssetResult<TValue>> LoadDataFromWeb<TValue>(string fileName)
+        {
+            var result = await LoadDataFromWeb(fileName);
+            if (!result.success)
+            {
+                return new StreamingAssetResult<TValue>()
+                {
+                    success = false,
+                    data = default,
+                    error = result.error,
+                };
+            }
+
+            var data = JsonConvert.DeserializeObject<TValue>(result.data);
+            return new StreamingAssetResult<TValue>()
+            {
+                success = true,
+                data = data,
+                error = null,
+            };
+        }
+
         public static async UniTask<StreamingAssetResult> LoadDataFromWeb(string fileName)
         {
             var path = Path.Combine(_applicationPath, fileName);
@@ -32,7 +65,7 @@
                 {
                     success = false,
                     data = null,
-                    Error = e
+                    error = e
                 };
             }
 
@@ -42,7 +75,7 @@
             {
                 success = true,
                 data = result,
-                Error = null
+                error = null
             };
         }
         
@@ -62,7 +95,7 @@
                 {
                     success = false,
                     data = null,
-                    Error = e
+                    error = e
                 };
             }
 
@@ -72,15 +105,22 @@
             {
                 success = true,
                 data = result,
-                Error = null
+                error = null
             };
         }
+    }
+    
+    public struct StreamingAssetResult<TValue>
+    {
+        public bool success;
+        public TValue data;
+        public Exception error;
     }
     
     public struct StreamingAssetResult
     {
         public bool success;
         public string data;
-        public Exception Error;
+        public Exception error;
     }
 }
