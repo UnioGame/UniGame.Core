@@ -24,7 +24,7 @@ namespace UniModules.Runtime.Network
         
         public string userToken = string.Empty;
         public bool addVersion = true;
-        public TextureFormat defaultTextureFormat = TextureFormat.ASTC_4x4;
+        // public TextureFormat defaultTextureFormat = TextureFormat.ASTC_4x4;
 
         private Vector2 _spritePivot = new(0.5f, 0.5f);
 
@@ -244,11 +244,11 @@ namespace UniModules.Runtime.Network
             if (!requestResult.success) return result;
             
             var texture = DownloadHandlerTexture.GetContent(request);
-            var compressedTexture = ConvertTextureFormat(texture,defaultTextureFormat);
-            if(compressedTexture!=texture)
-                Object.Destroy(texture);
+            // var compressedTexture = ConvertTextureFormat(texture,defaultTextureFormat);
+            // if(compressedTexture!=texture)
+            //     Object.Destroy(texture);
             
-            texture = compressedTexture;
+            // texture = compressedTexture;
             result.texture = texture;
             
             return result;
