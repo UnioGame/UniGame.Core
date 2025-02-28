@@ -26,6 +26,7 @@ namespace UniGame.Runtime.ObjectPool.Extensions
                 Despawn(asset);
                 return;
             }
+            
             ClassPool.Despawn(data);
         }
         

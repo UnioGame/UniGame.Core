@@ -98,7 +98,8 @@
             Vector3 position, 
             Quaternion rotation,
             Transform parent = null, 
-            bool stayWorld = false)
+            bool stayWorld = false,
+            bool setActive = false)
         {
 #if UNITY_EDITOR
             if (!asset) {
@@ -110,7 +111,7 @@
             // Attempt to spawn from the cache
             while (Cache.Count > 0) {
             
-                var clone = TakeFromCache(position, rotation, parent, stayWorld);
+                var clone = TakeFromCache(position, rotation, parent, stayWorld, setActive);
                 if(clone == null) continue;
                 return clone;
             }
@@ -219,7 +220,8 @@
             Vector3 position,
             Quaternion rotation,
             Transform parent = null,
-            bool stayWorld = false)
+            bool stayWorld = false,
+            bool setActive = false)
         {
             // Attempt to spawn from the cache
             while (Cache.Count > 0) {
@@ -231,7 +233,7 @@
                     continue;
                 }
                 
-                clone = ApplyGameAssetProperties(clone, position, rotation, parent, stayWorld);
+                clone = ApplyGameAssetProperties(clone, position, rotation, parent, stayWorld, setActive);
                 return clone;
             }
             
@@ -243,7 +245,8 @@
             Vector3 position,
             Quaternion rotation,
             Transform parent = null,
-            bool stayWorld = false)
+            bool stayWorld = false,
+            bool setActive = false)
         {
             if(count <= 0 || count > Cache.Count) return ObjectsItemResult.Empty;
             
@@ -254,7 +257,7 @@
             
             // Attempt to spawn from the cache
             while (Cache.Count > 0 && spawnedCount < count) {
-                var clone = TakeFromCache(position, rotation, parent, stayWorld);
+                var clone = TakeFromCache(position, rotation, parent, stayWorld, setActive);
                 if(clone == null) continue;
                 
                 result.Items[spawnedCount] = clone;
@@ -336,7 +339,7 @@
         }
         
         private GameObject ApplyGameAssetProperties(GameObject target, Vector3 position,
-            Quaternion rotation, Transform parent, bool stayWorldPosition = false)
+            Quaternion rotation, Transform parent, bool stayWorldPosition = false, bool setActive = false)
         {
             var transform = target.transform;
             transform.localPosition = position;
@@ -344,9 +347,8 @@
 
             if (transform.parent != parent)
                 transform.SetParent(parent, stayWorldPosition);
-
-            // Hide it
-            target.SetActive(false);
+            
+            target.SetActive(setActive);
 
             return target;
         }
