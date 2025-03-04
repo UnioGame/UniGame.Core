@@ -123,18 +123,24 @@ namespace UniGame.Runtime.ObjectPool.Extensions
             return pawn;
         }
         
-        public static GameObject Spawn(this GameObject prototype, Vector3 position, 
-            Quaternion rotation, Transform parent = null,
-            bool stayWorldPosition = false, bool setActive = false)
+        public static GameObject Spawn(this GameObject prototype, 
+            Vector3 position, 
+            Quaternion rotation, 
+            Transform parent = null,
+            bool stayWorldPosition = false, 
+            bool setActive = true)
         {
             if (!prototype) return null;
-            var pawn = Spawn(prototype,false, position, rotation, parent, stayWorldPosition);
+            var pawn = Spawn(prototype,setActive, position, 
+                rotation, parent, stayWorldPosition);
             return pawn;
         }
 
         public static GameObject Spawn(this GameObject prototype,bool activateOnSpawn,
             Vector3 position, Quaternion rotation,
-            Transform parent = null, bool stayWorldPosition = false, bool setActive = false)
+            Transform parent = null, 
+            bool stayWorldPosition = false, 
+            bool setActive = false)
         {
             if (!prototype) return null;
             var pawn = ObjectPool.Spawn(prototype,activateOnSpawn, position, rotation, parent, stayWorldPosition,0,setActive);
