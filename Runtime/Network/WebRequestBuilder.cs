@@ -310,13 +310,14 @@ namespace UniModules.Runtime.Network
             }
             catch (Exception e)
             {
-                GameLog.LogError("error on web request: " + e.Message);
+                var errorMessage = $"error on web request: {request.url} | {e.Message}";
+                GameLog.LogError( errorMessage);
                 
                 return new WebServerResult
                 {
                     success = false,
                     data = null,
-                    error = e.Message,
+                    error = errorMessage,
                     responseCode = request.responseCode,
                 };
             }
