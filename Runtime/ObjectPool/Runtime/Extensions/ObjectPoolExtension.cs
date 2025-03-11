@@ -36,11 +36,12 @@ namespace UniGame.Runtime.ObjectPool.Extensions
             Vector3 position,
             Quaternion rotation, 
             Transform parent = null,
-            bool stayWorldPosition = false)
+            bool stayWorldPosition = false,
+            bool setActive = false)
             where T : Object
         {
             if (!prototype) return null;
-            var pawn = ObjectPool.Spawn<T>(prototype, position, rotation, parent, stayWorldPosition);
+            var pawn = ObjectPool.Spawn<T>(prototype, position, rotation, parent, stayWorldPosition,setActive);
             return pawn;
         }
         
@@ -122,21 +123,27 @@ namespace UniGame.Runtime.ObjectPool.Extensions
             return pawn;
         }
         
-        public static GameObject Spawn(this GameObject prototype, Vector3 position, 
-            Quaternion rotation, Transform parent = null,
-            bool stayWorldPosition = false)
+        public static GameObject Spawn(this GameObject prototype, 
+            Vector3 position, 
+            Quaternion rotation, 
+            Transform parent = null,
+            bool stayWorldPosition = false, 
+            bool setActive = true)
         {
             if (!prototype) return null;
-            var pawn = Spawn(prototype,false, position, rotation, parent, stayWorldPosition);
+            var pawn = Spawn(prototype,setActive, position, 
+                rotation, parent, stayWorldPosition);
             return pawn;
         }
 
         public static GameObject Spawn(this GameObject prototype,bool activateOnSpawn,
             Vector3 position, Quaternion rotation,
-            Transform parent = null, bool stayWorldPosition = false)
+            Transform parent = null, 
+            bool stayWorldPosition = false, 
+            bool setActive = false)
         {
             if (!prototype) return null;
-            var pawn = ObjectPool.Spawn(prototype,activateOnSpawn, position, rotation, parent, stayWorldPosition,0);
+            var pawn = ObjectPool.Spawn(prototype,activateOnSpawn, position, rotation, parent, stayWorldPosition,0,setActive);
             return pawn;
         }
         

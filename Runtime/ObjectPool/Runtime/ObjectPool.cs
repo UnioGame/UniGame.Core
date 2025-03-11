@@ -29,7 +29,7 @@ namespace UniGame.Runtime.ObjectPool
             return PoolAsset.AttachToLifeTime(poolAsset, lifeTime, createIfEmpty,preload);
         }
 
-        public static bool HasCustomPoolLifeTimeFor(this Object poolAsset)
+        public static bool HasCustomPoolLifeTime(this Object poolAsset)
         {
             var originLifeTime = PoolAsset.LifeTime;
             var pool = PoolAsset.GetPool(poolAsset);
@@ -72,10 +72,11 @@ namespace UniGame.Runtime.ObjectPool
             Vector3 position,
             Quaternion rotation, 
             Transform parent = null,
-            bool stayWorld = false)
+            bool stayWorld = false,
+            bool setActive = false)
             where T : Object
         {
-            return PoolAsset.Spawn<T>(target,position,rotation,parent,stayWorld);
+            return PoolAsset.Spawn<T>(target,position,rotation,parent,stayWorld,setActive);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -113,9 +114,10 @@ namespace UniGame.Runtime.ObjectPool
             return PoolAsset.Spawn(prefab,position,rotation,parent,stayWorld,preload);
         }
 
-        public static  GameObject Spawn(GameObject prefab,bool activate, Vector3 position, Quaternion rotation, Transform parent = null,bool stayWorld = false,int preload = 0)
+        public static  GameObject Spawn(GameObject prefab,bool activate, Vector3 position, Quaternion rotation, 
+            Transform parent = null, bool stayWorld = false, int preload = 0, bool setActive = false)
         {
-            return PoolAsset.Spawn(prefab,activate,position,rotation,parent,stayWorld,preload);
+            return PoolAsset.Spawn(prefab,activate,position,rotation,parent,stayWorld,preload,setActive);
         }
         
         public static void CreatePool(Component targetPrefab, int preloads = 0)

@@ -95,6 +95,11 @@ namespace UniModules.UniCore.Runtime.DataFlow
         /// is lifetime terminated
         /// </summary>
         public bool IsTerminated => isTerminated;
+        
+        /// <summary>
+        /// is lifetime alive
+        /// </summary>
+        public bool IsAlive => !isTerminated;
 
         public CancellationToken Token
         {

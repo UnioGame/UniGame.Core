@@ -114,7 +114,8 @@ namespace UniGame.Runtime.ObjectPool
             Vector3 position, 
             Quaternion rotation, 
             Transform parent = null,
-            bool stayWorld = false) where T : class
+            bool stayWorld = false,
+            bool setActive = false) where T : class
         {
 #if UNITY_EDITOR
             if (Application.isPlaying == false) return default;
@@ -128,7 +129,7 @@ namespace UniGame.Runtime.ObjectPool
             
             // Clone this prefabs's GameObject
             var asset = isComponent ? component.gameObject : target;
-            var clone = Spawn(asset, position, rotation, parent, stayWorld, 0);
+            var clone = Spawn(asset, position, rotation, parent, stayWorld, 0, setActive);
 
             var result = isComponent && clone is GameObject gameAsset 
                 ? gameAsset.GetComponent<T>() 
@@ -167,12 +168,12 @@ namespace UniGame.Runtime.ObjectPool
         }
 
         public GameObject Spawn(GameObject prefab,bool activate,
-            Vector3 position, Quaternion rotation, Transform parent,bool stayWorld, int preload)
+            Vector3 position, Quaternion rotation, Transform parent,bool stayWorld, int preload, bool setActive = false)
         {
 #if UNITY_EDITOR
             if (Application.isPlaying == false) return null;
 #endif
-            var pawn = Spawn(prefab, position, rotation, parent, stayWorld, preload) as GameObject;
+            var pawn = Spawn(prefab, position, rotation, parent, stayWorld, preload, setActive) as GameObject;
             pawn?.SetActive(activate);
             return pawn;
         }
@@ -195,7 +196,8 @@ namespace UniGame.Runtime.ObjectPool
             Quaternion rotation, 
             Transform parent,
             bool stayWorld, 
-            int preload)
+            int preload,
+            bool setActive = false)
         {
 #if UNITY_EDITOR
             if (Application.isPlaying == false) return null;
@@ -220,7 +222,7 @@ namespace UniGame.Runtime.ObjectPool
             
             var pool = CreatePool(prefab, preload);
             // Spawn a clone from this pool
-            var clone = pool.Spawn(position, rotation, parent,stayWorld);
+            var clone = pool.Spawn(position, rotation, parent,stayWorld, setActive);
 
             allCloneLinks[clone] = pool;
             
@@ -232,7 +234,8 @@ namespace UniGame.Runtime.ObjectPool
             Vector3 position, 
             Quaternion rotation,
             Transform parent,
-            bool stayWorld = false)
+            bool stayWorld = false,
+            bool setActive = false)
         {
             
 #if UNITY_EDITOR
@@ -259,7 +262,7 @@ namespace UniGame.Runtime.ObjectPool
             var pool = CreatePool(prefab);
             
             // Spawn a clone from this pool
-            var clone = pool.Spawn(position, rotation, parent,stayWorld);
+            var clone = pool.Spawn(position, rotation, parent,stayWorld, setActive);
             
             allCloneLinks[clone] = pool;
             return clone;
