@@ -6,9 +6,19 @@ namespace UniModules.Runtime.Network
     [Serializable]
     public struct WebServerResult
     {
+        public const string NotResponseError = "Not response";
+        public static readonly WebServerResult NotResponse = new WebServerResult()
+        {
+            success = false,
+            data = null,
+            error = NotResponseError,
+            responseCode = 0
+        };
+        
         public bool success;
         public object data;
         public string error;
+        public long responseCode;
     }
 
     [Serializable]

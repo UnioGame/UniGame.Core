@@ -13,6 +13,7 @@
         };
 
         public string url;
+        public int timeout;
         public Dictionary<string, string> form;
         public Dictionary<string, string> headers;
         public Dictionary<string, string> parameters;

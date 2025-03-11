@@ -50,9 +50,14 @@ namespace UniModules.Runtime.Network
                 
         public async UniTask<WebServerResult> GetAsync(string url,
             Dictionary<string, string> parameters = null,
-            Dictionary<string, string> headers = null)
+            Dictionary<string, string> headers = null,
+            int timeout = 0,
+            Action<UnityWebRequest> webRequestAction = null)
         {
-            var webRequest = BuildGetRequest(url, parameters, headers);
+            var webRequest = BuildGetRequest(url, parameters, headers,timeout);
+            
+            webRequestAction?.Invoke(webRequest);
+            
             return await SendRequestAsync(webRequest,typeof(string));
         }
         
@@ -72,10 +77,15 @@ namespace UniModules.Runtime.Network
         
         public async UniTask<WebServerResult> PostAsync(string url, 
             string data = null,
-            Dictionary<string,string> headers = null)
+            Dictionary<string,string> headers = null,
+            int timeout = 0,
+            Action<UnityWebRequest> webRequestAction = null)
         {
-            var post = BuildPostRequest(url,data,headers);
-            return await SendRequestAsync(post,typeof(string));
+            var request = BuildPostRequest(url,data,headers,timeout);
+            
+            webRequestAction?.Invoke(request);
+            
+            return await SendRequestAsync(request,typeof(string));
         }
         
         public string SetParameters(string url, Dictionary<string, string> parameters = null)
@@ -123,13 +133,17 @@ namespace UniModules.Runtime.Network
         public UnityWebRequest BuildGetRequest(
             string url,
             Dictionary<string, string> parameters = null,
-            Dictionary<string, string> headers = null)
+            Dictionary<string, string> headers = null,
+            int timeout = 0)
         {
             SetParameters(url, parameters);
             
             
             var webRequest = UnityWebRequest.Get(url);
             webRequest = SetHeaders(webRequest, headers);
+            
+            if(timeout > 0)
+                webRequest.timeout = timeout;
 
 #if UNITY_EDITOR
             GameLog.Log("[WeRequest]: Get | " + webRequest.url, Color.cyan);
@@ -146,7 +160,8 @@ namespace UniModules.Runtime.Network
         public UnityWebRequest BuildPostRequest(
             string url,
             string json = null,
-            Dictionary<string,string> headers = null)
+            Dictionary<string,string> headers = null,
+            int timeout = 0)
         {
             json ??= string.Empty;
             
@@ -160,9 +175,11 @@ namespace UniModules.Runtime.Network
                 contentType = ContentTypeJson,
                 headers = headers,
                 url = url,
+                timeout = timeout,
             };
             
-            return BuildPostRequest(postData);
+            var request = BuildPostRequest(postData);
+            return request;
         }
         
         public UnityWebRequest BuildPostRequest(
@@ -205,6 +222,8 @@ namespace UniModules.Runtime.Network
 #if UNITY_EDITOR
             GameLog.Log($"[WeRequest]: Post | {webRequest.url}", Color.cyan);
 #endif
+            if(postData.timeout > 0)
+                webRequest.timeout = postData.timeout;
             
             return webRequest;
         }
@@ -298,6 +317,7 @@ namespace UniModules.Runtime.Network
                     success = false,
                     data = null,
                     error = e.Message,
+                    responseCode = request.responseCode,
                 };
             }
             
