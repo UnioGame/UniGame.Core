@@ -344,5 +344,4 @@ namespace UniModules.Runtime.Network
         //public string GetInviteUrl(string uuid) => $"https://t.me/{_settings.bot}?start=ref{uuid}";
     }
     
-    
 }

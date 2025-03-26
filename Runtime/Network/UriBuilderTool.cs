@@ -3,9 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
+    using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Text;
-    
+    using System.Text.RegularExpressions;
     using UnityEngine;
     using UnityEngine.Networking;
     
@@ -30,12 +31,74 @@
         }
         
 #endif
+        
+                #region url pattern updater
+
+        
+
+        
+        public static Regex UrlPatternRegex = new Regex("{([a-zA-Z0-9_]+)}");
+        
+        public static BindingFlags UrlBindingFlags = BindingFlags.Public | BindingFlags.Instance 
+                                                                         | BindingFlags.NonPublic 
+                                                                         | BindingFlags.IgnoreCase;
+        
+        public static string UpdateUrlPattern(this string url,object source)
+        {
+            if(source == null) return url;
+            
+            var matches = UrlPatternRegex.Matches(url);
+            var result = url;
+            
+            foreach (Match match in matches)
+            {
+                result = UpdatePattern(result,source,match);
+            }
+
+            return result;
+        }
+        
+        public static string UpdatePattern(string url,object source,Match match)
+        {
+            var matchValue = match.Value;
+            var thisType = source.GetType();
+            var result = url;
+            if(match.Groups.Count < 2) return result;
+        
+            var group = match.Groups[1];
+        
+            var value = group.Value;
+            var field = thisType.GetField(value, UrlBindingFlags);
+            var replaceValue = string.Empty;
+            
+            if (field != null)
+            {
+                var fieldValue = field.GetValue(source);
+                if (fieldValue != null)
+                    replaceValue = fieldValue.ToString();
+            }
+            
+            var property = thisType.GetProperty(value, UrlBindingFlags);
+            if (property != null)
+            {
+                var propertyValue = property.GetValue(source);
+                if (propertyValue != null)
+                    replaceValue = propertyValue.ToString();
+            }
+            
+            result = result.Replace(matchValue, replaceValue);
+
+            return result;
+        }
+        
+        
+        #endregion
 
         public static NameValueCollection ParseQueryString(this string query)
         {
             return ParseQueryString(query, Encoding.UTF8);
         }
-
+        
         public static NameValueCollection ParseQueryString(this string query, Encoding encoding)
         {
 #if NET_STANDARD
