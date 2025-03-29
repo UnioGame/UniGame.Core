@@ -17,6 +17,7 @@ namespace UniModules.Runtime.Network
         public const string ContentTypeBinary = "application/octet-stream";
         public const string BearerValue = "Bearer {0}";
         public const string VersionParameter = "v";
+        public const string PatchRequest = "PATCH";
         
         public static readonly Dictionary<string,string> EmptyData = new();
         public static readonly Sprite EmptySprite = Sprite
@@ -85,6 +86,18 @@ namespace UniModules.Runtime.Network
             
             webRequestAction?.Invoke(request);
             
+            return await SendRequestAsync(request,typeof(string));
+        }
+        
+        public async UniTask<WebServerResult> PatchAsync(string url, 
+            string data = null,
+            Dictionary<string,string> headers = null,
+            int timeout = 0,
+            Action<UnityWebRequest> webRequestAction = null)
+        {
+            var request = BuildPostRequest(url,data,headers,timeout);
+            request.method = PatchRequest;
+            webRequestAction?.Invoke(request);
             return await SendRequestAsync(request,typeof(string));
         }
         
