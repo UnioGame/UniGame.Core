@@ -149,8 +149,7 @@ namespace UniModules.Runtime.Network
             Dictionary<string, string> headers = null,
             int timeout = 0)
         {
-            SetParameters(url, parameters);
-            
+            url = SetParameters(url, parameters);
             
             var webRequest = UnityWebRequest.Get(url);
             webRequest = SetHeaders(webRequest, headers);
