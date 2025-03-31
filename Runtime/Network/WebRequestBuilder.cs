@@ -232,8 +232,9 @@ namespace UniModules.Runtime.Network
             }
             
 #if UNITY_EDITOR
-            GameLog.Log($"[WeRequest]: Post | {webRequest.url}", Color.cyan);
+            GameLog.Log($"[WeRequest]: {webRequest.method} | {webRequest.url}", Color.cyan);
 #endif
+            
             if(postData.timeout > 0)
                 webRequest.timeout = postData.timeout;
             
