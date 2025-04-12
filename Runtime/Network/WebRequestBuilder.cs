@@ -49,7 +49,7 @@ namespace UniModules.Runtime.Network
             return signUpUrl;
         }
                 
-        public async UniTask<WebServerResult> GetAsync(string url,
+        public async UniTask<WebRequestResult> GetAsync(string url,
             Dictionary<string, string> parameters = null,
             Dictionary<string, string> headers = null,
             int timeout = 0,
@@ -62,13 +62,13 @@ namespace UniModules.Runtime.Network
             return await SendRequestAsync(webRequest,typeof(string));
         }
         
-        public async UniTask<WebServerResult> PostAsync(string url, WWWForm form)
+        public async UniTask<WebRequestResult> PostAsync(string url, WWWForm form)
         {
             var post = BuildPostRequest(url,form);
             return await SendRequestAsync(post,typeof(string));
         }
         
-        public async UniTask<WebServerResult> PostAsync(string url, 
+        public async UniTask<WebRequestResult> PostAsync(string url, 
             Dictionary<string,string> headers = null, 
             byte[] data = null)
         {
@@ -76,7 +76,7 @@ namespace UniModules.Runtime.Network
             return await SendRequestAsync(post,typeof(string));
         }
         
-        public async UniTask<WebServerResult> PostAsync(string url, 
+        public async UniTask<WebRequestResult> PostAsync(string url, 
             string data = null,
             Dictionary<string,string> headers = null,
             int timeout = 0,
@@ -89,7 +89,7 @@ namespace UniModules.Runtime.Network
             return await SendRequestAsync(request,typeof(string));
         }
         
-        public async UniTask<WebServerResult> PatchAsync(string url, 
+        public async UniTask<WebRequestResult> PatchAsync(string url, 
             string data = null,
             Dictionary<string,string> headers = null,
             int timeout = 0,
@@ -314,7 +314,7 @@ namespace UniModules.Runtime.Network
             return serverUrl.MergeUrl(path);
         }
 
-        private async UniTask<WebServerResult> SendRequestAsync(UnityWebRequest request,Type targetType)
+        private async UniTask<WebRequestResult> SendRequestAsync(UnityWebRequest request,Type targetType)
         {
             try
             {
@@ -325,14 +325,6 @@ namespace UniModules.Runtime.Network
             {
                 var errorMessage = $"error on web request: {request.url} | {e.Message}";
                 GameLog.LogError( errorMessage);
-                
-                return new WebServerResult
-                {
-                    success = false,
-                    data = null,
-                    error = errorMessage,
-                    responseCode = request.responseCode,
-                };
             }
             
             var isSuccessful = request.result == UnityWebRequest.Result.Success;
@@ -341,20 +333,18 @@ namespace UniModules.Runtime.Network
                 ? request.downloadHandler.text
                 : string.Empty;
             
-            var webResult =  new WebServerResult
+            var webResult =  new WebRequestResult
             {
                 success = isSuccessful,
                 data = resultData,
                 error = request.error,
+                httpError = request.result == UnityWebRequest.Result.ProtocolError,
+                networkError = request.result == UnityWebRequest.Result.ConnectionError,
+                responseCode = request.responseCode,
             };
             
             return webResult;
         }
-        
-
-        // https://t.me/ТВОЙБОТ?start=refПОЛЬЗОВАТЕЛЬUUID
-        // (https://t.me/share/url?url=https://t.me/%D0%A2%D0%92%D0%9E%D0%99%D0%91%D0%9E%D0%A2?start=ref%D0%9F%D0%9E%D0%9B%D0%AC%D0%97%D0%9E%D0%92%D0%90%D0%A2%D0%95%D0%9B%D0%ACUUID)
-        //public string GetInviteUrl(string uuid) => $"https://t.me/{_settings.bot}?start=ref{uuid}";
     }
     
 }

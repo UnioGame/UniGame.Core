@@ -4,10 +4,10 @@ namespace UniModules.Runtime.Network
     using UnityEngine;
 
     [Serializable]
-    public struct WebServerResult
+    public struct WebRequestResult
     {
         public const string NotResponseError = "Not response";
-        public static readonly WebServerResult NotResponse = new WebServerResult()
+        public static readonly WebRequestResult NotResponse = new WebRequestResult()
         {
             success = false,
             data = null,
@@ -16,6 +16,8 @@ namespace UniModules.Runtime.Network
         };
         
         public bool success;
+        public bool networkError;
+        public bool httpError;
         public object data;
         public string error;
         public long responseCode;
