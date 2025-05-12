@@ -337,6 +337,7 @@ namespace UniModules.Runtime.Network
             
             var webResult =  new WebRequestResult
             {
+                url = request.url,
                 success = isSuccessful,
                 data = resultData,
                 error = request.error,

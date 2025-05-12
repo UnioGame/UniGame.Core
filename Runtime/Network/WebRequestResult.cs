@@ -15,6 +15,7 @@ namespace UniModules.Runtime.Network
             responseCode = 0
         };
         
+        public string url;
         public bool success;
         public bool networkError;
         public bool httpError;
