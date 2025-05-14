@@ -11,6 +11,11 @@
         {
         }
 
+        public void LogImportant(string message)
+        {
+            
+        }
+
         public void LogFormatWithTrace(string template, params object[] values)
         {
         }
@@ -69,6 +74,10 @@
         }
 
         public void LogRuntime(string message, Object source = null)
+        {
+        }
+
+        public void LogException(Exception e)
         {
         }
     }

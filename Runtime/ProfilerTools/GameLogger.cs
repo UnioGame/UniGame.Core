@@ -8,7 +8,11 @@
     using UnityEngine;
     using Debug = UnityEngine.Debug;
     using Object = UnityEngine.Object;
-
+    
+#if ENABLE_FIREBASE_CRASHLYTICS
+    using Firebase.Crashlytics;
+#endif
+    
     public class GameLogger : IGameLogger
     {
         private const string NameTemplate = @"[{0} #{1}]:";
@@ -35,6 +39,15 @@
             LogRuntime(message, source);
 
 #endif
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void LogImportant(string message)
+        {
+#if ENABLE_FIREBASE_CRASHLYTICS
+            Crashlytics.Log(message);
+#endif
+            LogRuntime(message);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -121,10 +134,23 @@
             var message = ZString.Format(template, values);
             Debug.LogWarning(GetLogMessageWithPrefix(message));
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void LogException(Exception e)
+        {
+#if ENABLE_FIREBASE_CRASHLYTICS
+            Crashlytics.LogException(e);
+#endif
+            Debug.LogException(e);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LogError(string message, Object source = null)
         {
+#if ENABLE_FIREBASE_CRASHLYTICS
+            Crashlytics.Log($"ERROR: {message}");
+#endif
+            
             if (source) {
                 Debug.LogError(message, source);
                 return;

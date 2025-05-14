@@ -7,6 +7,7 @@ namespace UniCore.Runtime.ProfilerTools.Interfaces
     public interface IGameLogger
     {
         void Log(string message, Object source = null);
+        void LogImportant(string message);
         void LogFormatWithTrace(string template, params object[] values);
         void LogFormat(string template, Color color, params object[] values);
         void Log(string message, Color color, Object source = null);
@@ -22,5 +23,6 @@ namespace UniCore.Runtime.ProfilerTools.Interfaces
         void LogRuntime(string message, Color color, Object source = null);
         string GetColorTemplate(string message, Color color);
         void LogRuntime(string message, Object source = null);
+        void LogException(Exception e);
     }
 }

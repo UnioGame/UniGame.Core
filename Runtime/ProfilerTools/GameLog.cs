@@ -36,16 +36,22 @@
         
         [Conditional("UNITY_EDITOR"), 
          Conditional("GAME_LOGS_ENABLED"),
-         Conditional("DEBUG")]
+         Conditional("GAME_DEBUG")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Log(string message, Object source = null)
         {
             Logger.Log(message, source);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void LogImportant(string message)
+        {
+            Logger.LogImportant(message);
+        }
+        
         [Conditional("UNITY_EDITOR"), 
          Conditional("GAME_LOGS_ENABLED"),
-         Conditional("DEBUG")]
+         Conditional("GAME_DEBUG")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void LogFormatWithTrace(string template, params object[] values)
         {
@@ -54,7 +60,7 @@
 
         [Conditional("UNITY_EDITOR"), 
          Conditional("GAME_LOGS_ENABLED"),
-         Conditional("DEBUG")]
+         Conditional("GAME_DEBUG")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void LogFormat(string template, Color color, params object[] values)
         {
@@ -63,7 +69,7 @@
 
         [Conditional("UNITY_EDITOR"), 
          Conditional("GAME_LOGS_ENABLED"),
-         Conditional("DEBUG")]
+         Conditional("GAME_DEBUG")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Log(string message, Color color, Object source = null) {
             Logger.Log(message, color, source);
@@ -71,7 +77,7 @@
 
         [Conditional("UNITY_EDITOR"), 
          Conditional("GAME_LOGS_ENABLED"),
-         Conditional("DEBUG")]
+         Conditional("GAME_DEBUG")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void LogWarning(string message, Color color, Object source = null)
         {
@@ -95,7 +101,7 @@
         
         [Conditional("UNITY_EDITOR"), 
          Conditional("GAME_LOGS_ENABLED"),
-         Conditional("DEBUG")]
+         Conditional("GAME_DEBUG")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void LogWarning(string message, Object source = null)
         {
@@ -104,7 +110,7 @@
 
         [Conditional("UNITY_EDITOR"), 
          Conditional("GAME_LOGS_ENABLED"),
-         Conditional("DEBUG")]
+         Conditional("GAME_DEBUG")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void LogWarningFormat(string template, params object[] values)
         {
@@ -113,7 +119,7 @@
 
         [Conditional("UNITY_EDITOR"), 
          Conditional("GAME_LOGS_ENABLED"),
-         Conditional("DEBUG")]
+         Conditional("GAME_DEBUG")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void LogFormat(string template, params object[] values)
         {
@@ -122,7 +128,7 @@
 
         [Conditional("UNITY_EDITOR"), 
          Conditional("GAME_LOGS_ENABLED"),
-         Conditional("DEBUG")]
+         Conditional("GAME_DEBUG")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void LogMessage(string template, params object[] values)
         {
@@ -133,6 +139,12 @@
         public static void LogError(string message, Object source = null)
         {
             Logger.LogError(message, source);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void LogException(Exception e)
+        {
+            Logger.LogException(e);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
