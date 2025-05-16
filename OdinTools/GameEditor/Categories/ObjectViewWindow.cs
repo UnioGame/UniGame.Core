@@ -3,7 +3,7 @@ using Sirenix.OdinInspector.Editor;
 using Sirenix.Utilities.Editor;
 using UnityEngine;
 
-namespace UniModules.Editor.OdinTools.GameEditor.Categories
+namespace UniModules.GameEditor.Categories
 {
     public class ObjectViewWindow : OdinEditorWindow
     {

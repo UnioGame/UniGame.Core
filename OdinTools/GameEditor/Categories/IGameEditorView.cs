@@ -1,4 +1,4 @@
-﻿namespace UniModules.Editor.OdinTools.GameEditor.Categories
+﻿namespace UniModules.GameEditor.Categories
 {
     public interface IGameEditorView
     {

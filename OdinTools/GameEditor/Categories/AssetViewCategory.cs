@@ -1,7 +1,7 @@
 using System;
 using UniModules.Editor;
 
-namespace UniModules.Editor.OdinTools.GameEditor.Categories
+namespace UniModules.GameEditor.Categories
 {
     using Object = UnityEngine.Object;
     

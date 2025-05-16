@@ -3,8 +3,10 @@ using Sirenix.OdinInspector;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
-namespace UniModules.Editor.OdinTools.GameEditor.Categories
+namespace UniModules.GameEditor.Categories
 {
+    using Editor;
+
     [Serializable]
     public class AssetObjectCategory : ViewCategory<Object>
     {

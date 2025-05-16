@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UniModules.Editor.OdinTools.GameEditor.Categories
+namespace UniModules.GameEditor.Categories
 {
     using System.Collections.Generic;
     using System.Linq;

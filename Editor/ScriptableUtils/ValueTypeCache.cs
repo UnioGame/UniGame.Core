@@ -13,7 +13,7 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
     using UnityEditor;
     using UnityEngine;
 
-    public static class GeneratedTypeItem
+    public static class ValueTypeCache
     {
         private static MemorizeItem<Type, ScriptableObject> _assetCache = 
             MemorizeTool.Memorize<Type, ScriptableObject>(null);
@@ -27,6 +27,14 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
         
         public static bool IsInitialized => _initialized;
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Reset()
+        {
+            _initialized = false;
+            _assetPath = string.Empty;
+            _callbacks?.Clear();
+        }
+        
         public static string GetAssetPath<TAsset>(bool includeNamespace = false) where TAsset : ScriptableObject
         {
             var targetType = typeof(TAsset);

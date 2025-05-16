@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace UniModules.Editor.OdinTools.GameEditor.Categories
+namespace UniModules.GameEditor.Categories
 {
     public class EmptyDrawer : ScriptableObject
     {

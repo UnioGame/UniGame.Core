@@ -1,37 +1,33 @@
-﻿namespace UniModules.Editor.OdinTools.GameEditor
+﻿namespace UniModules.GameEditor
 {
     using System.Collections.Generic;
     using System.Linq;
     using Sirenix.OdinInspector.Editor;
     using Categories;
     using UniCore.Runtime.DataFlow;
-    
+    using UniGame.Core.Editor.EditorProcessors;
+
     public class GeneralGameEditorWindow<TConfiguration> : OdinMenuEditorWindow
-        where TConfiguration : BaseEditorConfiguration<TConfiguration>
+        where TConfiguration : BaseEditorConfiguration
     {
+        #region private data
 
         private TConfiguration _configuration;
-
         private HashSet<OdinMenuItem> _selectedItems = new();
         private List<IGameEditorCategory> _categories = new();
         private LifeTimeDefinition _lifeTimeDefinition = new();
+        
+        #endregion
 
-        protected override void Initialize()
+        public TConfiguration Configuration
         {
-            base.Initialize();
-            
-            _lifeTimeDefinition?.Release();
-            _lifeTimeDefinition = new LifeTimeDefinition();
-            
-            _configuration = AssetEditorTools.GetAsset<TConfiguration>();
-            _configuration = _configuration == null
-                ? BaseEditorConfiguration<TConfiguration>.Asset
-                : _configuration;
-
-            _configuration.UpdateAction -= Rebuild;
-            _configuration.UpdateAction += Rebuild;
-
-            Rebuild();
+            get
+            {
+                if(_configuration!= null)
+                    return _configuration;
+                _configuration = ValueTypeCache.LoadAsset<TConfiguration>();
+                return _configuration;
+            }
         }
 
         private void Rebuild()
@@ -39,9 +35,24 @@
             ForceMenuTreeRebuild();
         }
         
+        protected override void Initialize()
+        {
+            base.Initialize();
+            
+            _lifeTimeDefinition?.Release();
+            _lifeTimeDefinition = new LifeTimeDefinition();
+            var configuration = Configuration;
+            configuration.UpdateAction -= Rebuild;
+            configuration.UpdateAction += Rebuild;
+
+            Rebuild();
+        }
+        
         protected override OdinMenuTree BuildMenuTree()
         {
-            _categories = new List<IGameEditorCategory>(_configuration.categories);
+            var configuration = Configuration;
+            
+            _categories = new List<IGameEditorCategory>(configuration.categories);
             
             var tree = new OdinMenuTree(false)
             {
@@ -50,24 +61,25 @@
                 }
             };
 
-            tree.DefaultMenuStyle.IconSize             = 24.00f;
-            tree.DefaultMenuStyle.IconOffset           = -6.00f;
-            tree.DefaultMenuStyle.NotSelectedIconAlpha = 0.90f;
-            tree.DefaultMenuStyle.IconPadding          = 2.00f;
+            
+            tree.DefaultMenuStyle.IconSize             = configuration.iconSize;
+            tree.DefaultMenuStyle.IconOffset           = configuration.iconOffset;
+            tree.DefaultMenuStyle.NotSelectedIconAlpha = configuration.notSelectedIconAlpha;
+            tree.DefaultMenuStyle.IconPadding          = configuration.iconPadding;
 
-            foreach (var category in _configuration.editorGroups)
-            {
-                if(string.IsNullOrEmpty(category.Name))continue;
-                
-                tree.Add(category.Name,null,category.Icon);
-            }
+            // foreach (var category in _configuration.editorGroups)
+            // {
+            //     if(string.IsNullOrEmpty(category.Name))continue;
+            //     
+            //     tree.Add(category.Name,null,category.Icon);
+            // }
 
             foreach (var editorCategory in _categories)
             {
                 AddEditorCategory(editorCategory,editorCategory.Category,tree);
             }
             
-            tree.Add(_configuration.Category,_configuration,_configuration.Icon);
+            tree.Add(configuration.Category,configuration,configuration.Icon);
             
             var firstCategory = _categories.FirstOrDefault();
             if (firstCategory != null)
@@ -102,7 +114,7 @@
             if (editorCategory is not {Enabled: true}) 
                 return;
                 
-            editorCategory.SetupConfiguration(_configuration);
+            editorCategory.SetupConfiguration(Configuration);
                 
             var category = editorCategory.UpdateCategory();
             var viewer = category.CreateDrawer();
@@ -125,12 +137,11 @@
         private string GetFullPath(IGameEditorCategory category) => $"{category.Category}/{category.Name}";
         
         private string GetFullPath(IGameEditorCategory category,string categoryName) => $"{categoryName}/{category.Name}";
-
-
+        
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            _configuration.UpdateAction -= Rebuild;
+            Configuration.UpdateAction -= Rebuild;
             _lifeTimeDefinition.Release();
         }
     }

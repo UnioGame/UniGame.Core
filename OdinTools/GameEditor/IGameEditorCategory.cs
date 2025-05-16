@@ -1,7 +1,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace UniModules.Editor.OdinTools.GameEditor
+namespace UniModules.GameEditor
 {
     using System.Collections.Generic;
 

@@ -2,7 +2,7 @@ using Sirenix.OdinInspector;
 using UniModules.Editor;
 using UnityEngine;
 
-namespace UniModules.Editor.OdinTools.GameEditor.Categories
+namespace UniModules.GameEditor.Categories
 {
     [HideLabel]
     [InlineProperty]

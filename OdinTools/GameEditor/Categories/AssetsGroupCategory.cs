@@ -4,7 +4,7 @@ using Sirenix.OdinInspector;
 using UniModules.Editor;
 using Object = UnityEngine.Object;
 
-namespace UniModules.Editor.OdinTools.GameEditor.Categories
+namespace UniModules.GameEditor.Categories
 {
     [Serializable]
     public class AssetsGroupCategory<TAsset> : ViewCategory<List<TAsset>>

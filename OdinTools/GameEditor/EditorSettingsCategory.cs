@@ -1,12 +1,15 @@
-namespace UniModules.Editor.OdinTools.GameEditor
+namespace UniModules.GameEditor
 {
     using System;
+    using Sirenix.OdinInspector;
     using UnityEngine;
 
     [Serializable]
-    public class EditorSettingsCategory// : IGameEditorCategory
+    public class EditorSettingsCategory : IGameEditorCategory
     {
         public string name;
+        
+        [PreviewField]
         public Sprite icon;
 
         public virtual bool   Enabled        => true;
@@ -17,6 +20,11 @@ namespace UniModules.Editor.OdinTools.GameEditor
         public virtual object CreateDrawer() => icon;
         
         public void SetupConfiguration(BaseEditorConfiguration configuration) { }
+        
+        public IGameEditorCategory UpdateCategory()
+        {
+            return this;
+        }
 
         //public IGameEditorCategory UpdateCategory() => this;
 

@@ -1,9 +1,6 @@
-using UniModules.UniGame.Core.Editor.EditorProcessors;
-
-namespace UniModules.Editor.OdinTools.GameEditor
+namespace UniModules.GameEditor
 {
-    [GeneratedAssetInfo("UniGame/Editors/Assets/" + nameof(GameEditorConfiguration))]
-    public class GameEditorConfiguration : BaseEditorConfiguration<GameEditorConfiguration>, IGameEditorCategory
+    public class GameEditorConfiguration : BaseEditorConfiguration
     {
 
     }

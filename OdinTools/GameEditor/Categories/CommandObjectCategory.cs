@@ -2,7 +2,7 @@ using System;
 using UniGame.Core.Runtime;
 using UnityEngine;
 
-namespace UniModules.Editor.OdinTools.GameEditor.Categories
+namespace UniModules.GameEditor.Categories
 {
     [Serializable]
     public class CommandObjectCategory : GameEditorCategory

@@ -5,65 +5,102 @@ using UniModules.UniGame.Core.Editor.EditorProcessors;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace UniModules.Editor.OdinTools.GameEditor
+namespace UniModules.GameEditor
 {
-    public class BaseEditorConfiguration<TConfiguration> : BaseEditorConfiguration
-        where TConfiguration : BaseEditorConfiguration<TConfiguration>
-    {
-        #region static data
-        
-        public static TConfiguration Asset => GeneratedTypeItem.LoadAsset<TConfiguration>();
-        
-        #endregion
-    }
-    
-    public class BaseEditorConfiguration : ScriptableObject, IGameEditorConfiguration
+    using System.Linq;
+    using Editor;
+    using UniCore.Runtime.Utils;
+    using UnityEditor;
+
+    public class BaseEditorConfiguration : ScriptableObject,IGameEditorCategory
     {
         public const string SettingsCategoryName = "Editor Settings";
+        public const string SettingsKey = "Editor Settings";
+        public const string GroupKey = "Categories";
 
         #region inspector
-        
-        public Object configurationAsset;
 
+        
+        [TabGroup(GroupKey)]  
         [Space]
         public Sprite icon;
         
+        [TabGroup(GroupKey)]  
         public string menuName = string.Empty;
 
+        [TabGroup(GroupKey)]  
         [Searchable(FilterOptions = SearchFilterOptions.ISearchFilterableInterface)]
         [SerializeReference] 
         [OnValueChanged(nameof(OnCategoriesChanged))]
         [ListDrawerSettings(ListElementLabelName = nameof(IGameEditorCategory.Name))]
         public List<IGameEditorCategory> categories = new();
 
-        [OnValueChanged(nameof(OnValueChanged))]
-        [ListDrawerSettings(ListElementLabelName = nameof(EditorSettingsCategory.Name))]
-        public List<EditorSettingsCategory> editorGroups = new();
-
-        #endregion
-
-        private Action _updateAction;
+        [TabGroup(SettingsKey)]   
+        public Object configurationAsset;
+        [TabGroup(SettingsKey)]
+        public float iconSize             = 24.00f;
+        [TabGroup(SettingsKey)]
+        public float iconOffset           = -6.00f;
+        [TabGroup(SettingsKey)]
+        public float notSelectedIconAlpha = 0.90f;
+        [TabGroup(SettingsKey)]
+        public float iconPadding          = 2.00f;
         
-        public bool   Enabled  => true;
-        public Sprite Icon     => icon;
-        public string Category => SettingsCategoryName;
-        public string Name     => menuName;
-        public Color  Color    => Color.yellow;
+        #endregion
+        
+        private Action _updateAction;
 
+        #region public properties
+        
+        public virtual Type ConfigurationType => GetType();
+        public bool   Enabled  => true;
+        public virtual Sprite Icon     => icon;
+        public virtual string Category => SettingsCategoryName;
+        public virtual string Name     => menuName;
+        public virtual Color  Color    => Color.yellow;
+        
+        #endregion
+        
         public Action UpdateAction
         {
             get => _updateAction;
             set => _updateAction = value;
         }
 
+        [TabGroup(GroupKey)]  
+        [ResponsiveButtonGroup("_DefaultTabGroup/Categories/Commands",DefaultButtonSize = ButtonSizes.Medium,Order = -1)]
         [Button]
-        public void Refresh() => OnValueChanged();
+        public virtual void Refresh() => OnValueChanged();
         
-        public List<EditorSettingsCategory> EditorSettingsCategories => editorGroups;
+        [TabGroup(GroupKey)]  
+        [ResponsiveButtonGroup("_DefaultTabGroup/Categories/Commands",DefaultButtonSize = ButtonSizes.Medium,Order = -1)]
+        [Button]
+        public virtual void FillConfigurations()
+        {
+            var categoriesTypes = TypeCache.GetTypesDerivedFrom(typeof(IAutoEditorCategory));
+            foreach (var categoryType in categoriesTypes)
+            {
+                if(categoryType.IsAbstract || categoryType.IsInterface || categoryType.IsGenericTypeDefinition) continue;
+                if(categoryType.IsSubclassOf(typeof(Object))) continue;
+                if(categories.Any(x => x?.GetType() == categoryType)) continue;
+                if(categoryType.HasDefaultConstructor() == false) continue;
+                
+                var category = (IAutoEditorCategory)categoryType.CreateWithDefaultConstructor();
+                if(category == null) continue;
+                
+                category.UpdateCategory();
+                
+                categories.Add(category);
+
+                this.MarkDirty();
+            }
+            
+            Refresh();
+        }
+
+        public virtual object CreateDrawer() => this;
         
-        public object CreateDrawer() => this;
-        
-        public IGameEditorCategory UpdateCategory() => this;
+        public virtual IGameEditorCategory UpdateCategory() => this;
 
         public void SetupConfiguration(BaseEditorConfiguration configuration) {}
         

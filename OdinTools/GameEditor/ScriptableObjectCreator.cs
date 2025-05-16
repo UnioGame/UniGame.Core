@@ -1,4 +1,4 @@
-﻿namespace UniModules.Editor.OdinTools.GameEditor
+﻿namespace UniModules.GameEditor
 {
     using Sirenix.OdinInspector.Editor;
     using Sirenix.Utilities;

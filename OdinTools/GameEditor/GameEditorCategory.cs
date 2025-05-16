@@ -1,4 +1,4 @@
-namespace UniModules.Editor.OdinTools.GameEditor
+namespace UniModules.GameEditor
 {
     using System;
     using System.Collections.Generic;
@@ -31,7 +31,6 @@ namespace UniModules.Editor.OdinTools.GameEditor
         public string name = nameof(GameEditorCategory);
         
         [VerticalGroup(nameof(category)+"/"+nameof(name))]
-        [ValueDropdown(nameof(GetCategories))]
         [LabelWidth(60)]
         public string category = "BASE";
 
@@ -62,14 +61,6 @@ namespace UniModules.Editor.OdinTools.GameEditor
         {
             if (!string.IsNullOrEmpty(name) && name != Name) name = Name;
             return this;
-        }
-
-        public IEnumerable<string> GetCategories()
-        {
-            if(configuration == null)
-               return Enumerable.Empty<string>();
-            return configuration.editorGroups
-                .Select(x => x.Name);
         }
 
         public virtual bool IsMatch(string searchString)

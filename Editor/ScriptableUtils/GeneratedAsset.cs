@@ -20,15 +20,15 @@
 
         public static readonly Type AssetType = typeof(TAsset);
 
-        public static string AssetPath =>  GeneratedTypeItem.GetAssetPath<TAsset>();
+        public static string AssetPath =>  ValueTypeCache.GetAssetPath<TAsset>();
 
         public static TAsset Asset => _selector != null 
             ? _selector 
-            : GeneratedTypeItem.LoadAsset<TAsset>(x => _selector = x);
+            : ValueTypeCache.LoadAsset<TAsset>(x => _selector = x);
         
         public static TAsset Load(Action<TAsset> action)
         {
-            return GeneratedTypeItem.LoadAsset<TAsset>(x => Load(x, action));
+            return ValueTypeCache.LoadAsset<TAsset>(x => Load(x, action));
         }
         
         private static void Load(TAsset asset, Action<TAsset> action)
