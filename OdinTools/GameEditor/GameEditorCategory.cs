@@ -3,6 +3,7 @@ namespace UniModules.GameEditor
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Editor;
     using Sirenix.OdinInspector;
     using UnityEngine;
     
@@ -19,6 +20,12 @@ namespace UniModules.GameEditor
         [HideInInspector]
         public BaseEditorConfiguration configuration;
         
+#if ODIN_INSPECTOR
+        [InlineButton(nameof(OpenScript),SdfIconType.Folder2Open)]
+#endif
+#if TRI_INSPECTOR || ODIN_INSPECTOR
+        [GUIColor("green")]
+#endif
         [HorizontalGroup(nameof(category))]
         [LabelWidth(8)]
         [VerticalGroup(nameof(category)+"/"+nameof(icon))]
@@ -66,6 +73,14 @@ namespace UniModules.GameEditor
         public virtual bool IsMatch(string searchString)
         {
             return GameEditorCategoryFilter.IsMatch(this, searchString);
+        }
+        
+#if TRI_INSPECTOR
+        [Button]
+#endif
+        public void OpenScript()
+        {
+            GetType().OpenScript();
         }
     }
 
