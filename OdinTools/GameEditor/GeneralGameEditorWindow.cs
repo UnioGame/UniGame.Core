@@ -46,6 +46,7 @@
             configuration.UpdateAction += Rebuild;
 
             Rebuild();
+            Rebuild();
         }
         
         protected override OdinMenuTree BuildMenuTree()
@@ -60,7 +61,6 @@
                     DrawSearchToolbar = true
                 }
             };
-
             
             tree.DefaultMenuStyle.IconSize             = configuration.iconSize;
             tree.DefaultMenuStyle.IconOffset           = configuration.iconOffset;
@@ -84,7 +84,7 @@
             var firstCategory = _categories.FirstOrDefault();
             if (firstCategory != null)
                 TrySelectMenuItemWithObject(firstCategory);
-            
+
             return tree;
         }
 
