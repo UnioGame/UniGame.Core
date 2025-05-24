@@ -155,7 +155,7 @@ public static class LifetimeExtension
     
     public static ILifeTime DespawnWith(this Object asset, ILifeTime lifeTime)
     {
-        if (!asset) return lifeTime;
+        if (asset == null) return lifeTime;
         if (lifeTime.IsTerminated)
         {
             asset.Despawn();
