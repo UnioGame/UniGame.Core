@@ -6,9 +6,14 @@
     {
         public static DateTime UnitTime = new DateTime(1970, 1, 1);
         
-        public static int ToUnixTimestamp(this DateTime date)
+        public static DateTime UnixTimeToDateTime(this long time)
         {
-            var unixTimestamp = (int)(date.ToUniversalTime().
+            return UnitTime.Add(TimeSpan.FromSeconds(time));
+        }
+        
+        public static long ToUnixTimestamp(this DateTime date)
+        {
+            var unixTimestamp = (long)(date.ToUniversalTime().
                 Subtract(UnitTime)).TotalSeconds;
             return unixTimestamp;
         }
