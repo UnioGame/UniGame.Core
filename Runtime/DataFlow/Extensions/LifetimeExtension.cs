@@ -113,7 +113,7 @@ public static class LifetimeExtension
     
     public static LifeTime RestartWith(this LifeTime lifeTime, ILifeTime owner)
     {
-        
+        owner.AddCleanUpAction(lifeTime.Restart);
         return lifeTime;
     }
         
