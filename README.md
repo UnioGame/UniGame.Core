@@ -6,6 +6,21 @@ UniTools core package
 
 
 # Game Logger
+
+** Installing the https://github.com/Cysharp/ZString can be useful for better performance of the logger. **
+
+if ZString is installed in the project on with the package manager, when add define ENABLE_ZSTRING to the project, the logger will use ZString for better performance.
+
+```
+    "versionDefines": [
+        {
+            "name": "com.cysharp.zstring",
+            "expression": "",
+            "define": "ENABLE_ZSTRING"
+        }
+    ],
+```
+
  
 ```csharp
 GameLog.Log("Some Log Message") //pring logs to unity console under Editor, this method is not used in build

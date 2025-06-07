@@ -2,7 +2,6 @@
 {
     using System;
     using System.Runtime.CompilerServices;
-    using Cysharp.Text;
     using Interfaces;
     using UniModules.UniCore.Runtime.Utils;
     using UnityEngine;
@@ -11,6 +10,10 @@
     
 #if ENABLE_FIREBASE_CRASHLYTICS
     using Firebase.Crashlytics;
+#endif
+
+#if ENABLE_ZSTRING
+    using Cysharp.Text;
 #endif
     
     public class GameLogger : IGameLogger
@@ -66,10 +69,19 @@
         {
 #if UNITY_EDITOR || GAME_LOGS_ENABLED || DEBUG
 
-            var message = values == null || values.Length == 0 ? template : ZString.Format(template, values);
+            var message = values == null || values.Length == 0 
+                ? template 
+                : Format(template, values);
             Log(message, color);
-
 #endif
+        }
+
+        public string Format(string template, params object[] values)
+        {
+#if ENABLE_ZSTRING
+            return ZString.Format(template, values);
+#endif
+            return string.Format(template, values);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -131,7 +143,7 @@
         public void LogWarningFormat(string template, params object[] values)
         {
             if (!Enabled) return;
-            var message = ZString.Format(template, values);
+            var message = Format(template, values);
             Debug.LogWarning(GetLogMessageWithPrefix(message));
         }
         
@@ -193,7 +205,7 @@
 
         public string GetColorTemplate(string message, Color color)
         {
-            var colorMessage = ZString.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>",
+            var colorMessage = Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>",
                                              (byte) (color.r * 255f), (byte) (color.g * 255f), (byte) (color.b * 255f),
                                              message);
             return colorMessage;
@@ -215,14 +227,12 @@
 
         private string GetNamePrefix()
         {
-            return ZString.Format(NameTemplate, Name, _counter.ToStringFromCache());
+            return Format(NameTemplate, Name, _counter.ToStringFromCache());
         }
 
         private string GetLogMessageWithPrefix(string message)
         {
-            return ZString.Format(LogTemplate,
-                DateTime.Now.ToLongTimeString(), 
-                LogPrefix, message);
+            return Format(LogTemplate, DateTime.Now.ToLongTimeString(), LogPrefix, message);
         }
     }
 }
