@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using UniModules.UniGame.Core.Editor.EditorProcessors;
+using UniGame.Core.Editor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 

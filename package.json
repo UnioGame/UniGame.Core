@@ -16,6 +16,7 @@
   ],
   "homepage": "https://github.com/UnioGame/UniGame.Core/blob/main/README.md",
   "dependencies": {
+    "com.unity.editorcoroutines" : "1.0.0",
     "com.cysharp.unitask" : "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"
   }
 }

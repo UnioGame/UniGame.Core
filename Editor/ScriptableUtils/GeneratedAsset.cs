@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.Editor.EditorProcessors
+﻿namespace UniGame.Core.Editor
 {
     using System;
     using UnityEngine;

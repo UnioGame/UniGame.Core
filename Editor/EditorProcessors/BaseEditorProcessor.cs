@@ -1,8 +1,7 @@
-﻿namespace UniModules.UniGame.Core.Editor.EditorProcessors
+﻿namespace UniGame.Core.Editor
 {
     using System;
     using System.Collections.Generic;
-    using UniGameFlow.GameFlowEditor.Editor.UiElementsEditor.Styles;
 
     [Serializable]
     public class BaseEditorProcessor<TData> :  IEditorProcessor<TData> 

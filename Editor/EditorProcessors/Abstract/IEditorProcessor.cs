@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGameFlow.GameFlowEditor.Editor.UiElementsEditor.Styles
+﻿namespace UniGame.Core.Editor
 {
     using System;
     using System.Collections.Generic;

@@ -1,7 +1,7 @@
 namespace UniModules.GameEditor.Categories
 {
     using System;
-    using UniGame.Core.Editor.EditorProcessors;
+    using global::UniGame.Core.Editor;
     using UnityEngine;
 
     [Serializable]

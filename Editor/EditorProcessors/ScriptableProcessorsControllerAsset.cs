@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.Editor.EditorProcessors
+﻿namespace UniGame.Core.Editor
 {
     using System;
     using global::UniGame.Runtime.ReflectionUtils;
@@ -6,7 +6,7 @@
     using System.Linq;
     using UniModules.Editor;
     using UnityEditor;
-    using global::UniGame.Core.Runtime.Extension;
+    using Runtime.Extension;
     using UnityEngine;
 
     [GeneratedAssetInfo("ScriptableProcessors")]
@@ -27,7 +27,7 @@
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.InlineEditor]
 #endif
-        public List<ScriptableObject> processors = new List<ScriptableObject>();
+        public List<ScriptableObject> processors = new();
 
         public bool activateOnLoad = true;
         

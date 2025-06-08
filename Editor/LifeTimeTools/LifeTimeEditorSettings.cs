@@ -1,4 +1,4 @@
-using UniModules.UniGame.Core.Editor.EditorProcessors;
+using UniGame.Core.Editor;
 using UnityEngine;
 
 namespace UniModules.UniGame.Core.Editor.LifeTimeTools

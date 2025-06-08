@@ -1,7 +1,6 @@
-﻿namespace UniModules.UniGame.Core.Editor.EditorProcessors
+﻿namespace UniGame.Core.Editor
 {
     using System.Collections.Generic;
-    using UniGameFlow.GameFlowEditor.Editor.UiElementsEditor.Styles;
     using UnityEngine;
 
     public class BaseEditorProcessorAsset<TData> : ScriptableObject, IEditorProcessor<TData>
