@@ -1,6 +1,6 @@
 ﻿using UniCore.Runtime.ProfilerTools;
 
-namespace UniModules.UniGame.Core.Editor.EditorProcessors
+namespace UniGame.Core.Editor
 {
     
 #if UNITY_EDITOR
@@ -9,6 +9,7 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
     using System.Collections.Generic;
     using global::UniGame.Runtime.ReflectionUtils;
     using global::UniGame.Runtime.Utils;
+    using UniModules;
     using UniModules.Editor;
     using UnityEditor;
     using UnityEngine;

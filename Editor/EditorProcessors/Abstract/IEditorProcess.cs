@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.Editor.EditorProcessors
+﻿namespace UniGame.Core.Editor
 {
     public interface IEditorProcess
     {

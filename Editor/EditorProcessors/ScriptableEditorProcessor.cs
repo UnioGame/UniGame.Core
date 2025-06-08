@@ -1,16 +1,15 @@
 ﻿using UniGame.Runtime.Utils;
+using UniCore.Runtime.Attributes;
+using UniGame.Runtime.ReflectionUtils;
 
-namespace UniModules.UniGame.Core.Editor.EditorProcessors
+namespace UniGame.Core.Editor
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using UniModules.Editor;
-    using global::UniGame.Core.Runtime.Extension;
-    using global::UniCore.Runtime.Attributes;
-    using global::UniGame.Runtime.ReflectionUtils;
-    using UniGameFlow.GameFlowEditor.Editor.UiElementsEditor.Styles;
+    using Runtime.Extension;
     using Unity.EditorCoroutines.Editor;
     using UnityEngine;
     using Object = UnityEngine.Object;
@@ -27,21 +26,21 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
         [Sirenix.OdinInspector.InlineProperty]
 #endif
         [SerializeReference]
-        public List<TDataProcessor> processors = new List<TDataProcessor>();
+        public List<TDataProcessor> processors = new();
 
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.InlineEditor()]
 #endif
-        public List<Object> assetsProcessors = new List<Object>();
+        public List<Object> assetsProcessors = new();
 
-        [SerializeField] public List<TData> data = new List<TData>();
+        [SerializeField] public List<TData> data = new();
 
         [SerializeField] [ReadOnlyValue] public bool isActive = false;
 
         #endregion
 
         private EditorCoroutine           _coroutine;
-        private List<TData> _removedData  = new List<TData>();
+        private List<TData> _removedData  = new();
 
         public bool IsRunning => _coroutine != null;
 
