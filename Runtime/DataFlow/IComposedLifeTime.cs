@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.Runtime.DataFlow
+﻿namespace UniGame.DataFlow
 {
     using System;
     using System.Collections.Generic;

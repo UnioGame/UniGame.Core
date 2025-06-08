@@ -1,14 +1,14 @@
 ﻿using UniCore.Runtime.ProfilerTools;
-using UniModules.UniCore.Runtime.Extension;
+using UniGame.Runtime.Extension;
 using UnityEngine;
 
-namespace UniModules.UniCore.Runtime.DataFlow
+namespace UniGame.Runtime.DataFlow
 {
     using System;
     using System.Buffers;
     using System.Runtime.CompilerServices;
     using System.Threading;
-    using UniGame.Core.Runtime.DataFlow;
+    using global::UniGame.DataFlow;
     using global::UniGame.Core.Runtime;
 
     

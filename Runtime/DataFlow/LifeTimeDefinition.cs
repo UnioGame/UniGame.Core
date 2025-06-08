@@ -1,10 +1,10 @@
 ﻿using System.Threading;
 
-namespace UniModules.UniCore.Runtime.DataFlow
+namespace UniGame.Runtime.DataFlow
 {
     using System;
     using global::UniGame.Core.Runtime.ObjectPool;
-    using UniGame.Core.Runtime.DataFlow;
+    using global::UniGame.DataFlow;
     using global::UniGame.Core.Runtime;
 
     public class LifeTimeDefinition : 

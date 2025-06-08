@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using UniGame.Core.Runtime.Common;
-using UniModules.UniCore.Runtime.Utils;
+using UniGame.Runtime.Utils;
 
 namespace UniModules.UniCore.EditorTools.Editor.PropertiesDrawers
 {

@@ -1,9 +1,9 @@
-﻿namespace UniModules.UniGame.Core.Runtime.DataStructure
+﻿namespace UniGame.DataStructure
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using Rx;
+    using Runtime.Rx;
     using global::UniGame.Runtime.ObjectPool;
 
     /// <summary>

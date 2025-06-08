@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.Runtime.Math
+﻿namespace UniGame.Math
 {
     using UnityEngine;
 

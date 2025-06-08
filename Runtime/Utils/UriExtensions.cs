@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.Runtime.Utils
+﻿namespace UniGame.Utils
 {
     using System;
     using System.Collections.Generic;

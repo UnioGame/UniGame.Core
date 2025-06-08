@@ -9,7 +9,7 @@ namespace UniModules.GameEditor
 {
     using System.Linq;
     using Editor;
-    using UniCore.Runtime.Utils;
+    using global::UniGame.Runtime.Utils;
     using UnityEditor;
 
     public class BaseEditorConfiguration : ScriptableObject,IGameEditorCategory

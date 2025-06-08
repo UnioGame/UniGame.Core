@@ -1,4 +1,4 @@
-namespace UniModules.UniGame.Core.Runtime.Utils
+namespace UniGame.Utils
 {
 #if UNITY_EDITOR
     using UnityEditor;

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UniModules.Editor;
-using UniModules.UniCore.Runtime.Utils;
-using UniModules.UniGame.Core.Runtime.DataStructure;
+using UniGame.Runtime.Utils;
+using UniGame.DataStructure;
 using UnityEditor;
 using UnityEngine;
 

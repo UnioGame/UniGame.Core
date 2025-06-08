@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.ReflectionUtils
+﻿namespace UniGame.Runtime.ReflectionUtils
 {
     using System;
     using System.Collections;

@@ -6,8 +6,8 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using UniModules.UniCore.EditorTools.Editor;
-    using UniModules.UniCore.Runtime.ReflectionUtils;
-    using UniModules.UniCore.Runtime.Utils;
+    using global::UniGame.Runtime.ReflectionUtils;
+    using global::UniGame.Runtime.Utils;
     using global::UniGame.Core.Runtime.Extension;
     using UnityEditor;
     using UnityEngine;

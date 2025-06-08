@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using UniModules.UniGame.Core.Runtime.DataStructure;
+    using global::UniGame.DataStructure;
     using Object = UnityEngine.Object;
 
     [Serializable]

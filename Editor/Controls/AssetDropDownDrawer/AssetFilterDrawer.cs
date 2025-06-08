@@ -11,8 +11,8 @@ namespace UniModules.Editor.Controls.AssetDropDownControl
     using System.Collections.Generic;
     using System.Linq;
     using global::UniGame.Core.Runtime.Extension;
-    using UniCore.Runtime.Utils;
-    using UniGame.Core.Runtime.Attributes;
+    using global::UniGame.Runtime.Utils;
+    using global::UniGame.Attributes;
     using UniModules.Editor;
     using UnityEditor;
     using UnityEngine;

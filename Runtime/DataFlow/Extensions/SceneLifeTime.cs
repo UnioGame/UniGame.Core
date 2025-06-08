@@ -1,12 +1,11 @@
-namespace UniModules.UniGame.Core.Runtime.DataFlow.Extensions
+namespace UniGame.Core.Runtime
 {
     using System;
     using System.Runtime.CompilerServices;
-    using global::UniGame.Core.Runtime;
-    using UniModules.UniCore.Runtime.DataFlow;
     using UnityEngine;
     using UnityEngine.SceneManagement;
-    using UniCore.Runtime.Utils;
+    using UniGame.Runtime.DataFlow;
+    using UniGame.Runtime.Utils;
 
 #if UNITY_EDITOR
     using UnityEditor;

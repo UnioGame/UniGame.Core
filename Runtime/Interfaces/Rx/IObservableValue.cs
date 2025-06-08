@@ -1,6 +1,7 @@
-namespace UniGame.Core.Runtime.Rx
+namespace UniGame.Runtime.Rx
 {
     using System;
+    using Core.Runtime;
 
     public interface IObservableValue<out T> : 
         IObservable<T>, 

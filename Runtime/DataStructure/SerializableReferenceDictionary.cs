@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.Runtime.DataStructure
+﻿namespace UniGame.DataStructure
 {
     using System;
     using System.Collections.Generic;

@@ -3,7 +3,6 @@
     using System;
     using System.Runtime.CompilerServices;
     using Interfaces;
-    using UniModules.UniCore.Runtime.Utils;
     using UnityEngine;
     using Debug = UnityEngine.Debug;
     using Object = UnityEngine.Object;
@@ -227,7 +226,7 @@
 
         private string GetNamePrefix()
         {
-            return Format(NameTemplate, Name, _counter.ToStringFromCache());
+            return Format(NameTemplate, Name, _counter);
         }
 
         private string GetLogMessageWithPrefix(string message)

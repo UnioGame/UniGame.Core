@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.Runtime.Attributes.FieldTypeDrawer
+﻿namespace UniGame.Attributes.FieldTypeDrawer
 {
     using System;
 

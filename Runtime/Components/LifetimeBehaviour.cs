@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UniModules.UniGame.Core.Runtime.Components
+namespace UniGame.Components
 {
     public class LifetimeBehaviour : MonoBehaviour
     {

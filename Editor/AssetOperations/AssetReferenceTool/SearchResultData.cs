@@ -6,7 +6,7 @@ namespace UniModules.Editor
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using UniModules.UniCore.EditorTools.Editor;
-    using UniCore.Runtime.DataFlow;
+    using global::UniGame.Runtime.DataFlow;
     using Object = UnityEngine.Object;
 
     public class SearchResultData : IDisposable, ILifeTimeContext

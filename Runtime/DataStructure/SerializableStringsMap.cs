@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UniModules.UniGame.Core.Runtime.DataStructure
+namespace UniGame.DataStructure
 {
     [Serializable]
     public class SerializableStringsMap : 

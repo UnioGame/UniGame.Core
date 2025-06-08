@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.ProfilerTools
+﻿namespace UniGame.Runtime.ProfilerTools
 {
     using System;
     using System.Collections.Generic;

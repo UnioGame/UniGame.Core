@@ -1,7 +1,7 @@
 ﻿namespace UniGame.Core.Runtime.DataFlow
 {
     using System;
-    using UniModules.UniCore.Runtime.DataFlow;
+    using UniGame.Runtime.DataFlow;
     using UniGame.Runtime.ObjectPool.Extensions;
     using ObjectPool;
     using Runtime;

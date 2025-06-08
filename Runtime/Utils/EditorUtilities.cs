@@ -1,5 +1,5 @@
 ﻿#if UNITY_EDITOR
-namespace UniModules.UniCore.Runtime.Utils
+namespace UniGame.Runtime.Utils
 {
     using System.IO;
     using UnityEditor;

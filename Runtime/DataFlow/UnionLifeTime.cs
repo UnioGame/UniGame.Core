@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
-using UniModules.UniCore.Runtime.DataFlow;
+using UniGame.Runtime.DataFlow;
 using UniGame.Core.Runtime;
 
-namespace UniModules.UniGame.Core.Runtime.DataFlow
+namespace UniGame.DataFlow
 {
     [Serializable]
     public class UnionLifeTime : IDisposable, ILifeTime

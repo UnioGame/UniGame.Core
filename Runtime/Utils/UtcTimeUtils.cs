@@ -1,6 +1,6 @@
 ﻿    using System;
 
-    namespace UniModules.UniGame.Core.Runtime.Utils
+    namespace UniGame.Utils
     {
         public static class UtcTimeUtils
         {

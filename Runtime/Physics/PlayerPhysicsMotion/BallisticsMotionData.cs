@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.Physics.PlayerPhysicsMotion {
+﻿namespace UniGame.Runtime.Physics.PlayerPhysicsMotion {
     using System;
     using UnityEngine;
 

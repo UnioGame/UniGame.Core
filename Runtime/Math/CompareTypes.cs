@@ -1,4 +1,4 @@
-namespace UniModules.UniCore.Runtime.Math
+namespace UniGame.Runtime.Math
 {
     using System;
 

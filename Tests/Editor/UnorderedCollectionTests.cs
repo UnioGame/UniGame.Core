@@ -1,7 +1,7 @@
 ﻿namespace UniModules.UniCore.Tests.Editor
 {
     using NUnit.Framework;
-    using Runtime.DataStructure;
+    using global::UniGame.Runtime.DataStructure;
 
     public class UnorderedCollectionTests
     {

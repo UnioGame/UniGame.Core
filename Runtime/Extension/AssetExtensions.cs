@@ -1,4 +1,4 @@
-﻿using UniModules.UniCore.Runtime.Utils;
+﻿using UniGame.Runtime.Utils;
 using UniGame.Core.Runtime;
 using UnityEngine;
 

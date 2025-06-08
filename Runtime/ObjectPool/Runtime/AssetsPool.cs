@@ -1,6 +1,6 @@
 ﻿namespace UniGame.Runtime.ObjectPool
 {
-    using UniModules.UniGame.Core.Runtime.DataFlow.Extensions;
+    using Core.Runtime;
     using UnityEngine;
 
     public class AssetsPool : MonoBehaviour

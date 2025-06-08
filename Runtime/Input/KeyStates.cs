@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.Input {
+﻿namespace UniGame.Runtime.Input {
 	using System;
 
 	[Flags]

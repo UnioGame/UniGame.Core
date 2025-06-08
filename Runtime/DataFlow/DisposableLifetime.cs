@@ -1,11 +1,11 @@
-﻿using System.Threading;
+﻿using UniGame.Core.Runtime.ObjectPool;
+using UniGame.Core.Runtime;
 
-namespace UniModules.UniGame.Core.Runtime.Common
+namespace UniGame.Common
 {
     using System;
-    using UniCore.Runtime.DataFlow;
-    using global::UniGame.Core.Runtime.ObjectPool;
-    using global::UniGame.Core.Runtime;
+    using System.Threading;
+    using Runtime.DataFlow;
 
     public class DisposableLifetime : IDisposableLifetime, IPoolable
     {

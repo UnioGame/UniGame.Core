@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace UniModules.UniGame.Core.Runtime.DataStructure
+namespace UniGame.DataStructure
 {
     public class SerializableDictionaryAttribute : PropertyAttribute
     {

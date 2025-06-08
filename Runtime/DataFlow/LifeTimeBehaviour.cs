@@ -1,11 +1,11 @@
 ﻿using System.Threading;
 using UnityEngine;
 
-namespace UniModules.UniGame.Core.Runtime.DataFlow
+namespace UniGame.DataFlow
 {
     using System;
     using global::UniGame.Core.Runtime;
-    using UniModules.UniCore.Runtime.DataFlow;
+    using Runtime.DataFlow;
     using UnityEngine.Serialization;
 
     public class LifeTimeBehaviour :

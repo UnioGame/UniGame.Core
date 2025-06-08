@@ -3,9 +3,8 @@
 using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using UniModules.UniCore.Runtime.DataFlow;
+using UniGame.Runtime.DataFlow;
 using UniGame.Core.Runtime;
-using UniGame.Core.Runtime.ScriptableObjects;
 
 namespace UniGame.Context.Editor
 {
@@ -34,11 +33,7 @@ namespace UniGame.Context.Editor
             scriptableLifeTimes.Clear();
             foreach (var lifeTime in lifeTimeValue)
             {
-                if (lifeTime is LifetimeScriptableObject lifetimeScriptableObject)
-                {
-                    // scriptableLifeTimes.Add(new LifeTimeEditorItem()
-                    //     .Initialize(lifetimeScriptableObject));
-                }
+                
             }
         }
 

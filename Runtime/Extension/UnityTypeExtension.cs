@@ -4,7 +4,7 @@ using UnityEngine;
 namespace UniGame.Core.Runtime.Extension
 {
     using System.Collections.Generic;
-    using UniModules.UniCore.Runtime.Utils;
+    using UniGame.Runtime.Utils;
     using Object = UnityEngine.Object;
 
     public static class UnityTypeExtension

@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.DataFlow
+﻿namespace UniGame.Runtime.DataFlow
 {
     using Interfaces;
     using global::UniGame.Core.Runtime.ObjectPool;

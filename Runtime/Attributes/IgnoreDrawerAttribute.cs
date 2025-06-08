@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UniModules.UniGame.Core.Runtime.Attributes
+namespace UniGame.Attributes
 {
     [AttributeUsage(AttributeTargets.Field)]
     public class IgnoreDrawerAttribute : Attribute

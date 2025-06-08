@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.ScriptableObjects
+﻿namespace UniGame.Runtime.ScriptableObjects
 {
     using System;
     using System.Collections;
