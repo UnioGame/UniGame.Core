@@ -1,7 +1,7 @@
 ﻿namespace UniModules.Editor.Controls.Layers
 {
     using System.Reflection;
-    using UniGame.Core.Runtime.Attributes;
+    using global::UniGame.Attributes;
     using UnityEditor;
     using UnityEngine;
 

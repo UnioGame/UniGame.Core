@@ -2,7 +2,7 @@
 
 [assembly: Preserve]
 
-namespace UniModules.UniGame.Core.Runtime.Utils
+namespace UniGame.Utils
 {
     public class ScriptingUtils
     {

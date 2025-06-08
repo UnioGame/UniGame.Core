@@ -1,4 +1,4 @@
-﻿using UniModules.UniCore.Runtime.Utils;
+﻿using UniGame.Runtime.Utils;
 
 namespace UniModules.UniGame.Core.Editor.EditorProcessors
 {
@@ -9,7 +9,7 @@ namespace UniModules.UniGame.Core.Editor.EditorProcessors
     using UniModules.Editor;
     using global::UniGame.Core.Runtime.Extension;
     using global::UniCore.Runtime.Attributes;
-    using UniCore.Runtime.ReflectionUtils;
+    using global::UniGame.Runtime.ReflectionUtils;
     using UniGameFlow.GameFlowEditor.Editor.UiElementsEditor.Styles;
     using Unity.EditorCoroutines.Editor;
     using UnityEngine;

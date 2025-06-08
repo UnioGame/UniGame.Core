@@ -1,11 +1,12 @@
-﻿using UniModules.UniCore.Runtime.Utils;
+﻿using UniGame.Runtime.Utils;
 
-namespace UniModules.UniCore.Runtime.ProfilerTools
+namespace UniGame.Runtime.ProfilerTools
 {
     using System;
     using System.Diagnostics;
     using System.IO;
     using System.Runtime.Serialization.Formatters.Binary;
+    using Utils;
 
     public class ProfilerUtils
     {

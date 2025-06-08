@@ -1,5 +1,5 @@
-﻿using UniModules.UniCore.Runtime.Common;
-using UniModules.UniCore.Runtime.DataFlow;
+﻿using UniGame.Runtime.Common;
+using UniGame.Runtime.DataFlow;
 
 namespace UniGame.Runtime.ObjectPool
 {

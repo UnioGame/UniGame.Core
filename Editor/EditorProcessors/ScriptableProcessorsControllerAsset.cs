@@ -1,7 +1,7 @@
 ﻿namespace UniModules.UniGame.Core.Editor.EditorProcessors
 {
     using System;
-    using UniModules.UniCore.Runtime.ReflectionUtils;
+    using global::UniGame.Runtime.ReflectionUtils;
     using System.Collections.Generic;
     using System.Linq;
     using UniModules.Editor;

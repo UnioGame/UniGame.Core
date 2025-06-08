@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using UniModules.UniGame.Core.Runtime.Attributes;
+using UniGame.Attributes;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 namespace UniModules.UniGame.Editor.DrawersTools
 {
     using UniModules.Editor;
-    using UniCore.Runtime.Utils;
+    using global::UniGame.Runtime.Utils;
 
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;

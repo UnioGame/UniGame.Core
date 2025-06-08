@@ -2,7 +2,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using UniGame.Runtime.ObjectPool;
 using UniGame.Runtime.ObjectPool.Extensions;
-using UniModules.UniCore.Runtime.Utils;
+using UniGame.Runtime.Utils;
 
 namespace UniModules.Editor
 {

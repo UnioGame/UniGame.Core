@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.Runtime.Utils
+﻿namespace UniGame.Utils
 {
     /// <summary>
     ///         <para>Enumeration specifying a change in the Editor's play mode state.

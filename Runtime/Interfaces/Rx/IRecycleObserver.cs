@@ -1,6 +1,6 @@
 ﻿using UniGame.Core.Runtime.ObjectPool;
 
-namespace UniGame.Core.Runtime.Rx
+namespace UniGame.Runtime.Rx
 {
     using System;
 

@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.Utils
+﻿namespace UniGame.Runtime.Utils
 {
     using System.Linq;
     using System;

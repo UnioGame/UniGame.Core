@@ -1,6 +1,6 @@
 ﻿namespace UniGame.Core.Runtime
 {
-	using Rx;
+	using UniGame.Runtime.Rx;
 
 	public interface IDataValue<TData,TApi> : 
 		IObservableValue<TApi>,

@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.ProfilerTools
+﻿namespace UniGame.Runtime.ProfilerTools
 {
     
     public enum LogMode : byte

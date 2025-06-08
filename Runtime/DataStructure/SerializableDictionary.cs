@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using UniModules.UniCore.Runtime.ReflectionUtils;
+using UniGame.Runtime.ReflectionUtils;
 using UnityEngine;
 
-namespace UniModules.UniGame.Core.Runtime.DataStructure
+namespace UniGame.DataStructure
 {
     using System.Linq;
     using global::UniCore.Runtime.ProfilerTools;

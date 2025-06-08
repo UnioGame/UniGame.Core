@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UniModules.UniGame.Core.Runtime.Common
+namespace UniGame.Common
 {
     using global::UniGame.Core.Runtime;
 

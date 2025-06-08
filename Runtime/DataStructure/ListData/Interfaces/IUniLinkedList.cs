@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.Runtime.Rx
+﻿namespace UniGame.Runtime.Rx
 {
     using System.Collections.Generic;
     using global::UniGame.Core.Runtime.ObjectPool;

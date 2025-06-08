@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.Physics
+﻿namespace UniGame.Runtime.Physics
 {
     using System.Collections.Generic;
     using PlayerPhysicsMotion;

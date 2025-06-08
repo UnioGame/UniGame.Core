@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.DataFlow.Interfaces
+﻿namespace UniGame.Runtime.DataFlow.Interfaces
 {
     public interface ILifeTimeFactory
     {

@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniGame.Core.Runtime.Rx
+﻿namespace UniGame.Runtime.Rx
 {
     using global::UniGame.Runtime.ObjectPool.Extensions;
     using global::UniGame.Core.Runtime.ObjectPool;

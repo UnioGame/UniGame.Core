@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.Extension
+﻿namespace UniGame.Runtime.Extension
 {
     using System;
 

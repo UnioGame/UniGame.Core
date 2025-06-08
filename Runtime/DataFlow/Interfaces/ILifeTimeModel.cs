@@ -1,4 +1,4 @@
-namespace UniModules.UniCore.Runtime.DataFlow.Interfaces
+namespace UniGame.Runtime.DataFlow.Interfaces
 {
     using System;
     using global::UniGame.Core.Runtime;

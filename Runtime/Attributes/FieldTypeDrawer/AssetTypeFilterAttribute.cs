@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace UniModules.UniGame.Core.Runtime.Attributes.FieldTypeDrawer
+namespace UniGame.Attributes.FieldTypeDrawer
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class AssetTypeFilterAttribute : PropertyAttribute

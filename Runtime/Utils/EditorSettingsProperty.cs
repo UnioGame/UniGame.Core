@@ -1,7 +1,7 @@
 ﻿#if UNITY_EDITOR
 #endif
 
-namespace UniModules.UniCore.Runtime.Utils
+namespace UniGame.Runtime.Utils
 {
     using UnityEditor;
 

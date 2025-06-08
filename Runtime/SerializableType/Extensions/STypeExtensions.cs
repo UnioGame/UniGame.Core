@@ -2,8 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using UniModules.UniCore.Runtime.ReflectionUtils;
-    using UniModules.UniCore.Runtime.Utils;
+    using UniGame.Runtime.ReflectionUtils;
+    using UniGame.Runtime.Utils;
 
     public static class STypeExtensions
     {

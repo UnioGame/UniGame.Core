@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.DateTime
+﻿namespace UniGame.Runtime.DateTime
 {
     using System;
 

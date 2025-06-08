@@ -1,5 +1,5 @@
 ﻿namespace UniModules.UniCore.EditorTools.Editor.Physics {
-    using Runtime.Physics;
+    using global::UniGame.Runtime.Physics;
     using UnityEditor;
     using UnityEngine;
 

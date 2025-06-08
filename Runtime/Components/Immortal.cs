@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UniModules.UniCore.Runtime.Components
+namespace UniGame.Runtime.Components
 {
     public class Immortal : MonoBehaviour
     {

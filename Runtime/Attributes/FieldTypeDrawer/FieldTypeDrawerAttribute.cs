@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UniModules.UniGame.Core.Runtime.Attributes.FieldTypeDrawer
+namespace UniGame.Attributes.FieldTypeDrawer
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class FieldTypeDrawerAttribute : Attribute

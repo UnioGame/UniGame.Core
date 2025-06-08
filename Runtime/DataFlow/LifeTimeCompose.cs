@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace UniModules.UniGame.Core.Runtime.DataFlow
+namespace UniGame.DataFlow
 {
     using System.Threading;
     using global::UniGame.Core.Runtime;
-    using UniModules.UniCore.Runtime.DataFlow;
+    using Runtime.DataFlow;
     using global::UniGame.Runtime.ObjectPool;
     using global::UniGame.Core.Runtime.ObjectPool;
 

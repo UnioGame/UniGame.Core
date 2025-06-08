@@ -4,7 +4,7 @@
     using System.Linq;
     using Sirenix.OdinInspector.Editor;
     using Categories;
-    using UniCore.Runtime.DataFlow;
+    using global::UniGame.Runtime.DataFlow;
     using UniGame.Core.Editor.EditorProcessors;
 
     public class GeneralGameEditorWindow<TConfiguration> : OdinMenuEditorWindow

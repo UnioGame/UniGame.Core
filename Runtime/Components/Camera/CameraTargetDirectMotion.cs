@@ -1,4 +1,4 @@
-﻿namespace UniModules.UniCore.Runtime.Camera
+﻿namespace UniGame.Runtime.Camera
 {
     using UnityEngine;
 
