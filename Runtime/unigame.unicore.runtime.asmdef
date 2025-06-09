@@ -4,7 +4,9 @@
     "references": [
         "GUID:18e001e7783f9fa4f91ffb0f7d0ecfc5",
         "GUID:343deaaf83e0cee4ca978e7df0b80d21",
-        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:88be65f96b86746888c927a5c8ff3534",
+        "GUID:5fd453cd0d182422093c4a764fd5eadb"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -18,6 +20,11 @@
             "name": "com.cysharp.zstring",
             "expression": "",
             "define": "ENABLE_ZSTRING"
+        },
+        {
+            "name": "com.annulusgames.alchemy",
+            "expression": "",
+            "define": "ALCHEMY_INSPECTOR"
         }
     ],
     "noEngineReferences": false

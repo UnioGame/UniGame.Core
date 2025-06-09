@@ -8,6 +8,9 @@
 #if ODIN_INSPECTOR
     using Sirenix.OdinInspector;
 #endif
+#if ALCHEMY_INSPECTOR
+    using Alchemy.Inspector;
+#endif
     
     [Serializable]
     public class VariantValue<TValue,TAsset,TApi> : 
@@ -16,17 +19,26 @@
     {
         
         [SerializeReference]
-        #if ODIN_INSPECTOR
+#if ODIN_INSPECTOR
         [InlineProperty]
         [HideLabel]
         [HideIf(nameof(IsUnityCommandInitialized))]
-        #endif
+#endif
+#if ALCHEMY_INSPECTOR
+        [InlineEditor]
+        [HideIf(nameof(IsUnityCommandInitialized))]
+#endif
         public TValue value;
 
         [Space]
 #if  ODIN_INSPECTOR
         [InlineEditor]
         [ValueDropdown(nameof(GetAssets))]
+        [HideIf(nameof(IsSerializedCommandInitialized))]
+        [HideLabel]
+#endif
+#if ALCHEMY_INSPECTOR
+        [InlineEditor]
         [HideIf(nameof(IsSerializedCommandInitialized))]
         [HideLabel]
 #endif
