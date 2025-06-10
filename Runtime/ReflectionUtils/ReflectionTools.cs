@@ -44,6 +44,7 @@
                 fields.AddRange(x.GetFields(bindingFlags));
                 return fields;
             });
+
         
         public static MemorizeItem<Type, IReadOnlyList<PropertyInfo>> InstanceProperties =
             MemorizeTool.Memorize<Type, IReadOnlyList<PropertyInfo>>(x =>
@@ -113,6 +114,11 @@
         public static IReadOnlyList<FieldInfo> GetInstanceFields(this Type type)
         {
             return InstanceFields[type];
+        }
+        
+        public static IReadOnlyList<PropertyInfo> GetInstanceProperties(this Type type)
+        {
+            return InstanceProperties[type];
         }
 
         public static bool IsReallyAssignableFrom(this Type type, Type otherType)
