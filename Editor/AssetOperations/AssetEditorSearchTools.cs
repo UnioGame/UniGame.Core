@@ -153,7 +153,16 @@ namespace UniModules.Editor
             return GetAssets(filterValue, folders).Where(x => x && type.IsInstanceOfType(x)).ToList();
         }
 
-        public static string CreateFilter(Type type,string filter) => string.Format(FilterTemplate, type.Name, filter);
+        public static string CreateFilter(Type type, string filter)
+        {
+            //check is filter already contains type
+            if (!string.IsNullOrEmpty(filter))
+            {
+                if (filter.Contains("t:")) return filter;
+            }
+            var targetFilter  =string.Format(FilterTemplate, type.Name, filter);
+            return targetFilter;
+        }
         
         public static List<Object> GetAssets(string filter, string[] folders = null, int count = 0)
         {
@@ -173,11 +182,11 @@ namespace UniModules.Editor
 
             var assets = GetAssets(typeof(T), sourceList, filter, folders, count);
 
-            sourceList.Despawn();
-            
-            return assets
+            var result = assets
                 .OfType<T>()
                 .ToList();
+            sourceList.Despawn();
+            return result;
         }
 
         public static List<T> GetAssetsByPaths<T>(List<string> paths) where T : Object
@@ -229,7 +238,7 @@ namespace UniModules.Editor
             
             return resultContainer;
         }
-        
+
         public static  List<AssetEditorInfo> GetAssetsInfo(
             Type type, 
             string filter,
