@@ -7,6 +7,7 @@
     using System.Runtime.CompilerServices;
     using System.Text;
     using System.Text.RegularExpressions;
+    using UniCore.Runtime.Utils;
     using UnityEngine;
     using UnityEngine.Networking;
     
@@ -155,11 +156,7 @@
         
         public static UriBuilder GetUriBuilder(string url)
         {
-            if (_builders.TryGetValue(url, out var builder))
-                return builder;
-            
-            builder = new UriBuilder(url);
-            _builders[url] = builder;
+            var builder = new UriBuilder(url);
             return builder;
         }
         
@@ -281,13 +278,25 @@
             if(_urlsCache.TryGetValue(hash, out var url))
                 return url;
 
+            var result = MergeUrlNonCached(serverUrl, path);
+            
+            _urlsCache[hash] = result;
+            return result;
+        }
+        
+        public static string MergeUrlNonCached(this string serverUrl, string path)
+        {
             path = string.IsNullOrEmpty(path) ? string.Empty : path;
 
             var uriBuilder = GetUriBuilder(serverUrl);
-            uriBuilder.Path = path;
+            
+            // Убираем лишние слэши и объединяем
+            var currentPath = uriBuilder.Path.TrimEnd('/');
+            var addPath = path.TrimStart('/');
+            
+            uriBuilder.Path = $"{currentPath}/{addPath}";
             
             var result = uriBuilder.Uri.ToString();
-            _urlsCache[hash] = result;
             return result;
         }
     }
