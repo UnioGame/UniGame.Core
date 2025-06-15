@@ -323,10 +323,8 @@ namespace UniModules.Runtime.Network
             }
             catch (Exception e)
             {
-#if GAME_DEBUG || UNITY_EDITOR
                 var errorMessage = $"error on web request: {request.url} | {e.Message}";
                 GameLog.LogError( errorMessage);
-#endif
             }
             
             var isSuccessful = request.result == UnityWebRequest.Result.Success;

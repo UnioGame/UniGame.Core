@@ -1,6 +1,6 @@
 ﻿namespace UniGame.Core.Runtime
 {
-    public interface IResetable
+    public interface IResettable
     {
         void Reset();
     }
