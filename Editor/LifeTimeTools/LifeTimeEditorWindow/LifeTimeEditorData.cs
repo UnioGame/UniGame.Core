@@ -19,7 +19,7 @@ namespace UniGame.Context.Editor
 
         #endregion
 
-        private LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
+        private LifeTime _lifeTime = new LifeTime();
         
         public void Initialize(IReadOnlyList<ILifeTime> lifeTimes)
         {

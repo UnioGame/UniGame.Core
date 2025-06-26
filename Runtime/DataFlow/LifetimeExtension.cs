@@ -173,7 +173,7 @@ public static class LifetimeExtension
     }
 
     
-    public static LifeTimeDefinition AddTo(this LifeTimeDefinition lifeTimeDefinition, ILifeTime lifeTime)
+    public static LifeTime AddTo(this LifeTime lifeTimeDefinition, ILifeTime lifeTime)
     {
         if (lifeTime == null)
             return lifeTimeDefinition;
@@ -182,7 +182,7 @@ public static class LifetimeExtension
     }
 
     
-    public static LifeTimeDefinition ReleaseWith(this LifeTimeDefinition lifeTimeDefinition, ILifeTime lifeTime)
+    public static LifeTime ReleaseWith(this LifeTime lifeTimeDefinition, ILifeTime lifeTime)
     {
         if (lifeTime == null)
             return lifeTimeDefinition;

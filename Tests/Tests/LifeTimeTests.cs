@@ -7,9 +7,9 @@ public class LifeTimeTests
     public void LifeTimeMergeTest()
     {
         //info
-        var lifeTime1 = new LifeTimeDefinition();
-        var lifeTime2 = new LifeTimeDefinition();
-        var lifeTime3 = new LifeTimeDefinition();
+        var lifeTime1 = new LifeTime();
+        var lifeTime2 = new LifeTime();
+        var lifeTime3 = new LifeTime();
         var isDisposed = false;
         
         //action
@@ -28,9 +28,9 @@ public class LifeTimeTests
     public void LifeTimeMergeWaitTest()
     {
         //info
-        var lifeTime1 = new LifeTimeDefinition();
-        var lifeTime2 = new LifeTimeDefinition();
-        var lifeTime3 = new LifeTimeDefinition();
+        var lifeTime1 = new LifeTime();
+        var lifeTime2 = new LifeTime();
+        var lifeTime3 = new LifeTime();
         var isDisposed = false;
         
         //action

@@ -21,7 +21,7 @@ namespace UniGame.Runtime.ObjectPool
 
         private const string RootObjectName = "PoolsRootObject";
         
-        private LifeTimeDefinition _lifeTime;
+        private LifeTime _lifeTime;
         private DisposableAction _disposableAction;
         private GameObject _poolsRoot;
 
@@ -449,7 +449,7 @@ namespace UniGame.Runtime.ObjectPool
         
         private void Awake()
         {
-            _lifeTime = new LifeTimeDefinition();
+            _lifeTime = new LifeTime();
             _lifeTime.AddCleanUpAction(OnDestroyAction);
         }
 

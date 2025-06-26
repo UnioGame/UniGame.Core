@@ -16,7 +16,7 @@ namespace UniGame.Runtime.DataFlow
     {
         #region static data
 
-        private static readonly LifeTimeDefinition _editorLifeTime = new();
+        private static readonly LifeTime _editorLifeTime = new();
         
         public static readonly ILifeTime TerminatedLifetime;
         public static readonly int DefaultCapacity = 2;
@@ -221,6 +221,11 @@ namespace UniGame.Runtime.DataFlow
         }
 
         public void Dispose() => Release();
+
+        /// <summary>
+        /// method for backward compatibility
+        /// </summary>
+        public void Terminate() => Release();
         
         /// <summary>
         /// invoke all cleanup actions

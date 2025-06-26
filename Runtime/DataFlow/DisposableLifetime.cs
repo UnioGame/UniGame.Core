@@ -9,8 +9,7 @@ namespace UniGame.Common
 
     public class DisposableLifetime : IDisposableLifetime, IPoolable
     {
-        private LifeTimeDefinition lifeTimeDefinition = new LifeTimeDefinition();
-        private ILifeTime lifeTime;
+        private LifeTime lifeTime = new();
         private bool isCompleted = true;
         
         public ILifeTime LifeTime => lifeTime;
@@ -22,8 +21,7 @@ namespace UniGame.Common
         /// </summary>
         public IDisposableLifetime Initialize()
         {
-            lifeTime = lifeTimeDefinition.LifeTime;
-            lifeTimeDefinition.Release();
+            lifeTime.Restart();
             isCompleted = false;
             lifeTime.AddCleanUpAction(Complete);
             
@@ -36,7 +34,7 @@ namespace UniGame.Common
         {
             isCompleted = true;
             lifeTime    = null;
-            lifeTimeDefinition.Terminate();
+            lifeTime.Terminate();
         }
 
         public void Complete() => Release();
@@ -45,7 +43,7 @@ namespace UniGame.Common
 
         public bool IsTerminated => lifeTime == null || lifeTime.IsTerminated;
         
-        public CancellationToken Token => lifeTimeDefinition.Token;
+        public CancellationToken Token => lifeTime.Token;
 
         public ILifeTime AddCleanUpAction(Action cleanAction) => lifeTime.AddCleanUpAction(cleanAction);
 

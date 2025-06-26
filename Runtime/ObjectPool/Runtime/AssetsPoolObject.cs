@@ -20,7 +20,7 @@
     {
         #region private properties
         
-        private LifeTimeDefinition _lifeTime = new();
+        private LifeTime _lifeTime = new();
         private GameObject _gameObjectAsset;
         private DisposableAction _disposableAction;
         
@@ -76,7 +76,7 @@
 
         public AssetsPoolObject Initialize(GameObject objectAsset,ILifeTime lifeTime, int preloadCount = 0,Transform root = null)
         {
-            _lifeTime ??= new LifeTimeDefinition();
+            _lifeTime ??= new LifeTime();
             _lifeTime.Release();
             _lifeTime.AddCleanUpAction(OnDestroy);
 

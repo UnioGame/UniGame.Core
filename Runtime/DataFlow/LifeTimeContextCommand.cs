@@ -8,7 +8,7 @@
 
     public class LifeTimeContextCommand : IDisposableCommand,IPoolable
     {
-        private LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
+        private LifeTime _lifeTime = new();
         private Action<ILifeTime> _action;
 
         public void Initialize(Action<ILifeTime> contextAction)

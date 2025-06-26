@@ -12,7 +12,7 @@ namespace UniGame.DataFlow
     public class LifeTimeCompose : IDisposable, IPoolable,ILifeTime
     {
         private int _counter;
-        private LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
+        private LifeTime _lifeTime = new();
 
         #region lifetime api
         

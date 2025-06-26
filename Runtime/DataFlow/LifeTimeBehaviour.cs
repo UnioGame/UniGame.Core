@@ -12,8 +12,8 @@ namespace UniGame.DataFlow
         MonoBehaviour, 
         ILifeTime
     {
-        private readonly LifeTimeDefinition _lifeTime = new();
-        private readonly LifeTimeDefinition _disableLifeTime = new();
+        private readonly LifeTime _lifeTime = new();
+        private readonly LifeTime _disableLifeTime = new();
 
         public ILifeTime AddCleanUpAction(Action cleanAction) => _lifeTime.AddCleanUpAction(cleanAction);
 

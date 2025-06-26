@@ -11,7 +11,7 @@ namespace UniModules.Editor
 
     public class SearchResultData : IDisposable, ILifeTimeContext
     {
-        private LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
+        private LifeTime _lifeTime = new LifeTime();
         private Action<ProgressData> _progressAction;
 
         public Action<ProgressData> ProgressAction => _progressAction;

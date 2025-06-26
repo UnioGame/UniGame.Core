@@ -9,7 +9,7 @@ namespace UniGame.DataFlow
     public class UnionLifeTime : IDisposable, ILifeTime
     {
         private int _counter;
-        private LifeTimeDefinition _lifeTime = new LifeTimeDefinition();
+        private LifeTime _lifeTime = new();
 
         #region lifetime api
         

@@ -7,7 +7,7 @@
     public class LifeTimeModel : ILifeTimeModel, IPoolable
     {
         
-        private LifeTimeDefinition lifeTimeDefinition = new LifeTimeDefinition();
+        private LifeTime lifeTimeDefinition = new();
 
         public ILifeTime LifeTime => lifeTimeDefinition;
 
