@@ -1,9 +1,6 @@
-﻿using System;
-using UniGame.GameFlow.Runtime;
-
-namespace UniGame.UniNodes.GameFlow.Runtime
+﻿namespace UniGame.GameFlow.Runtime
 {
-    using Cysharp.Threading.Tasks;
+    using System;
     using UniGame.Runtime.DataFlow;
     using Core.Runtime;
 
@@ -13,12 +10,10 @@ namespace UniGame.UniNodes.GameFlow.Runtime
     [Serializable]
     public abstract class GameService : IGameService
     {
-        private readonly LifeTimeDefinition _lifeTimeDefinition = new();
+        private readonly LifeTime _lifeTime = new();
 
-        public void Dispose() => _lifeTimeDefinition.Terminate();
+        public void Dispose() => _lifeTime.Release();
 
-        public ILifeTime LifeTime => _lifeTimeDefinition;
-
-        public virtual UniTask InitializeAsync() { return UniTask.CompletedTask; }
+        public ILifeTime LifeTime => _lifeTime;
     }
 }
