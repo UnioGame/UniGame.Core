@@ -10,7 +10,7 @@ namespace UniModules.Runtime.Network
     {
         private static WebRequestBuilder _webRequestBuilder = new();
         
-        public static async UniTask<UrlCheckingResult> CheckEndPoints(string[] urls,int timeout = 5)
+        public static async UniTask<UrlCheckingResult> CheckEndPoints(IEnumerable<string> urls,int timeout = 5)
         {
             var urlTasks = urls.Select(x => TestUrlAsync(x,timeout));
             var testResults = await UniTask.WhenAll(urlTasks);
@@ -29,7 +29,7 @@ namespace UniModules.Runtime.Network
             return result;
         }
         
-        public static async UniTask<UrlResult> SelectFastestEndPoint(string[] urls,int timeout = 5)
+        public static async UniTask<UrlResult> SelectFastestEndPoint(IEnumerable<string> urls,int timeout = 5)
         {
             var urlTasks = urls.Select(x => TestUrlAsync(x,timeout));
             var testResults = await UniTask.WhenAll(urlTasks);
