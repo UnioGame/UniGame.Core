@@ -10,10 +10,8 @@ namespace UniModules.Runtime.Network
     {
         private static WebRequestBuilder _webRequestBuilder = new();
         
-        public static async UniTask<UrlCheckingResult> SelectFastestEndPoint(string[] urls,int timeout = 5)
+        public static async UniTask<UrlCheckingResult> CheckEndPoints(string[] urls,int timeout = 5)
         {
-            GameLog.Log($"[Detect Optimal Storage] Start Detection", Color.cyan);
-
             var urlTasks = urls.Select(x => TestUrlAsync(x,timeout));
             var testResults = await UniTask.WhenAll(urlTasks);
             var maxTime = float.MaxValue;
@@ -26,6 +24,28 @@ namespace UniModules.Runtime.Network
                 if (urlResult.time > maxTime) continue;
                 maxTime = urlResult.time;
                 result.bestResult = urlResult;
+            }
+            
+            return result;
+        }
+        
+        public static async UniTask<UrlResult> SelectFastestEndPoint(string[] urls,int timeout = 5)
+        {
+            var urlTasks = urls.Select(x => TestUrlAsync(x,timeout));
+            var testResults = await UniTask.WhenAll(urlTasks);
+            var maxTime = float.MaxValue;
+            var result = new UrlResult()
+            {
+                success = false,
+                url = string.Empty,
+            };
+            
+            foreach (var urlResult in testResults)
+            {
+                if (!urlResult.success) continue;
+                if (urlResult.time > maxTime) continue;
+                maxTime = urlResult.time;
+                result = urlResult;
             }
             
             return result;
