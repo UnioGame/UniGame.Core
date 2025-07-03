@@ -34,6 +34,7 @@ namespace UniModules.Runtime.Network
             var urlTasks = urls.Select(x => TestUrlAsync(x,timeout));
             var testResults = await UniTask.WhenAll(urlTasks);
             var maxTime = float.MaxValue;
+            
             var result = new UrlResult()
             {
                 success = false,

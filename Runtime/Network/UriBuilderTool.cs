@@ -153,6 +153,18 @@
             return result;
         }
         
+        public static UriBuilder CreateUriBuilder(string host, int port,
+            string schema = "http", string path = "")
+        {
+            var builder = new UriBuilder(host)
+            {
+                Path = path,
+                Port = port,
+                Scheme = schema
+            };
+            return builder;
+        }
+        
         public static UriBuilder GetUriBuilder(string url)
         {
             var builder = new UriBuilder(url);
